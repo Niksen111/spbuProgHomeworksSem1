@@ -40,7 +40,7 @@ void printArray(const int theArray[], const int lengthOfTheArray)
     printf("\n\n");
 }
 
-void insertionSort(int theArray[], int lengthOfTheArray)
+void insertionSort(int theArray[], const int lengthOfTheArray)
 {
     for (int i = 0; i < lengthOfTheArray; ++i)
     {
@@ -145,11 +145,11 @@ bool testInsertionSort()
         checkThatAnArraysAreIdentical(thirdArray, sortedTheThirdArray, 10));
 }
 
-bool testMyQSortOnRandomArrays(int maxLengthOfTheArrays, int numberOfArrays)
+bool testMyQSortOnRandomArrays(const int maxLengthOfTheArrays, const int numberOfArrays)
 {
     srand((unsigned)time(NULL));
 
-    int* randomArray = (int*)calloc(maxLengthOfTheArrays, 4);
+    int* randomArray = (int*)calloc(maxLengthOfTheArrays, sizeof(int));
     bool sortIsWorking = true;
 
     if (randomArray == NULL)
@@ -164,8 +164,10 @@ bool testMyQSortOnRandomArrays(int maxLengthOfTheArrays, int numberOfArrays)
         int supportElement = randomArray[0];
         myQSort(randomArray, lengthOfTheArray);
 
-        if (!checkThatArrayIsSorted)
+        if (!checkThatArrayIsSorted(randomArray, lengthOfTheArray))
         {
+            printf("Wrong myQSort on the array:\n");
+            printArray(randomArray, lengthOfTheArray);
             sortIsWorking = false;
             break;
         }
@@ -174,14 +176,46 @@ bool testMyQSortOnRandomArrays(int maxLengthOfTheArrays, int numberOfArrays)
     return sortIsWorking;
 }
 
+bool testMyQSort()
+{
+    int array1[5] = { 2, 5, 1, 6, -2 };
+    int array2[10] = { 3, 1, 1, 7, -2, 6, -2, -6, 20, 10 };
+    int array3[20] = { 5, 2, 5, 2, 6, 2, 6, 0, -3, 12,
+        22, -22, 3, 1, 5, -6, 0, 222, 1, -50 };
+    myQSort(array1, 5);
+    myQSort(array2, 10);
+    myQSort(array3, 20);
+
+    return (checkThatArrayIsSorted(array1, 5) && checkThatArrayIsSorted(array2, 10) &&
+        checkThatArrayIsSorted(array3, 20));
+}
+
 int main()
 {
-    if (testMyQSortOnRandomArrays(1000, 1000))
+    if (!testMyQSort() || !testInsertionSort() || !testMyQSortOnRandomArrays(1000, 1000))
     {
-        printf("All works :)\n");
+        printf("Tests failed(\n");
+        return 0;
     }
-    else
+
+    srand((unsigned)time(NULL));
+    int lengthOfRandomArray = rand() % 20;
+    int rangeOfRandomArray = rand() % 30;
+    
+    int* randomArray = (int*)calloc(lengthOfRandomArray, sizeof(int));
+    arrayWithRandomElements(randomArray, lengthOfRandomArray, rangeOfRandomArray);
+
+    printf("Random array before sorting:\n\n");
+    printArray(randomArray, lengthOfRandomArray);
+    myQSort(randomArray, lengthOfRandomArray);
+    printf("Random array after sorting:\n\n");
+    printArray(randomArray, lengthOfRandomArray);
+
+    if (checkThatArrayIsSorted(randomArray, lengthOfRandomArray))
     {
-        printf("Fuck :(");
+        printf("The array is sorted :)\n");
+        return 0;
     }
+    printf("The array is'nt sorted :(\n");
+    return 0;
 }
