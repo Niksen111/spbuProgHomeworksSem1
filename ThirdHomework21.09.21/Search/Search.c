@@ -120,8 +120,24 @@ bool binarySearch(const int theArray[], const int lengthOfTheArray, const int th
     return false;
 }
 
+bool testBinarySearch()
+{
+    int array1[10] = { 0, 1, 1, 2, 3, 3, 4, 5, 6, 7 };
+    int array2[15] = { -13, -11, -7, -5, -3, -2, -1, 0, 1, 1, 2, 3, 5, 8 , 13};
+
+    return (binarySearch(array1, 10, 6) && binarySearch(array1, 10, 0)&&
+        !binarySearch(array1, 10, 8) && binarySearch(array2, 15, -7) &&
+        binarySearch(array2, 15, 13) && !binarySearch(array2, 15, -9));
+}
+
 int main()
 {
+    if (!testBinarySearch())
+    {
+        printf("Tests failed(\n");
+        return 0;
+    }
+
     srand((unsigned)time(NULL));
     int justArray[20] = { 0 };
     arrayWithRandomElements(justArray, 20, 25);
