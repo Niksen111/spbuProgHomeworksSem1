@@ -138,20 +138,18 @@ int main()
         return 0;
     }
 
-    srand((unsigned)time(NULL));
-    int justArray[20] = { 0 };
-    arrayWithRandomElements(justArray, 20, 25);
-    printArray(justArray, 20);
-    myQSort(justArray, 20);
-    printArray(justArray, 20);
-    int elem = rand() % 25;
-    printf("%d\n", elem);
-    if (binarySearch(justArray, 20, elem))
-    {
-        printf("True\n");
-    }
-    else
-    {
-        printf("False\n");
-    }
+    int n = 0;
+    int k = 0;
+    printf("Enter two numbers (separated by a space):\n");
+    scanf("%d %d", &n, &k);
+
+    int* randomArray = (int*)calloc(n, sizeof(int));
+    int* randomElements = (int*)calloc(k, sizeof(int));
+
+    bool ifPrint = false;
+    short ifPrintHelp = 0;
+    printf("Do you want to print every array? (1 or 0)\n");
+    scanf("%hd", &ifPrintHelp);
+    ifPrint = (ifPrintHelp ? true : false);
+    printf("%d", ifPrint);
 }
