@@ -146,10 +146,24 @@ int main()
     int* randomArray = (int*)calloc(n, sizeof(int));
     int* randomElements = (int*)calloc(k, sizeof(int));
 
-    bool ifPrint = false;
-    short ifPrintHelp = 0;
-    printf("Do you want to print every array? (1 or 0)\n");
-    scanf("%hd", &ifPrintHelp);
-    ifPrint = (ifPrintHelp ? true : false);
-    printf("%d", ifPrint);
+    arrayWithRandomElements(randomArray, n, n);
+    arrayWithRandomElements(randomElements, k, n + 1);
+    
+    printf("The array befor sorting:\n\n");
+    printArray(randomArray, n);
+    myQSort(randomArray, n);
+    printf("The array after sorting:\n\n");
+    printArray(randomArray, n);
+
+    for (int i = 0; i < k; ++i)
+    {
+        if (binarySearch(randomArray, n, randomElements[i]))
+        {
+            printf("Element %d is contained in the array.\n", randomElements[i]);
+        }
+        else
+        {
+            printf("Element %d is not contained in the array.\n", randomElements[i]);
+        }
+    }
 }
