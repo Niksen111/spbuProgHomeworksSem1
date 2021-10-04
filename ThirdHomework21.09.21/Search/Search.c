@@ -10,7 +10,7 @@ void swap(int* firstVariable, int* secondVariable)
     *firstVariable ^= *secondVariable;
 }
 
-void arrayWithRandomElements(int theArray[], int lengthOfTheArray, int mod)
+void fillArrayWithRandomElements(int theArray[], int lengthOfTheArray, int mod)
 {
     srand((unsigned)time(NULL));
     for (int i = 0; i < lengthOfTheArray; ++i)
@@ -49,19 +49,19 @@ void myQSort(int theArray[], const int lengthOfTheArray)
         return;
     }
 
-    bool elementsIsNotEqual = false;
+    bool elementsAreNotEqual  = false;
     int supportElement = 0;
     for (int i = 0; i < lengthOfTheArray - 1; ++i)
     {
         if (theArray[i] != theArray[i + 1])
         {
             supportElement = max(theArray[i], theArray[i + 1]);
-            elementsIsNotEqual = true;
+            elementsAreNotEqual  = true;
             break;
         }
     }
 
-    if (!elementsIsNotEqual)
+    if (!elementsAreNotEqual )
     {
         return;
     }
@@ -86,15 +86,8 @@ void myQSort(int theArray[], const int lengthOfTheArray)
         }
     }
 
-    for (int i = 0; i < lengthOfTheArray; ++i)
-    {
-        if (theArray[i + 1] >= supportElement)
-        {
-            myQSort(theArray, i + 1);
-            myQSort(&theArray[i + 1], lengthOfTheArray - i - 1);
-            return;
-        }
-    }
+    myQSort(theArray, i);
+    myQSort(&theArray[i], lengthOfTheArray - i);
 }
 
 bool binarySearch(const int theArray[], const int lengthOfTheArray, const int theElement)
@@ -193,7 +186,7 @@ bool testMyQSortOnRandomArrays(const int maxLengthOfTheArrays, const int numberO
     for (int i = 0; i < numberOfArrays; ++i)
     {
         int lengthOfTheArray = rand() % maxLengthOfTheArrays;
-        arrayWithRandomElements(randomArray, lengthOfTheArray, 1000);
+        fillArrayWithRandomElements(randomArray, lengthOfTheArray, 1000);
         int supportElement = randomArray[0];
         myQSort(randomArray, lengthOfTheArray);
 
@@ -239,8 +232,8 @@ int main()
     int* randomArray = (int*)calloc(n, sizeof(int));
     int* randomElements = (int*)calloc(k, sizeof(int));
 
-    arrayWithRandomElements(randomArray, n, n);
-    arrayWithRandomElements(randomElements, k, n + 1);
+    fillArrayWithRandomElements(randomArray, n, n);
+    fillArrayWithRandomElements(randomElements, k, n + 1);
     
     printf("The array befor sorting:\n\n");
     printArray(randomArray, n);
@@ -259,4 +252,6 @@ int main()
             printf("Element %d is not contained in the array.\n", randomElements[i]);
         }
     }
+    free(randomArray);
+    free(randomElements);
 }
