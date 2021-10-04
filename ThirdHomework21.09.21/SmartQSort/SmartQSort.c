@@ -22,7 +22,7 @@ bool checkThatArrayIsSorted(const int theArray[], const int lengthOfTheArray)
     return true;
 }
 
-void arrayWithRandomElements(int theArray[], int lengthOfTheArray, int mod)
+void fillArrayWithRandomElements(int theArray[], int lengthOfTheArray, int mod)
 {
     srand((unsigned)time(NULL));
     for (int i = 0; i < lengthOfTheArray; ++i)
@@ -61,19 +61,19 @@ void myQSort(int theArray[], const int lengthOfTheArray)
         return;
     }
 
-    bool elementsIsNotEqual = false;
+    bool elementsAreNotEqual = false;
     int supportElement = 0;
     for (int i = 0; i < lengthOfTheArray - 1; ++i)
     {
         if (theArray[i] != theArray[i + 1])
         {
             supportElement = max(theArray[i], theArray[i + 1]);
-            elementsIsNotEqual = true;
+            elementsAreNotEqual = true;
             break;
         }
     }
 
-    if (!elementsIsNotEqual)
+    if (!elementsAreNotEqual)
     {
         return;
     }
@@ -98,15 +98,8 @@ void myQSort(int theArray[], const int lengthOfTheArray)
         }
     }
 
-    for (int i = 0; i < lengthOfTheArray; ++i)
-    {
-        if (theArray[i + 1] >= supportElement)
-        {
-            myQSort(theArray, i + 1);
-            myQSort(&theArray[i + 1], lengthOfTheArray - i - 1);
-            return;
-        }
-    }
+    myQSort(theArray, i);
+    myQSort(&theArray[i], lengthOfTheArray - i);
 }
 
 bool checkThatAnArraysAreIdentical(const int firstArray[],
@@ -160,7 +153,7 @@ bool testMyQSortOnRandomArrays(const int maxLengthOfTheArrays, const int numberO
     for (int i = 0; i < numberOfArrays; ++i)
     {
         int lengthOfTheArray = rand() % maxLengthOfTheArrays;
-        arrayWithRandomElements(randomArray, lengthOfTheArray, 1000);
+        fillArrayWithRandomElements(randomArray, lengthOfTheArray, 1000);
         int supportElement = randomArray[0];
         myQSort(randomArray, lengthOfTheArray);
 
@@ -203,7 +196,7 @@ int main()
     int rangeOfRandomArray = rand() % 30;
     
     int* randomArray = (int*)calloc(lengthOfRandomArray, sizeof(int));
-    arrayWithRandomElements(randomArray, lengthOfRandomArray, rangeOfRandomArray);
+    fillArrayWithRandomElements(randomArray, lengthOfRandomArray, rangeOfRandomArray);
 
     printf("Random array before sorting:\n\n");
     printArray(randomArray, lengthOfRandomArray);
@@ -214,8 +207,10 @@ int main()
     if (checkThatArrayIsSorted(randomArray, lengthOfRandomArray))
     {
         printf("The array is sorted :)\n");
+        free(randomArray);
         return 0;
     }
+    free(randomArray);
     printf("The array is'nt sorted :(\n");
     return 0;
 }
