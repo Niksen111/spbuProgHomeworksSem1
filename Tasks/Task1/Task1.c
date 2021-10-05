@@ -47,8 +47,12 @@ void fillArrayWithRandomElements(int theArray[], int lengthOfTheArray, int mod)
 
 int sumOfDigits(int number)
 {
+    if (number < 0)
+    {
+        number = -number;
+    }
     int sum = 0;
-    while (number != 0)
+    while (number > 0)
     {
         sum += number % 10;
         number /= 10;
@@ -91,10 +95,10 @@ void findNumberWithMaxSumOfDigits(int theArray[], int lengthOfTheArray, int repl
 
 bool testFindNumberWithMaxSumOfDigits()
 {
-    int array1[3] = { 111, 234, 55 };
+    int array1[3] = { 111, 234, -55 };
     int answerForArray1[3] = { 0 };
     int lengthOfAnswersNumber = 0;
-    int rigthAnswer[1] = { 55 };
+    int rigthAnswer[1] = { -55 };
     findNumberWithMaxSumOfDigits(array1, 3, answerForArray1, &lengthOfAnswersNumber);
     bool ans = checkThatAnArraysAreIdentical(answerForArray1, rigthAnswer, max(1, lengthOfAnswersNumber));
 
