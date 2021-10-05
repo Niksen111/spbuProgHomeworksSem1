@@ -63,8 +63,26 @@ void selectionSort(int theArray[], const int lengthOfTheArray)
     }
 }
 
+bool testSelectionSort()
+{
+    int firstArray[5] = { 2, 3, 1, 5, 2 };
+    selectionSort(firstArray, 5);
+
+    int secondArray[3] = { -1, -1, -1 };
+    selectionSort(secondArray, 3);
+
+    return (checkThatArrayIsSorted(firstArray, 5) && checkThatArrayIsSorted(secondArray, 3));
+}
+
 int main()
 {
+    if (!testSelectionSort())
+    {
+        printf("Tests failed(");
+        return 0;
+    }
+
+    printf("Enter an integer array of 10 elements:\n\n");
     int usersArray[10] = { 0 };
     scanArray(usersArray, 10);
 
