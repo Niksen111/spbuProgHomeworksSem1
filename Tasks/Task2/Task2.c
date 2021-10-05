@@ -40,14 +40,12 @@ bool checkThatArrayIsSorted(const int theArray[], const int lengthOfTheArray)
 
 void selectionSort(int theArray[], const int lengthOfTheArray)
 {
-    int minElement = theArray[0];
-    int indexOfMinElement = 0;
     int currentIndex = 0;
     bool changes = true;
     while (changes)
     {
-        minElement = theArray[currentIndex];
-        indexOfMinElement = currentIndex;
+        int minElement = theArray[currentIndex];
+        int indexOfMinElement = currentIndex;
         changes = false;
         for (int i = currentIndex + 1; i < lengthOfTheArray; ++i)
         {
@@ -58,7 +56,10 @@ void selectionSort(int theArray[], const int lengthOfTheArray)
                 indexOfMinElement = i;
             }
         }
-        swap(&theArray[currentIndex], &theArray[indexOfMinElement]);
+        if (currentIndex != indexOfMinElement)
+        {
+            swap(&theArray[currentIndex], &theArray[indexOfMinElement]);
+        }
         ++currentIndex;
     }
 }
@@ -71,7 +72,14 @@ bool testSelectionSort()
     int secondArray[3] = { -1, -1, -1 };
     selectionSort(secondArray, 3);
 
-    return (checkThatArrayIsSorted(firstArray, 5) && checkThatArrayIsSorted(secondArray, 3));
+    int array3[1] = { 99 };
+    selectionSort(array3, 1);
+
+    int array4[11] = { 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5};
+    selectionSort(array4, 11);
+
+    return (checkThatArrayIsSorted(firstArray, 5) && checkThatArrayIsSorted(secondArray, 3) &&
+        checkThatArrayIsSorted(array3, 1) && checkThatArrayIsSorted(array4, 11));
 }
 
 int main()
