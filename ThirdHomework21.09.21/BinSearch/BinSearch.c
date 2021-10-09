@@ -128,18 +128,14 @@ bool checkThatArrayIsSorted(const int theArray[], const int lengthOfTheArray)
 bool checkThatAnArraysAreIdentical(const int firstArray[],
     const int secondArray[], const int lengthOfArrays)
 {
-    bool identical = true;
-
     for (int i = 0; i < lengthOfArrays; ++i)
     {
         if (firstArray[i] != secondArray[i])
         {
-            identical = false;
-            break;
+            return false;
         }
     }
-
-    return identical;
+    return true;
 }
 
 bool testBinarySearch()
@@ -147,9 +143,9 @@ bool testBinarySearch()
     int array1[10] = { 0, 1, 1, 2, 3, 3, 4, 5, 6, 7 };
     int array2[15] = { -13, -11, -7, -5, -3, -2, -1, 0, 1, 1, 2, 3, 5, 8 , 13};
 
-    return (binarySearch(array1, 10, 6) && binarySearch(array1, 10, 0)&&
+    return binarySearch(array1, 10, 6) && binarySearch(array1, 10, 0)&&
         !binarySearch(array1, 10, 8) && binarySearch(array2, 15, -7) &&
-        binarySearch(array2, 15, 13) && !binarySearch(array2, 15, -9));
+        binarySearch(array2, 15, 13) && !binarySearch(array2, 15, -9);
 }
 
 bool testInsertionSort()
@@ -166,9 +162,9 @@ bool testInsertionSort()
     const int sortedTheThirdArray[10] = { 0, 1, 2, 3, 4, 5, 5, 7, 8, 9 };
     insertionSort(thirdArray, 10);
 
-    return (checkThatAnArraysAreIdentical(firstArray, sortedTheFirstArray, 5) &&
+    return checkThatAnArraysAreIdentical(firstArray, sortedTheFirstArray, 5) &&
         checkThatAnArraysAreIdentical(secondArray, sortedTheSecondtArray, 3) &&
-        checkThatAnArraysAreIdentical(thirdArray, sortedTheThirdArray, 10));
+        checkThatAnArraysAreIdentical(thirdArray, sortedTheThirdArray, 10);
 }
 
 bool testMyQSortOnRandomArrays(const int maxLengthOfTheArrays, const int numberOfArrays)
@@ -212,16 +208,16 @@ bool testMyQSort()
     myQSort(array2, 10);
     myQSort(array3, 20);
 
-    return (checkThatArrayIsSorted(array1, 5) && checkThatArrayIsSorted(array2, 10) &&
-        checkThatArrayIsSorted(array3, 20));
+    return checkThatArrayIsSorted(array1, 5) && checkThatArrayIsSorted(array2, 10) &&
+        checkThatArrayIsSorted(array3, 20);
 }
 
 int main()
 {
-    if (!testBinarySearch() || !testInsertionSort() || !testMyQSort || !testMyQSortOnRandomArrays(1000, 1000))
+    if (!testBinarySearch() || !testInsertionSort() || !testMyQSort() || !testMyQSortOnRandomArrays(1000, 1000))
     {
         printf("Tests failed(\n");
-        return 0;
+        return -1;
     }
 
     int n = 0;
