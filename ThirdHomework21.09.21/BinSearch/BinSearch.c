@@ -28,7 +28,7 @@ void printArray(const int theArray[], const int lengthOfTheArray)
     printf("\n\n");
 }
 
-void insertionSort(int theArray[], int lengthOfTheArray)
+void insertionSort(int theArray[], const int lengthOfTheArray)
 {
     for (int i = 0; i < lengthOfTheArray; ++i)
     {
@@ -96,7 +96,7 @@ bool binarySearch(const int theArray[], const int lengthOfTheArray, const int th
     int rightBorder = lengthOfTheArray;
     while (rightBorder - leftBorder > 1)
     {
-        int middleElement = (leftBorder + rightBorder) / 2;
+        const int middleElement = (leftBorder + rightBorder) / 2;
         if (theElement >= theArray[middleElement])
         {
             leftBorder = middleElement;
@@ -106,11 +106,7 @@ bool binarySearch(const int theArray[], const int lengthOfTheArray, const int th
             rightBorder = middleElement;
         }
     }
-    if (theArray[leftBorder] == theElement)
-    {
-        return true;
-    }
-    return false;
+    return theArray[leftBorder] == theElement;
 }
 
 bool checkThatArrayIsSorted(const int theArray[], const int lengthOfTheArray)
@@ -141,9 +137,9 @@ bool checkThatAnArraysAreIdentical(const int firstArray[],
 bool testBinarySearch()
 {
     int array1[10] = { 0, 1, 1, 2, 3, 3, 4, 5, 6, 7 };
-    int array2[15] = { -13, -11, -7, -5, -3, -2, -1, 0, 1, 1, 2, 3, 5, 8 , 13};
+    int array2[15] = { -13, -11, -7, -5, -3, -2, -1, 0, 1, 1, 2, 3, 5, 8, 13};
 
-    return binarySearch(array1, 10, 6) && binarySearch(array1, 10, 0)&&
+    return binarySearch(array1, 10, 6) && binarySearch(array1, 10, 0) &&
         !binarySearch(array1, 10, 8) && binarySearch(array2, 15, -7) &&
         binarySearch(array2, 15, 13) && !binarySearch(array2, 15, -9);
 }
