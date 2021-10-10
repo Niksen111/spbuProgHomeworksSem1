@@ -4,8 +4,8 @@
 
 typedef struct
 {
-    char phone[30];
-    char name[40];
+    char phone[20];
+    char name[30];
 }TelephoneDerectory;
 
 int readBaseOfNumbers(char fileName[], TelephoneDerectory userDataBase[])
@@ -15,7 +15,40 @@ int readBaseOfNumbers(char fileName[], TelephoneDerectory userDataBase[])
     {
         return -1;
     }
-
+    char symbol = '\0';
+    int currentNumber = 0;
+    while (true)
+    {
+        for (int i = 0; i < 20; ++i)
+        {
+            if ((symbol = fgetc(file)) != EOF)
+            {
+                *userDataBase[currentNumber].phone = symbol;
+            }
+            else
+            {
+                fclose(file);
+                return 0;
+            }
+        }
+        if ((symbol = fgetc(file)) == EOF)
+        {
+            fclose(file);
+            return 0;
+        }
+        for (int i = 0; i < 30; ++i)
+        {
+            if ((symbol = fgetc(file)) != EOF)
+            {
+                *userDataBase[currentNumber].name = symbol;
+            }
+            else
+            {
+                fclose(file);
+                return 0;
+            }
+        }
+    }
 }
 
 void userInteraction(char fileName[])
