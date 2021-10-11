@@ -9,6 +9,32 @@ typedef struct
     char name[30];
 }TelephoneDerectory;
 
+bool checkThatAnArraysAreIdentical(const char firstArray[],
+    const char secondArray[], const int lengthOfArrays)
+{
+    for (int i = 0; i < lengthOfArrays; ++i)
+    {
+        if (firstArray[i] != secondArray[i])
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+int findName(char desiredPhone[], const TelephoneDerectory userDataBase[], const int lengthOfBase, char contactName[])
+{
+    for (int i = 0; i < lengthOfBase; ++i)
+    {
+        if (checkThatAnArraysAreIdentical(userDataBase[i].phone, desiredPhone, 30))
+        {
+            strcpy(contactName, userDataBase[i].phone);
+            return 0;
+        }
+    }
+    return -1;
+}
+
 void printCharArray(const char theArray[], const int lengthOfTheArray)
 {
     for (int i = 0; i < lengthOfTheArray; ++i)
@@ -74,7 +100,7 @@ void fillArrayWithSpaces(char theArray[], const int lengthOfTheArray)
     }
 }
 
-void printBase(TelephoneDerectory userDataBase[], int lengthOfBase)
+void printBase(const TelephoneDerectory userDataBase[], const int lengthOfBase)
 {
     for (int i = 0; i < lengthOfBase; ++i)
     {
@@ -85,19 +111,27 @@ void printBase(TelephoneDerectory userDataBase[], int lengthOfBase)
     }
 }
 
-int addEntry(TelephoneDerectory userDataBase[], int *lengthOfBase, char phone[], char name[])
+void stringCopy(char mainArray[], char secondArray[])
 {
-    strcpy(userDataBase[*lengthOfBase].phone, phone);
-    strcpy(userDataBase[*lengthOfBase].name, name);
+    for (int i = 0; secondArray[i] != '\0'; ++i)
+    {
+        mainArray[i] = secondArray[i];
+    }
+}
+
+int addEntry(TelephoneDerectory userDataBase[], int *lengthOfBase, const char phone[], const char name[])
+{
+    stringCopy(userDataBase[*lengthOfBase].phone, phone);
+    stringCopy(userDataBase[*lengthOfBase].name, name);
     ++*lengthOfBase;
 }
 
 void userInteraction(const char fileName[])
 {
-    TelephoneDerectory baseOfNumbers[100] = { 0 };
+    TelephoneDerectory userDataBase[100] = { 0 };
     int lengthOfBase = 0;
 
-    readTelephoneDerectoryFromFile(fileName, baseOfNumbers, &lengthOfBase);
+    readTelephoneDerectoryFromFile(fileName, userDataBase, &lengthOfBase);
     int numberOfOperation = -1;
     while (true)
     {
@@ -109,19 +143,19 @@ void userInteraction(const char fileName[])
         }
         else if (numberOfOperation == 1)
         {
-            fillArrayWithSpaces(baseOfNumbers[lengthOfBase].phone, 20);
-            fillArrayWithSpaces(baseOfNumbers[lengthOfBase].name, 30);
-            char phone[20] = { 0 };
-            char name[30] = { 0 };
+            fillArrayWithSpaces(userDataBase[lengthOfBase].phone, 20);
+            fillArrayWithSpaces(userDataBase[lengthOfBase].name, 30);
+            char phoneNew[20] = { 0 };
+            char nameNew[30] = { 0 };
             printf("Введите номер телефона (не более 20 символов):\n");
-            scanf_s(" %[^\n]%*s", phone, 20);
+            scanf_s(" %[^\n]%*s", phoneNew, 20);
             printf("Ввеидите имя контакта (не более 30 символов):\n");
-            scanf_s(" %[^\n]%*s", name, 30);
-            addEntry(baseOfNumbers, &lengthOfBase, phone, name);
+            scanf_s(" %[^\n]%*s", nameNew, 30);
+            addEntry(userDataBase, &lengthOfBase, phoneNew, nameNew);
         }
         else if (numberOfOperation == 2)
         {
-            printBase(baseOfNumbers, lengthOfBase);
+            printBase(userDataBase, lengthOfBase);
         }
         else if (numberOfOperation == 3)
         {
@@ -129,7 +163,19 @@ void userInteraction(const char fileName[])
         }
         else if (numberOfOperation == 4)
         {
-            
+            char desiredPhone[20] = { 0 };
+            fillArrayWithSpaces(desiredPhone, 20);
+            printf("Введите искомый номер телефона:\n");
+            scanf("%s", desiredPhone);
+            char contactName[30] = { 0 };
+            if (findName(desiredPhone, userDataBase, lengthOfBase, contactName) == 0)
+            {
+                printf("Контакт не найден.\n");
+            }
+            else
+            {
+                printf("Искомый контакт:\n%s\n", contactName);
+            }
         }
         else if (numberOfOperation == 5)
         {
