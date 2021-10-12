@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ModulesAndFiles.c" />
+    <ClCompile Include="myQSortc.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myQSort.h" />

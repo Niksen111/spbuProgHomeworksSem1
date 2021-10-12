@@ -18,6 +18,9 @@
     <ClCompile Include="ModulesAndFiles.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="myQSortc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myQSort.h">
