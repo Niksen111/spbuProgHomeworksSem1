@@ -75,6 +75,57 @@ bool checkThatAnArraysAreIdentical(const int firstArray[],
     return identical;
 }
 
+int* readArrayFromFile(char nameOfFile[], int* lengthOfTheArray, int* errorNumber)
+{
+    FILE* file = fopen(nameOfFile, "r");
+    if (file == NULL)
+    {
+        *errorNumber = -1;
+        return NULL;
+    }
+
+    *lengthOfTheArray = 0;
+    fscanf(file, "%d\n", lengthOfTheArray);
+    int* theArray = calloc(*lengthOfTheArray, sizeof(int));
+    
+    if (theArray == NULL)
+    {
+        *errorNumber = -2;
+        return NULL;
+    }
+
+    for (int i = 0; i < *lengthOfTheArray; ++i)
+    {
+        fscanf(file, "%d ", &theArray[i]);
+    }
+
+    fclose(file);
+    *errorNumber = 0;
+    return theArray;
+}
+
+bool testReadFromFile()
+{
+    FILE* file = fopen("testFile1.txt", "w");
+    fprintf(file, "%d\n", 10);
+    int arrayAnswer[10] = { 8, 2, 1, 5, -2, 0, 100, -10000, 8, -5 };
+    for (int i = 0; i < 10; ++i)
+    {
+        fprintf(file, "%d ", arrayAnswer[i]);
+    }
+    fclose(file);
+    int lengthOfTheArray = 0;
+    int errorNumber = 0;
+    int* arrayReading = readArrayFromFile("testFile1.txt", &lengthOfTheArray, &errorNumber);
+    
+    if (errorNumber != 0)
+    {
+        return false;
+    }
+
+    return lengthOfTheArray == 10 && checkThatAnArraysAreIdentical(arrayAnswer, arrayReading, 10);
+}
+
 bool testInsertionSort()
 {
     int firstArray[5] = { 2, 3, 1, 5, 2 };
@@ -150,23 +201,30 @@ bool testFindTrend()
 int main()
 {
     if (!testMyQSort() || !testInsertionSort() || !testMyQSortOnRandomArrays(1000, 1000) ||
-        !testFindTrend())
+        !testFindTrend() || !testReadFromFile())
     {
         printf("Tests failed(\n");
-        return 0;
+        return -1;
     }
 
     printf("We sort the array using QSort and look for a trend over a line.\n( O(n logn) )\n\n");
 
-    srand((unsigned)time(NULL));
-    int justArray[20] = { 0 };
-    fillArrayWithRandomElements(justArray, 20, 20);
+    char nameOfTheFile[20] = "input.txt";
+    int errorNumber = 0;
+    int lengthOfTheArray = 0;
+    int* justArray = readArrayFromFile(nameOfTheFile, &lengthOfTheArray, &errorNumber);
+    if (errorNumber != 0)
+    {
+        printf("%s\n", errorNumber == -1 ? "File not found!" : 
+            "Failed to allocate memory to an array(");
+        return -1;
+    }
 
-    printf("Random array before sorting:\n\n");
+    printf("The array before sorting:\n\n");
     printArray(justArray, 20);
 
     myQSort(justArray, 20);
-    printf("Random array after sorting:\n\n");
+    printf("The array after sorting:\n\n");
     printArray(justArray, 20);
 
     printf("Trend is %d.\n", findTrend(justArray, 20));
