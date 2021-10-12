@@ -139,7 +139,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ModulesAndFiles.cpp" />
+    <ClCompile Include="ModulesAndFiles.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="myQSort.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
