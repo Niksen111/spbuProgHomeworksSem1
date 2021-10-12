@@ -22,7 +22,23 @@ bool checkThatAnArraysAreIdentical(const char firstArray[],
     return true;
 }
 
-int findName(char desiredPhone[], const TelephoneDerectory userDataBase[], const int lengthOfBase, char contactName[])
+int writeTelephoneDerectoyIntoFile(const char fileName[], 
+    const TelephoneDerectory userDataBase[], const int lengthOfBase)
+{
+    FILE* file = fopen(fileName, "w");
+    for (int i = 0; i < lengthOfBase; ++i)
+    {
+        fprintf_s(file, "%s", userDataBase[i].phone);
+        fprintf(file, ' ');
+        fprintf_s(file, "%s", userDataBase[i].name);
+        fprintf(file, '\n');
+    }
+    fclose(file);
+    return 0;
+}
+
+int findName(char desiredPhone[], const TelephoneDerectory userDataBase[], 
+    const int lengthOfBase, char contactName[])
 {
     for (int i = 0; i < lengthOfBase; ++i)
     {
@@ -43,22 +59,24 @@ void printCharArray(const char theArray[], const int lengthOfTheArray)
     }
 }
 
-int readTelephoneDerectoryFromFile(const char fileName[], TelephoneDerectory userDataBase[], int *lengthOfBase)
+int readTelephoneDerectoryFromFile(const char fileName[], 
+    TelephoneDerectory userDataBase[], int *lengthOfBase)
 {
+    *lengthOfBase = 0;
     FILE* file = fopen(fileName, "r");
     if (file == NULL)
     {
         return -1;
     }
     char symbol = '\0';
-    *lengthOfBase = 1;
+    
     while (true)
     {
         for (int i = 0; i < 20; ++i)
         {
             if ((symbol = fgetc(file)) != EOF)
             {
-                userDataBase[*lengthOfBase - 1].phone[i] = symbol;
+                userDataBase[*lengthOfBase].phone[i] = symbol;
             }
             else
             {
@@ -75,7 +93,7 @@ int readTelephoneDerectoryFromFile(const char fileName[], TelephoneDerectory use
         {
             if ((symbol = fgetc(file)) != EOF)
             {
-                userDataBase[*lengthOfBase - 1].name[i] = symbol;
+                userDataBase[*lengthOfBase].name[i] = symbol;
             }
             else
             {
@@ -83,12 +101,12 @@ int readTelephoneDerectoryFromFile(const char fileName[], TelephoneDerectory use
                 return 0;
             }
         }
+        ++* lengthOfBase;
         if ((symbol = fgetc(file)) == EOF)
         {
             fclose(file);
             return 0;
         }
-        ++*lengthOfBase;
     }
 }
 
@@ -148,9 +166,9 @@ void userInteraction(const char fileName[])
             char phoneNew[20] = { 0 };
             char nameNew[30] = { 0 };
             printf("Введите номер телефона (не более 20 символов):\n");
-            scanf_s(" %[^\n]%*s", phoneNew, 20);
+            scanf_s(" %[^\n]", phoneNew, 20);
             printf("Ввеидите имя контакта (не более 30 символов):\n");
-            scanf_s(" %[^\n]%*s", nameNew, 30);
+            scanf_s(" %[^\n]", nameNew, 30);
             addEntry(userDataBase, &lengthOfBase, phoneNew, nameNew);
         }
         else if (numberOfOperation == 2)
@@ -179,7 +197,7 @@ void userInteraction(const char fileName[])
         }
         else if (numberOfOperation == 5)
         {
-            
+            writeTelephoneDerectoyIntoFile(fileName, userDataBase, lengthOfBase);
         }
         else if (numberOfOperation == 6)
         {
