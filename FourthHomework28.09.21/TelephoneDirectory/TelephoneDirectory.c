@@ -37,6 +37,22 @@ int writeTelephoneDerectoyIntoFile(const char fileName[],
     return 0;
 }
 
+void stringCopy(char mainArray[], char secondArray[])
+{
+    for (int i = 0; secondArray[i] != '\0'; ++i)
+    {
+        mainArray[i] = secondArray[i];
+    }
+}
+
+void printCharArray(const char theArray[], const int lengthOfTheArray)
+{
+    for (int i = 0; i < lengthOfTheArray; ++i)
+    {
+        printf("%c", theArray[i]);
+    }
+}
+
 int findName(char desiredPhone[], const TelephoneDerectory userDataBase[], 
     const int lengthOfBase, char contactName[])
 {
@@ -44,7 +60,7 @@ int findName(char desiredPhone[], const TelephoneDerectory userDataBase[],
     {
         if (checkThatAnArraysAreIdentical(userDataBase[i].phone, desiredPhone, 30))
         {
-            strcpy(contactName, userDataBase[i].phone);
+            stringCopy(contactName, userDataBase[i].phone);
             return 0;
         }
     }
@@ -129,14 +145,6 @@ void printBase(const TelephoneDerectory userDataBase[], const int lengthOfBase)
     }
 }
 
-void stringCopy(char mainArray[], char secondArray[])
-{
-    for (int i = 0; secondArray[i] != '\0'; ++i)
-    {
-        mainArray[i] = secondArray[i];
-    }
-}
-
 int addEntry(TelephoneDerectory userDataBase[], int *lengthOfBase, const char phone[], const char name[])
 {
     stringCopy(userDataBase[*lengthOfBase].phone, phone);
@@ -153,13 +161,14 @@ void userInteraction(const char fileName[])
     int numberOfOperation = -1;
     while (true)
     {
-        printf("Введите номер нужной вам операции:\n");
+        printf("\nВведите номер нужной вам операции:\n(введите 6 если хотите напомнить список операций)\n");
         scanf("%d", &numberOfOperation);
-        if (numberOfOperation == 0)
+        printf("\n");
+        if (numberOfOperation == 0)// Завершает работу со справочником
         {
             return;
         }
-        else if (numberOfOperation == 1)
+        else if (numberOfOperation == 1)// Добавляет номер в базу
         {
             fillArrayWithSpaces(userDataBase[lengthOfBase].phone, 20);
             fillArrayWithSpaces(userDataBase[lengthOfBase].name, 30);
@@ -167,24 +176,24 @@ void userInteraction(const char fileName[])
             char nameNew[30] = { 0 };
             printf("Введите номер телефона (не более 20 символов):\n");
             scanf_s(" %[^\n]", phoneNew, 20);
-            printf("Ввеидите имя контакта (не более 30 символов):\n");
+            printf("Введите имя контакта (не более 30 символов):\n");
             scanf_s(" %[^\n]", nameNew, 30);
             addEntry(userDataBase, &lengthOfBase, phoneNew, nameNew);
         }
-        else if (numberOfOperation == 2)
+        else if (numberOfOperation == 2)// Печатает текущую базу
         {
             printBase(userDataBase, lengthOfBase);
         }
-        else if (numberOfOperation == 3)
+        else if (numberOfOperation == 3) // Ищет номер по имени контакти
         {
             
         }
-        else if (numberOfOperation == 4)
+        else if (numberOfOperation == 4) // Ищет имя по номеру контакта
         {
             char desiredPhone[20] = { 0 };
             fillArrayWithSpaces(desiredPhone, 20);
             printf("Введите искомый номер телефона:\n");
-            scanf("%s", desiredPhone);
+            scanf_s(" %[^\n]", desiredPhone, 20);
             char contactName[30] = { 0 };
             if (findName(desiredPhone, userDataBase, lengthOfBase, contactName) == 0)
             {
@@ -195,11 +204,11 @@ void userInteraction(const char fileName[])
                 printf("Искомый контакт:\n%s\n", contactName);
             }
         }
-        else if (numberOfOperation == 5)
+        else if (numberOfOperation == 5) // Сохраняет имеющиеся номера в файл
         {
             writeTelephoneDerectoyIntoFile(fileName, userDataBase, lengthOfBase);
         }
-        else if (numberOfOperation == 6)
+        else if (numberOfOperation == 6) // Печатает список команд
         {
             printf("0 - выйти\n1 - добавить запись(имя и телефон)\n2 - распечатать все имеющиеся записи\n3 - найти телефон по имени\n4 - найти имя по телефону\n5 - сохранить текущие данные в файл\n6 - покзать список операций\n");
         }
