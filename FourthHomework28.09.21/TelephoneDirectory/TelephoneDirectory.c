@@ -67,14 +67,6 @@ int findName(char desiredPhone[], const TelephoneDerectory userDataBase[],
     return -1;
 }
 
-void printCharArray(const char theArray[], const int lengthOfTheArray)
-{
-    for (int i = 0; i < lengthOfTheArray; ++i)
-    {
-        printf("%c", theArray[i]);
-    }
-}
-
 int readTelephoneDerectoryFromFile(const char fileName[], 
     TelephoneDerectory userDataBase[], int *lengthOfBase)
 {
@@ -222,9 +214,6 @@ void userInteraction(const char fileName[])
 int main()
 {
     setlocale(LC_ALL, "Rus");
-    /*char fileName[40] = { 0 };
-    printf("Введите имя файла(телефонного справочника) формата .txt\n");
-    scanf("%s", fileName);*/
     printf("0 - выйти\n1 - добавить запись(имя и телефон)\n2 - распечатать все имеющиеся записи\n3 - найти телефон по имени\n4 - найти имя по телефону\n5 - сохранить текущие данные в файл\n6 - покзать список операций\n");
     userInteraction("directory.txt");
 }
