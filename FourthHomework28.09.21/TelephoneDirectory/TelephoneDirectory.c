@@ -5,14 +5,25 @@
 
 typedef struct
 {
-    char phone[20];
-    char name[30];
-}TelephoneDerectory;
+    char phone[21];
+    char name[31];
+} TelephoneDirectory;
 
-bool checkThatAnArraysAreIdentical(const char firstArray[],
+void printListOfOperations()
+{
+    printf("    0 - РІС‹Р№С‚Рё\n");
+    printf("    1 - РґРѕР±Р°РІРёС‚СЊ Р·Р°РїРёСЃСЊ (РёРјСЏ Рё С‚РµР»РµС„РѕРЅ)\n");
+    printf("    2 - СЂР°СЃРїРµС‡Р°С‚Р°С‚СЊ РІСЃРµ РёРјРµСЋС‰РёРµСЃСЏ Р·Р°РїРёСЃРё\n");
+    printf("    3 - РЅР°Р№С‚Рё С‚РµР»РµС„РѕРЅ РїРѕ РёРјРµРЅРё\n");
+    printf("    4 - РЅР°Р№С‚Рё РёРјСЏ РїРѕ С‚РµР»РµС„РѕРЅСѓ\n");
+    printf("    5 - СЃРѕС…СЂР°РЅРёС‚СЊ С‚РµРєСѓС‰РёРµ РґР°РЅРЅС‹Рµ РІ С„Р°Р№Р»\n");
+    printf("    6 - РїРѕРєР°Р·Р°С‚СЊ СЃРїРёСЃРѕРє РѕРїРµСЂР°С†РёР№");
+}
+
+bool checkThatTheArraysAreIdentical(const char firstArray[],
     const char secondArray[], const int lengthOfArrays)
 {
-    for (int i = 0; i < lengthOfArrays; ++i)
+    for (int i = 0; firstArray[i] != '\0'; ++i)
     {
         if (firstArray[i] != secondArray[i])
         {
@@ -23,7 +34,7 @@ bool checkThatAnArraysAreIdentical(const char firstArray[],
 }
 
 int writeTelephoneDerectoyIntoFile(const char fileName[], 
-    const TelephoneDerectory userDataBase[], const int lengthOfBase)
+    const TelephoneDirectory userDataBase[], const int lengthOfBase)
 {
     FILE* file = fopen(fileName, "w");
     for (int i = 0; i < lengthOfBase; ++i)
@@ -37,7 +48,7 @@ int writeTelephoneDerectoyIntoFile(const char fileName[],
     return 0;
 }
 
-void stringCopy(char mainArray[], char secondArray[])
+void stringCopy(char mainArray[], const char secondArray[])
 {
     for (int i = 0; secondArray[i] != '\0'; ++i)
     {
@@ -53,12 +64,12 @@ void printCharArray(const char theArray[], const int lengthOfTheArray)
     }
 }
 
-int findName(char desiredPhone[], const TelephoneDerectory userDataBase[], 
+int findName(char desiredPhone[], const TelephoneDirectory userDataBase[],
     const int lengthOfBase, char contactName[])
 {
     for (int i = 0; i < lengthOfBase; ++i)
     {
-        if (checkThatAnArraysAreIdentical(userDataBase[i].phone, desiredPhone, 30))
+        if (checkThatTheArraysAreIdentical(userDataBase[i].phone, desiredPhone, 30))
         {
             stringCopy(contactName, userDataBase[i].phone);
             return 0;
@@ -67,8 +78,8 @@ int findName(char desiredPhone[], const TelephoneDerectory userDataBase[],
     return -1;
 }
 
-int readTelephoneDerectoryFromFile(const char fileName[], 
-    TelephoneDerectory userDataBase[], int *lengthOfBase)
+int readTelephoneDirectoryFromFile(const char fileName[],
+                                   TelephoneDirectory userDataBase[], int *lengthOfBase)
 {
     *lengthOfBase = 0;
     FILE* file = fopen(fileName, "r");
@@ -92,6 +103,7 @@ int readTelephoneDerectoryFromFile(const char fileName[],
                 return 0;
             }
         }
+        userDataBase[*lengthOfBase].phone[20] = '\0';
         if ((symbol = fgetc(file)) == EOF)
         {
             fclose(file);
@@ -109,7 +121,8 @@ int readTelephoneDerectoryFromFile(const char fileName[],
                 return 0;
             }
         }
-        ++* lengthOfBase;
+        userDataBase[*lengthOfBase].name[30] = '\0';
+        ++*lengthOfBase;
         if ((symbol = fgetc(file)) == EOF)
         {
             fclose(file);
@@ -126,7 +139,7 @@ void fillArrayWithSpaces(char theArray[], const int lengthOfTheArray)
     }
 }
 
-void printBase(const TelephoneDerectory userDataBase[], const int lengthOfBase)
+void printBase(const TelephoneDirectory userDataBase[], const int lengthOfBase)
 {
     for (int i = 0; i < lengthOfBase; ++i)
     {
@@ -137,76 +150,82 @@ void printBase(const TelephoneDerectory userDataBase[], const int lengthOfBase)
     }
 }
 
-int addEntry(TelephoneDerectory userDataBase[], int *lengthOfBase, const char phone[], const char name[])
+int addEntry(TelephoneDirectory userDataBase[], int *lengthOfBase, const char phone[], const char name[])
 {
-    stringCopy(userDataBase[*lengthOfBase].phone, phone);
-    stringCopy(userDataBase[*lengthOfBase].name, name);
+    strcpy(userDataBase[*lengthOfBase].phone, phone);
+    //stringCopy(userDataBase[*lengthOfBase].phone, phone);
+    strcpy(userDataBase[*lengthOfBase].name, name);
+    //stringCopy(userDataBase[*lengthOfBase].name, name);
     ++*lengthOfBase;
+    return 0;
 }
 
 void userInteraction(const char fileName[])
 {
-    TelephoneDerectory userDataBase[100] = { 0 };
+    TelephoneDirectory userDataBase[100] = { 0 };
     int lengthOfBase = 0;
 
-    readTelephoneDerectoryFromFile(fileName, userDataBase, &lengthOfBase);
+    readTelephoneDirectoryFromFile(fileName, userDataBase, &lengthOfBase);
     int numberOfOperation = -1;
     while (true)
     {
-        printf("\nВведите номер нужной вам операции:\n(введите 6 если хотите напомнить список операций)\n");
+        printf("\nР’РІРµРґРёС‚Рµ РЅРѕРјРµСЂ РЅСѓР¶РЅРѕР№ РІР°Рј РѕРїРµСЂР°С†РёРё:\n"
+               "(РІРІРµРґРёС‚Рµ 6 РµСЃР»Рё С…РѕС‚РёС‚Рµ РЅР°РїРѕРјРЅРёС‚СЊ СЃРїРёСЃРѕРє РѕРїРµСЂР°С†РёР№)\n");
         scanf("%d", &numberOfOperation);
         printf("\n");
-        if (numberOfOperation == 0)// Завершает работу со справочником
+        if (numberOfOperation == 0)// РІС‹Р№С‚Рё
         {
             return;
         }
-        else if (numberOfOperation == 1)// Добавляет номер в базу
+        else if (numberOfOperation == 1)// РґРѕР±Р°РІРёС‚СЊ Р·Р°РїРёСЃСЊ (РёРјСЏ Рё С‚РµР»РµС„РѕРЅ)
         {
             fillArrayWithSpaces(userDataBase[lengthOfBase].phone, 20);
+            userDataBase[lengthOfBase].phone[20] = '\0';
             fillArrayWithSpaces(userDataBase[lengthOfBase].name, 30);
+            userDataBase[lengthOfBase].name[30] = '\0';
             char phoneNew[20] = { 0 };
             char nameNew[30] = { 0 };
-            printf("Введите номер телефона (не более 20 символов):\n");
-            scanf_s(" %[^\n]", phoneNew, 20);
-            printf("Введите имя контакта (не более 30 символов):\n");
-            scanf_s(" %[^\n]", nameNew, 30);
+            printf("Р’РІРµРґРёС‚Рµ РЅРѕРјРµСЂ С‚РµР»РµС„РѕРЅР° (РЅРµ Р±РѕР»РµРµ 20 СЃРёРјРІРѕР»РѕРІ):\n");
+            scanf(" %[^\n]", phoneNew);
+            printf("Р’РІРµРґРёС‚Рµ РёРјСЏ РєРѕРЅС‚Р°РєС‚Р° (РЅРµ Р±РѕР»РµРµ 30 СЃРёРјРІРѕР»РѕРІ):\n");
+            scanf(" %[^\n]", nameNew);
             addEntry(userDataBase, &lengthOfBase, phoneNew, nameNew);
         }
-        else if (numberOfOperation == 2)// Печатает текущую базу
+        else if (numberOfOperation == 2)// СЂР°СЃРїРµС‡Р°С‚Р°С‚СЊ РІСЃРµ РёРјРµСЋС‰РёРµСЃСЏ Р·Р°РїРёСЃРё
         {
             printBase(userDataBase, lengthOfBase);
         }
-        else if (numberOfOperation == 3) // Ищет номер по имени контакти
+        else if (numberOfOperation == 3) // РЅР°Р№С‚Рё С‚РµР»РµС„РѕРЅ РїРѕ РёРјРµРЅРё
         {
             
         }
-        else if (numberOfOperation == 4) // Ищет имя по номеру контакта
+        else if (numberOfOperation == 4) // РЅР°Р№С‚Рё РёРјСЏ РїРѕ С‚РµР»РµС„РѕРЅСѓ
         {
             char desiredPhone[20] = { 0 };
             fillArrayWithSpaces(desiredPhone, 20);
-            printf("Введите искомый номер телефона:\n");
-            scanf_s(" %[^\n]", desiredPhone, 20);
+            printf("Р’РІРµРґРёС‚Рµ РёСЃРєРѕРјС‹Р№ РЅРѕРјРµСЂ С‚РµР»РµС„РѕРЅР°:\n");
+            scanf(" %[^\n]", desiredPhone);
             char contactName[30] = { 0 };
             if (findName(desiredPhone, userDataBase, lengthOfBase, contactName) == 0)
             {
-                printf("Контакт не найден.\n");
+                printf("РљРѕРЅС‚Р°РєС‚ РЅРµ РЅР°Р№РґРµРЅ.\n");
             }
             else
             {
-                printf("Искомый контакт:\n%s\n", contactName);
+                printf("РСЃРєРѕРјС‹Р№ РєРѕРЅС‚Р°РєС‚:\n%s\n", contactName);
             }
         }
-        else if (numberOfOperation == 5) // Сохраняет имеющиеся номера в файл
+        else if (numberOfOperation == 5) // СЃРѕС…СЂР°РЅРёС‚СЊ С‚РµРєСѓС‰РёРµ РґР°РЅРЅС‹Рµ РІ С„Р°Р№Р»
         {
             writeTelephoneDerectoyIntoFile(fileName, userDataBase, lengthOfBase);
         }
-        else if (numberOfOperation == 6) // Печатает список команд
+        else if (numberOfOperation == 6) // РїРѕРєР°Р·Р°С‚СЊ СЃРїРёСЃРѕРє РѕРїРµСЂР°С†РёР№
         {
-            printf("0 - выйти\n1 - добавить запись(имя и телефон)\n2 - распечатать все имеющиеся записи\n3 - найти телефон по имени\n4 - найти имя по телефону\n5 - сохранить текущие данные в файл\n6 - покзать список операций\n");
+            printListOfOperations();
         }
         else
         {
-            printf("Введено неверное значение\n");
+            printf("Р’РІРµРґС‘РЅ РЅРµРІРµСЂРЅС‹Р№ РЅРѕРјРµСЂ РѕРїРµСЂР°С†РёРё.\n");
         }
     }
 }
@@ -214,6 +233,6 @@ void userInteraction(const char fileName[])
 int main()
 {
     setlocale(LC_ALL, "Rus");
-    printf("0 - выйти\n1 - добавить запись(имя и телефон)\n2 - распечатать все имеющиеся записи\n3 - найти телефон по имени\n4 - найти имя по телефону\n5 - сохранить текущие данные в файл\n6 - покзать список операций\n");
+    printListOfOperations();
     userInteraction("directory.txt");
 }
