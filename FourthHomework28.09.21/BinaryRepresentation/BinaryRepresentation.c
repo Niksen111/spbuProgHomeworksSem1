@@ -24,53 +24,50 @@ bool checkThatAnArraysAreIdentical(const int firstArray[],
     return true;
 }
 
-void convertDecimalToBinaryRepresentation(int decimal, int binaryRepres[])
+void convertDecimalToBinaryRepresentation(int decimal, int binaryRepresentation[])
 {
     for (int i = 8 * sizeof(int) - 1; i >= 0; --i)
     {
-        binaryRepres[i] = decimal & 1;
+        binaryRepresentation[i] = decimal & 1;
         decimal = decimal >> 1;
     }
 }
 
-void convertBinaryToDecimalRepresentation(int binaryRepres[], int* decimal)
+int convertBinaryToDecimalRepresentation(int binaryRepresentation[])
 {
-    *decimal = 0;
+    int decimal = 0;
     for (int i = 0; i < 8 * sizeof(int); ++i)
     {
-        *decimal = *decimal << 1;
-        *decimal += binaryRepres[i];
+        decimal = decimal << 1;
+        decimal += binaryRepresentation[i];
     }
+    return decimal;
 }
 
 void sumOfTwoBinaryNumbers(int binNumber1[], int binNumber2[], int answer[])
 {
-    int sizeOfInt = sizeof(int);
-    int *auxiliaryArray = (int*)calloc(sizeOfInt * 8, sizeOfInt);
+    const int sizeOfInt = sizeof(int);
+    int transferableBit = 0;
     for (int i = sizeOfInt * 8 - 1; i >= 0; --i)
     {
-        answer[i] = (binNumber1[i] + binNumber2[i] + (i < sizeOfInt * 8 - 1 ? auxiliaryArray[i + 1] : 0)) % 2;
-        auxiliaryArray[i] = (int) ((binNumber1[i] + binNumber2[i] + (i < sizeOfInt * 8 - 1 ? auxiliaryArray[i + 1] : 0)) >= 2);
+        answer[i] = (binNumber1[i] + binNumber2[i] + transferableBit) % 2;
+        transferableBit = (int) ((binNumber1[i] + binNumber2[i] + transferableBit) >= 2);
     }
-    free(auxiliaryArray);
 }
 
 bool testConvertBinaryToDecimalRepresentation()
 {
     int number1Answer = 1024;
-    int number1 = 0;
     int number1Binary[32] = { 0 };
     number1Binary[21] = 1;
-    convertBinaryToDecimalRepresentation(number1Binary, &number1);
+    int number1 = convertBinaryToDecimalRepresentation(number1Binary);
     int number2Answer = -35;
-    int number2 = 0;
     int number2Binary[32] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1 };
-    convertBinaryToDecimalRepresentation(number2Binary, &number2);
-    int number3 = 0;
+    int number2 = convertBinaryToDecimalRepresentation(number2Binary);
     int number3Answer = 0;
     int number3Binary[32] = { 0 };
-    convertBinaryToDecimalRepresentation(number3Binary, &number3);
+    int number3 = convertBinaryToDecimalRepresentation(number3Binary);
 
     return number1 == number1Answer && number2 == number2Answer &&
         number3 == number3Answer;
@@ -133,7 +130,7 @@ int main()
     }
     int number1 = 0;
     int number2 = 0;
-    int sizeOfInt = sizeof(int);
+    const int sizeOfInt = sizeof(int);
     printf("Enter two numbers:\n");
     scanf("%d %d", &number1, &number2);
 
@@ -153,8 +150,7 @@ int main()
     printf("Sum of the numbers:\n");
     printArray(sumOfNumbers, 8 * sizeOfInt);
 
-    int sumOfNumbersDecimal = 0;
-    convertBinaryToDecimalRepresentation(sumOfNumbers, &sumOfNumbersDecimal);
+    int sumOfNumbersDecimal = convertBinaryToDecimalRepresentation(sumOfNumbers);
     printf("Decimal sum of the numbers %d", sumOfNumbersDecimal);
     free(binNumber1);
     free(binNumber2);
