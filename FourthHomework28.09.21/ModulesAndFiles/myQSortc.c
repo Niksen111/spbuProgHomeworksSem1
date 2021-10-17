@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
 
 void swap(int* firstVariable, int* secondVariable)
@@ -38,7 +40,7 @@ void myQSort(int theArray[], const int lengthOfTheArray)
     {
         if (theArray[i] != theArray[i + 1])
         {
-            supportElement = max(theArray[i], theArray[i + 1]);
+            supportElement = MAX(theArray[i], theArray[i + 1]);
             elementsAreNotEqual = true;
             break;
         }

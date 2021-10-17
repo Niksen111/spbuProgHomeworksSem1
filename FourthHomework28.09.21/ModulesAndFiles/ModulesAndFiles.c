@@ -4,9 +4,15 @@
 #include <time.h>
 #include "myQSort.h"
 
+void swap(int* firstVariable, int* secondVariable)
+{
+    *firstVariable ^= *secondVariable;
+    *secondVariable ^= *firstVariable;
+    *firstVariable ^= *secondVariable;
+}
+
 void fillArrayWithRandomElements(int theArray[], int lengthOfTheArray, int mod)
 {
-    srand((unsigned)time(NULL));
     for (int i = 0; i < lengthOfTheArray; ++i)
     {
         theArray[i] = rand() % mod;
@@ -85,7 +91,14 @@ int* readArrayFromFile(char nameOfFile[], int* lengthOfTheArray, int* errorNumbe
     }
 
     *lengthOfTheArray = 0;
-    fscanf(file, "%d\n", lengthOfTheArray);
+    int temporary = 0;
+    while (fscanf(file, "%d", &temporary) != EOF)
+    {
+        ++*lengthOfTheArray;
+    }
+    fclose(file);
+    FILE* file1 = fopen(nameOfFile, "r");
+
     int* theArray = calloc(*lengthOfTheArray, sizeof(int));
     
     if (theArray == NULL)
@@ -96,10 +109,10 @@ int* readArrayFromFile(char nameOfFile[], int* lengthOfTheArray, int* errorNumbe
 
     for (int i = 0; i < *lengthOfTheArray; ++i)
     {
-        fscanf(file, "%d ", &theArray[i]);
+        fscanf(file1, "%d ", &theArray[i]);
     }
 
-    fclose(file);
+    fclose(file1);
     *errorNumber = 0;
     return theArray;
 }
@@ -107,7 +120,6 @@ int* readArrayFromFile(char nameOfFile[], int* lengthOfTheArray, int* errorNumbe
 bool testReadFromFile()
 {
     FILE* file = fopen("testFile1.txt", "w");
-    fprintf(file, "%d\n", 10);
     int arrayAnswer[10] = { 8, 2, 1, 5, -2, 0, 100, -10000, 8, -5 };
     for (int i = 0; i < 10; ++i)
     {
@@ -140,9 +152,9 @@ bool testInsertionSort()
     const int sortedTheThirdArray[10] = { 0, 1, 2, 3, 4, 5, 5, 7, 8, 9 };
     insertionSort(thirdArray, 10);
 
-    return (checkThatAnArraysAreIdentical(firstArray, sortedTheFirstArray, 5) &&
+    return checkThatAnArraysAreIdentical(firstArray, sortedTheFirstArray, 5) &&
         checkThatAnArraysAreIdentical(secondArray, sortedTheSecondtArray, 3) &&
-        checkThatAnArraysAreIdentical(thirdArray, sortedTheThirdArray, 10));
+        checkThatAnArraysAreIdentical(thirdArray, sortedTheThirdArray, 10);
 }
 
 bool testMyQSortOnRandomArrays(const int maxLengthOfTheArrays, const int numberOfArrays)
@@ -186,8 +198,8 @@ bool testMyQSort()
     myQSort(array2, 10);
     myQSort(array3, 20);
 
-    return (checkThatArrayIsSorted(array1, 5) && checkThatArrayIsSorted(array2, 10) &&
-        checkThatArrayIsSorted(array3, 20));
+    return checkThatArrayIsSorted(array1, 5) && checkThatArrayIsSorted(array2, 10) &&
+        checkThatArrayIsSorted(array3, 20);
 }
 
 bool testFindTrend()
@@ -195,12 +207,13 @@ bool testFindTrend()
     int array1[10] = { 0, 1, 2, 3, 5, 5, 5, 6, 9, 9 };
     int array2[3] = { -10, 0, 10 };
 
-    return (findTrend(array1, 10) == 5 && findTrend(array2, 3) == -10);
+    return findTrend(array1, 10) == 5 && findTrend(array2, 3) == -10;
 }
 
 int main()
 {
-    if (!testMyQSort() || !testInsertionSort() || !testMyQSortOnRandomArrays(1000, 1000) ||
+    srand((unsigned)time(NULL));
+    if (!testMyQSort() || !testInsertionSort() || !testMyQSortOnRandomArrays(10, 10) ||
         !testFindTrend() || !testReadFromFile())
     {
         printf("Tests failed(\n");
