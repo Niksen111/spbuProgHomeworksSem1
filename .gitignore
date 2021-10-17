@@ -387,5 +387,5 @@ FodyWeavers.xsd
 .idea/
 *.sln.iml
 
-# JetBrains Clion
+# JetBrains CLion
 cmake-build-debug/
