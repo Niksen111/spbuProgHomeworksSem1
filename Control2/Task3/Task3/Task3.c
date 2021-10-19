@@ -45,6 +45,8 @@ int readArrayFromFile(const char nameOfFile[], int theArray[], int lengthOfArray
     return 0;
 }
 
+
+
 int main()
 {
     int lengthOfG = 0;
@@ -64,6 +66,30 @@ int main()
         printf("File g.txt not found!");
         return -1;
     }
-    
+
+    int lengthOfF = 0;
+    if (lengthArrayFromFile("f.txt", &lengthOfG) == -1)
+    {
+        printf("File g.txt not found!");
+        return -1;
+    }
+
+    int* arrayF = calloc(lengthOfF, sizeof(int));
+    if (readArrayFromFile("f.txt", arrayF, lengthOfF) == -1)
+    {
+        printf("File g.txt not found!");
+        return -1;
+    }
+
+    FILE* file = fopen("h.txt", "w");
+    for (int i = 0; i < lengthOfF; ++i)
+    {
+        if (arrayF[i] < numFromGFile)
+        {
+            fprintf("h.txt", "%d ", arrayF[i]);
+        }
+    }
+    fclose(file);
+    free(arrayF);
 }
 
