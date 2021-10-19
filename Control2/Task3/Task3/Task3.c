@@ -11,6 +11,19 @@ void printArray(const int theArray[], const int lengthOfTheArray)
     printf("\n\n");
 }
 
+bool checkThatAnArraysAreIdentical(const int firstArray[],
+    const int secondArray[], const int lengthOfArrays)
+{
+    for (int i = 0; i < lengthOfArrays; ++i)
+    {
+        if (firstArray[i] != secondArray[i])
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 int lengthArrayFromFile(const char nameOfFile[], int* lengthOfArray)
 {
     FILE* file = fopen(nameOfFile, "r");
@@ -45,10 +58,39 @@ int readArrayFromFile(const char nameOfFile[], int theArray[], int lengthOfArray
     return 0;
 }
 
+bool testLengthArrayFromFile()
+{
+    int length1 = 0;
+    int length1Answer = 0;
+    int length2 = 0;
+    int length2Answer = 6;
+    int lengthOfNotFile = 0;
+    lengthArrayFromFile("TestFile1.txt", &length1);
+    lengthArrayFromFile("TestFile2.txt", &length2);
 
+    return length1 == length1Answer && length2 == length2Answer &&
+        lengthArrayFromFile("trap.txt", &lengthOfNotFile) == -1;
+}
+
+//bool testLengthArrayFromFile()
+//{
+//    int length2 = 6;
+//    int array2[100] = { 0 };
+//    int array2Answer[6] = { 22, 135, 15, 120, 215, 124 };
+//    int notFile[1] = { 0 };
+//    readArrayFromFile("TestFile2.txt", array2, length2);
+//
+//    return checkThatAnArraysAreIdentical(array2, array2Answer, 6) &&
+//        lengthArrayFromFile("trap.txt", notFile) == -1;
+//}
 
 int main()
 {
+    if (!testLengthArrayFromFile())
+    {
+        printf("Tests failed.");
+        return -1;
+    }
     int lengthOfG = 0;
     if (lengthArrayFromFile("g.txt", &lengthOfG) == -1)
     {
