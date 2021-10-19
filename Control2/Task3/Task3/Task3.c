@@ -68,7 +68,7 @@ int main()
     }
 
     int lengthOfF = 0;
-    if (lengthArrayFromFile("f.txt", &lengthOfG) == -1)
+    if (lengthArrayFromFile("f.txt", &lengthOfF) == -1)
     {
         printf("File g.txt not found!");
         return -1;
