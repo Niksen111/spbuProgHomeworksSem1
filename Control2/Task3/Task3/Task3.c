@@ -75,18 +75,23 @@ int main()
     }
 
     int* arrayF = calloc(lengthOfF, sizeof(int));
+    if (arrayF == NULL)
+    {
+        printf("Not enought memory to create array(");
+        return -1;
+    }
     if (readArrayFromFile("f.txt", arrayF, lengthOfF) == -1)
     {
         printf("File g.txt not found!");
         return -1;
     }
-
+    
     FILE* file = fopen("h.txt", "w");
     for (int i = 0; i < lengthOfF; ++i)
     {
         if (arrayF[i] < numFromGFile)
         {
-            fprintf("h.txt", "%d ", arrayF[i]);
+            fprintf(file, "%d ", arrayF[i]);
         }
     }
     fclose(file);
