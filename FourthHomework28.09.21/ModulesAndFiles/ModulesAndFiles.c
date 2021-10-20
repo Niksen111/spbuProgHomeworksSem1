@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <time.h>
 #include "myQSort.h"
 #include "testMyQSort.h"
 #include "WorkWithArrays.h"
 
-int findTrend(int theArray[], int lengthOfTheArray)
+int findTrend(const int theArray[], int lengthOfTheArray)
 {
     int maxTrend = 1;
     int trend = theArray[0];
@@ -30,40 +29,38 @@ int findTrend(int theArray[], int lengthOfTheArray)
     return trend;
 }
 
-int* readArrayFromFile(char nameOfFile[], int* lengthOfTheArray, int* errorNumber) {
-    FILE *file = fopen(nameOfFile, "r");
+int lengthArrayFromFile(const char nameOfFile[], int* lengthOfArray)
+{
+    FILE* file = fopen(nameOfFile, "r");
     if (file == NULL)
     {
-        *errorNumber = -1;
-        return NULL;
+        return -1;
     }
-
-    *lengthOfTheArray = 0;
+    *lengthOfArray = 0;
     int temporary = 0;
-    while (fscanf(file, "%d", &temporary) != EOF)
+    int readBytes = fscanf(file, "%d", &temporary);
+    while (readBytes >= 0)
     {
-        ++*lengthOfTheArray;
+        ++* lengthOfArray;
+        readBytes = fscanf(file, "%d", &temporary);
     }
     fclose(file);
-    FILE* file1 = fopen(nameOfFile, "r");
+    return 0;
+}
 
-    int* theArray = calloc(*lengthOfTheArray, sizeof(int));
-    
-    if (theArray == NULL)
+int readArrayFromFile(const char nameOfFile[], int theArray[], int lengthOfArray)
+{
+    FILE* file = fopen(nameOfFile, "r");
+    if (file == NULL)
     {
-        fclose(file1);
-        *errorNumber = -2;
-        return NULL;
+        return -1;
     }
-
-    for (int i = 0; i < *lengthOfTheArray; ++i)
+    for (int i = 0; i < lengthOfArray; ++i)
     {
-        fscanf(file1, "%d ", &theArray[i]);
+        fscanf(file, "%d", &theArray[i]);
     }
-
-    fclose(file1);
-    *errorNumber = 0;
-    return theArray;
+    fclose(file);
+    return 0;
 }
 
 bool testReadFromFile()
@@ -75,16 +72,17 @@ bool testReadFromFile()
         fprintf(file, "%d ", arrayAnswer[i]);
     }
     fclose(file);
-    int lengthOfTheArray = 0;
-    int errorNumber = 0;
-    int* arrayReading = readArrayFromFile("testFile1.txt", &lengthOfTheArray, &errorNumber);
-    
-    if (errorNumber != 0)
+    int lengthOfTheArray = 10;
+    int* arrayReading = calloc(lengthOfTheArray, sizeof(int));
+
+    if (readArrayFromFile("testFile1.txt", arrayReading, lengthOfTheArray) != 0)
     {
+        free(arrayReading);
         return false;
     }
-
-    return lengthOfTheArray == 10 && checkThatAnArraysAreIdentical(arrayAnswer, arrayReading, 10);
+    bool testResult = lengthOfTheArray == 10 && checkThatAnArraysAreIdentical(arrayAnswer, arrayReading, 10);
+    free(arrayReading);
+    return testResult;
 }
 
 bool testFindTrend()
@@ -97,7 +95,6 @@ bool testFindTrend()
 
 int main()
 {
-    srand((unsigned)time(NULL));
     if (!testMyQSort() || !testFindTrend() || !testReadFromFile())
     {
         printf("Tests failed(\n");
@@ -107,22 +104,29 @@ int main()
     printf("We sort the array using QSort and look for a trend over a line.\n( O(n logn) )\n\n");
 
     char nameOfTheFile[20] = "input.txt";
-    int errorNumber = 0;
     int lengthOfTheArray = 0;
-    int* justArray = readArrayFromFile(nameOfTheFile, &lengthOfTheArray, &errorNumber);
-    if (errorNumber != 0)
+    if (lengthArrayFromFile(nameOfTheFile,&lengthOfTheArray) == -1)
     {
-        printf("%s\n", errorNumber == -1 ? "File not found!" : 
-            "Failed to allocate memory to an array(");
+        printf("File not found!");
+        return -1;
+    }
+
+    int* justArray = calloc(lengthOfTheArray, sizeof(int));
+
+    if (readArrayFromFile(nameOfTheFile, justArray, lengthOfTheArray) == -1)
+    {
+        free(justArray);
+        printf("File not found!");
         return -1;
     }
 
     printf("The array before sorting:\n\n");
-    printArray(justArray, 20);
+    printArray(justArray, lengthOfTheArray);
 
-    myQSort(justArray, 20);
+    myQSort(justArray, lengthOfTheArray);
     printf("The array after sorting:\n\n");
-    printArray(justArray, 20);
+    printArray(justArray, lengthOfTheArray);
 
-    printf("Trend is %d.\n", findTrend(justArray, 20));
+    printf("Trend is %d.\n", findTrend(justArray, lengthOfTheArray));
+    free(justArray);
 }
