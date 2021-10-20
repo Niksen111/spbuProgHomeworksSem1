@@ -1,33 +1,12 @@
 #include "testMyQSort.h"
-#include "myQSort.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <time.h>
-
-bool testInsertionSort()
-{
-    int firstArray[5] = { 2, 3, 1, 5, 2 };
-    const int sortedTheFirstArray[5] = { 1, 2, 2, 3, 5 };
-    insertionSort(firstArray, 5);
-
-    int secondArray[3] = { -1, -1, -1 };
-    const int sortedTheSecondtArray[3] = { -1, -1, -1 };
-    insertionSort(secondArray, 3);
-
-    int thirdArray[10] = { 2, 5, 5, 1, 8, 3, 9, 4, 0, 7 };
-    const int sortedTheThirdArray[10] = { 0, 1, 2, 3, 4, 5, 5, 7, 8, 9 };
-    insertionSort(thirdArray, 10);
-
-    return checkThatAnArraysAreIdentical(firstArray, sortedTheFirstArray, 5) &&
-           checkThatAnArraysAreIdentical(secondArray, sortedTheSecondtArray, 3) &&
-           checkThatAnArraysAreIdentical(thirdArray, sortedTheThirdArray, 10);
-}
+#include "myQSort.h"
+#include "WorkWithArrays.h"
 
 bool testMyQSortOnRandomArrays(const int maxLengthOfTheArrays, const int numberOfArrays)
 {
-    srand((unsigned)time(NULL));
-
     int* randomArray = (int*)calloc(maxLengthOfTheArrays, sizeof(int));
     bool sortIsWorking = true;
 
@@ -71,6 +50,6 @@ bool testMyQSortOnStableArrays()
 
 bool testMyQSort()
 {
-    return testInsertionSort() && testMyQSortOnRandomArrays() &&
+    return  testMyQSortOnRandomArrays(1000, 1000) &&
     testMyQSortOnStableArrays();
 }

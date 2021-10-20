@@ -1,17 +1,7 @@
 #include "myQSort.h"
-#include <stdio.h>
 #include <stdbool.h>
-#include <stdlib.h>
+#include "WorkWithArrays.h"
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
-#define MIN(x, y) (((x) < (y)) ? (x) : (y))
-
-
-void swap(int* firstVariable, int* secondVariable)
-{
-    *firstVariable ^= *secondVariable;
-    *secondVariable ^= *firstVariable;
-    *firstVariable ^= *secondVariable;
-}
 
 void insertionSort(int theArray[], int lengthOfTheArray)
 {
