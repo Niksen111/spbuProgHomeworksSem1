@@ -19,7 +19,6 @@ bool testMyQSortOnRandomArrays(const int maxLengthOfTheArrays, const int numberO
     {
         int lengthOfTheArray = rand() % maxLengthOfTheArrays;
         fillArrayWithRandomElements(randomArray, lengthOfTheArray, 1000);
-        int supportElement = randomArray[0];
         myQSort(randomArray, lengthOfTheArray);
 
         if (!checkThatArrayIsSorted(randomArray, lengthOfTheArray))
