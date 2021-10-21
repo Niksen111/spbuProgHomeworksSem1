@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <time.h>
 #include "myQSort.h"
 #include "testMyQSort.h"
 #include "WorkWithArrays.h"
@@ -29,7 +30,7 @@ int findTrend(const int theArray[], int lengthOfTheArray)
     return trend;
 }
 
-int lengthArrayFromFile(const char nameOfFile[], int* lengthOfArray)
+int getLengthArrayFromFile(const char nameOfFile[], int* lengthOfArray)
 {
     FILE* file = fopen(nameOfFile, "r");
     if (file == NULL)
@@ -74,7 +75,10 @@ bool testReadFromFile()
     fclose(file);
     int lengthOfTheArray = 10;
     int* arrayReading = calloc(lengthOfTheArray, sizeof(int));
-
+    if (arrayReading == NULL)
+    {
+        return false;
+    }
     if (readArrayFromFile("testFile1.txt", arrayReading, lengthOfTheArray) != 0)
     {
         free(arrayReading);
@@ -89,13 +93,38 @@ bool testFindTrend()
 {
     int array1[10] = { 0, 1, 2, 3, 5, 5, 5, 6, 9, 9 };
     int array2[3] = { -10, 0, 10 };
+    int array3[1] = { 99 };
+    int array4[5] = { -33, -33 , 5, 42, 42 };
 
-    return findTrend(array1, 10) == 5 && findTrend(array2, 3) == -10;
+    return findTrend(array1, 10) == 5 && findTrend(array2, 3) == -10 &&
+            findTrend(array3, 1) == 99 &&
+            (findTrend(array4, 5) == -33 || findTrend(array4, 5) == 42);
+}
+
+bool testGetLengthArrayFromFile()
+{
+    bool testResult = true;
+    for (int i = 0; i < 100; ++i) {
+        FILE *file = fopen("testFile1.txt", "w");
+        for (int j = 0; j < i; ++j) {
+            fprintf(file, "%d ", j);
+        }
+        fclose(file);
+        int lengthOfTheArray = 0;
+
+        if (getLengthArrayFromFile("testFile1.txt", &lengthOfTheArray) != 0) {
+            return false;
+        }
+        bool testResult = testResult && (lengthOfTheArray == i);
+    }
+    return testResult;
 }
 
 int main()
 {
-    if (!testMyQSort() || !testFindTrend() || !testReadFromFile())
+    srand((unsigned)time(NULL));
+    if (!testMyQSort() || !testFindTrend() || !testReadFromFile() ||
+        !testGetLengthArrayFromFile())
     {
         printf("Tests failed(\n");
         return -1;
@@ -105,7 +134,7 @@ int main()
 
     char nameOfTheFile[20] = "input.txt";
     int lengthOfTheArray = 0;
-    if (lengthArrayFromFile(nameOfTheFile,&lengthOfTheArray) == -1)
+    if (getLengthArrayFromFile(nameOfTheFile, &lengthOfTheArray) == -1)
     {
         printf("File not found!");
         return -1;
