@@ -9,10 +9,14 @@ typedef struct Stack
     struct Stack* next;
 } Stack;
 
-bool StackIsEmpty(Stack* stack);
+Stack* createStack();
 
-int push(Stack* head, Value value);
+bool stackIsEmpty(Stack** head);
 
-int pop(Stack* head, int* errorCode);
+int push(Stack** head, Value value);
 
-int deleteStack(Stack* head);
+Value pop(Stack** head, int* errorCode);
+
+int deleteStack(Stack** head);
+
+void printStack(Stack** head);
