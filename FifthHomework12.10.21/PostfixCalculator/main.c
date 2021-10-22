@@ -37,6 +37,7 @@ int operation(int value1, int value2, int operation, int* errorCode)
         case (int) '/':
             if (value2 == 0) *errorCode = -1;
             else return value1 / value2;
+            return 0;
         default:
             *errorCode = -2;
             return 0;
@@ -98,8 +99,37 @@ int postfixCalculator(int* error)
     return result;
 }
 
+bool testOperation()
+{
+    int errors[8] = { 0 };
+    int answers[8] = { 0 };
+    answers[0] = operation(4, 0, '/', &errors[0]);
+    answers[1] = operation(4, 5, '#', &errors[1]);
+    answers[2] = operation(-11, 7, '+', &errors[2]);
+    answers[3] = operation(4, -5, '-', &errors[3]);
+    answers[4] = operation(4, 0, '*', &errors[4]);
+    answers[5] = operation(8, -2, '/', &errors[5]);
+    answers[6] = operation(4, -5, '*', &errors[6]);
+    answers[7] = operation(6, 5, '/', &errors[7]);
+
+
+    return  answers[0] == 0 && errors[0] == -1 &&
+            answers[1] == 0 && errors[1] == -2 &&
+            answers[2] == -4 && errors[2] == 0 &&
+            answers[3] == 9 && errors[3] == 0 &&
+            answers[4] == 0 && errors[4] == 0 &&
+            answers[5] == -4 && errors[5] == 0 &&
+            answers[6] == -20 && errors[6] == 0 &&
+            answers[7] == 1 && errors[7] == 0;
+}
+
+bool testPostfixCalculator()
+{
+
+}
+
 int main() {
-    if (!testStack())
+    if (!testStack() && !testOperation())
     {
         printf("Tests failed(\n");
         return 0;
