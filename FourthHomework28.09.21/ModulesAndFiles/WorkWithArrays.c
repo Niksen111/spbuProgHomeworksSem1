@@ -34,18 +34,15 @@ bool checkThatArrayIsSorted(const int theArray[], const int lengthOfTheArray)
 bool checkThatAnArraysAreIdentical(const int firstArray[],
                                    const int secondArray[], const int lengthOfArrays)
 {
-    bool identical = true;
-
     for (int i = 0; i < lengthOfArrays; ++i)
     {
         if (firstArray[i] != secondArray[i])
         {
-            identical = false;
-            break;
+            return false;
         }
     }
 
-    return identical;
+    return true;
 }
 
 void swap(int* firstVariable, int* secondVariable)

@@ -1,5 +1,6 @@
 #include "myQSort.h"
 #include <stdbool.h>
+#include <stdlib.h>
 #include "WorkWithArrays.h"
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
@@ -13,6 +14,7 @@ void insertionSort(int theArray[], int lengthOfTheArray)
             swap(&theArray[j], &theArray[j - 1]);
             --j;
         }
+
     }
 }
 

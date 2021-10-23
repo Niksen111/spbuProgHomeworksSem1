@@ -49,6 +49,6 @@ bool testMyQSortOnStableArrays()
 
 bool testMyQSort()
 {
-    return  testMyQSortOnRandomArrays(1000, 1000) &&
-    testMyQSortOnStableArrays();
+    return testMyQSortOnRandomArrays(1000, 1000) &&
+        testMyQSortOnStableArrays();
 }

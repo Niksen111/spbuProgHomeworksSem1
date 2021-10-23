@@ -38,18 +38,17 @@ int getLengthArrayFromFile(const char nameOfFile[], int* lengthOfArray)
         return -1;
     }
     *lengthOfArray = 0;
-    int temporary = 0;
-    int readBytes = fscanf(file, "%d", &temporary);
+    int readBytes = fscanf(file, "%*d");
     while (readBytes >= 0)
     {
-        ++* lengthOfArray;
-        readBytes = fscanf(file, "%d", &temporary);
+        ++*lengthOfArray;
+        readBytes = fscanf(file, "%*d");
     }
     fclose(file);
     return 0;
 }
 
-int readArrayFromFile(const char nameOfFile[], int theArray[], int lengthOfArray)
+int readArrayFromFile(const char nameOfFile[], int theArray[], const int lengthOfArray)
 {
     FILE* file = fopen(nameOfFile, "r");
     if (file == NULL)
@@ -58,7 +57,10 @@ int readArrayFromFile(const char nameOfFile[], int theArray[], int lengthOfArray
     }
     for (int i = 0; i < lengthOfArray; ++i)
     {
-        fscanf(file, "%d", &theArray[i]);
+        if (fscanf(file, "%d", &theArray[i]) == EOF)
+        {
+            break;
+        }
     }
     fclose(file);
     return 0;
@@ -104,18 +106,21 @@ bool testFindTrend()
 bool testGetLengthArrayFromFile()
 {
     bool testResult = true;
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < 100; ++i)
+    {
         FILE *file = fopen("testFile1.txt", "w");
-        for (int j = 0; j < i; ++j) {
+        for (int j = 0; j < i; ++j)
+        {
             fprintf(file, "%d ", j);
         }
         fclose(file);
         int lengthOfTheArray = 0;
 
-        if (getLengthArrayFromFile("testFile1.txt", &lengthOfTheArray) != 0) {
+        if (getLengthArrayFromFile("testFile1.txt", &lengthOfTheArray) != 0)
+        {
             return false;
         }
-        bool testResult = testResult && (lengthOfTheArray == i);
+        testResult = testResult && (lengthOfTheArray == i);
     }
     return testResult;
 }
