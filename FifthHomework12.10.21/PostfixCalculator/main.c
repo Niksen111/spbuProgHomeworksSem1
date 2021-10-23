@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include "../Stack/stack.h"
 #include "../Stack/stackTests.h"
-#include "../Stack/stack.c"
-#include "../Stack/stackTests.c"
 
 void handleTheError(int errorCode)
 {
@@ -28,7 +26,7 @@ void handleTheError(int errorCode)
 int operation(int value1, int value2, int operation, int* errorCode)
 {
     *errorCode = 0;
-    switch(operation)
+    switch (operation)
     {
         case (int) '+':
             return value1 + value2;
@@ -37,8 +35,14 @@ int operation(int value1, int value2, int operation, int* errorCode)
         case (int) '*':
             return value1 * value2;
         case (int) '/':
-            if (value2 == 0) *errorCode = -1;
-            else return value1 / value2;
+            if (value2 == 0)
+            {
+                *errorCode = -1;
+            }
+            else
+            {
+                return value1 / value2;
+            }
             return 0;
         default:
             *errorCode = -2;
@@ -46,7 +50,7 @@ int operation(int value1, int value2, int operation, int* errorCode)
     }
 }
 
-int postfixCalculator(char arraySymbols[], int* error)
+int postfixCalculator(const char arraySymbols[], int* error)
 {
     *error = 0;
     Stack* stack = createStack();
