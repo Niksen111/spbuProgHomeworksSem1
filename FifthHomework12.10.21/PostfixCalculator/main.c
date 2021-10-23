@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "../Stack/stack.h"
 #include "../Stack/stackTests.h"
+#include "../Stack/stack.c"
+#include "../Stack/stackTests.c"
 
 void handleTheError(int errorCode)
 {
@@ -31,12 +33,12 @@ int operation(int value1, int value2, int operation, int* errorCode)
         case (int) '+':
             return value1 + value2;
         case (int) '-':
-            return value1 - value2;
+            return value2 - value1;
         case (int) '*':
             return value1 * value2;
         case (int) '/':
             if (value2 == 0) *errorCode = -1;
-            else return value1 / value2;
+            else return value2 / value1;
             return 0;
         default:
             *errorCode = -2;
@@ -44,16 +46,19 @@ int operation(int value1, int value2, int operation, int* errorCode)
     }
 }
 
-int postfixCalculator(int* error)
+int postfixCalculator(char arraySymbols[], int* error)
 {
-    error = 0;
+    *error = 0;
     Stack* stack = createStack();
-    int symbol = 0;
-    while(scanf("%d", &symbol) != EOF)
+    for (int i = 0; arraySymbols[i] != '\0'; ++i)
     {
-        if (symbol >= 0 && symbol <= 9)
+        if (arraySymbols[i] == ' ')
         {
-            push(&stack, symbol);
+            continue;
+        }
+        if ((int) arraySymbols[i] >= (int) '0' && (int) arraySymbols[i] <= (int) '9')
+        {
+            push(&stack, (int) arraySymbols[i] - (int) '0');
         }
         else
         {
@@ -72,7 +77,7 @@ int postfixCalculator(int* error)
                 deleteStack(&stack);
                 return -1;
             }
-            int result = operation(value1, value2, symbol, &errorCode);
+            int result = operation(value1, value2, arraySymbols[i], &errorCode);
             if (errorCode == -1)
             {
                 *error = -1;
@@ -135,8 +140,10 @@ int main() {
         return 0;
     }
     int errorCode = 0;
-    printf("Enter the numbers and operations with a space.\n");
-    int result = postfixCalculator(&errorCode);
+    printf("Enter the numbers and operations with a space:\n");
+    char postfixCalculatorEnter[1000] = { 0 };
+    scanf("%[^\n]s", postfixCalculatorEnter);
+    int result = postfixCalculator(postfixCalculatorEnter, &errorCode);
     handleTheError(errorCode);
     if (errorCode == 0)
     {
