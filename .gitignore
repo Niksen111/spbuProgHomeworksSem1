@@ -389,4 +389,3 @@ FodyWeavers.xsd
 
 # JetBrains CLion
 cmake-build-debug/
-CMakeLists.txt
