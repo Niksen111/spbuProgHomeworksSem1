@@ -59,6 +59,5 @@ bool testDeleteStack()
 bool testStack()
 {
     return testCreateStack() && testDeleteStack() &&
-    testPop() && testPush() && testStack() &&
-    testStackIsEmpty();
+    testPop() && testPush() && testStackIsEmpty();
 }
