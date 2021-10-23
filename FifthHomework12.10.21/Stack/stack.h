@@ -24,7 +24,7 @@ int push(Stack** head, Value value);
 Value pop(Stack** head, int* errorCode);
 
 // removes the entire stack
-int deleteStack(Stack** head);
+void deleteStack(Stack** head);
 
 // prints the entire stack
 void printStack(Stack** head);

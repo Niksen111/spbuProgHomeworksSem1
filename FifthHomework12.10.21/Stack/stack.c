@@ -26,7 +26,6 @@ int push(Stack** head, Value value)
     return 0;
 }
 
-
 Value pop(Stack** head, int* errorCode)
 {
     if (*head == NULL)
@@ -42,14 +41,13 @@ Value pop(Stack** head, int* errorCode)
     return value;
 }
 
-int deleteStack(Stack** head)
+void deleteStack(Stack** head)
 {
     while (!stackIsEmpty(head))
     {
         int errorCode = 0;
         pop(head, &errorCode);
     }
-    return 0;
 }
 
 void printStack(Stack** head)
