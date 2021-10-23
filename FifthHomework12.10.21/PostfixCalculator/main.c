@@ -33,12 +33,12 @@ int operation(int value1, int value2, int operation, int* errorCode)
         case (int) '+':
             return value1 + value2;
         case (int) '-':
-            return value2 - value1;
+            return value1 - value2;
         case (int) '*':
             return value1 * value2;
         case (int) '/':
             if (value2 == 0) *errorCode = -1;
-            else return value2 / value1;
+            else return value1 / value2;
             return 0;
         default:
             *errorCode = -2;
@@ -63,19 +63,19 @@ int postfixCalculator(char arraySymbols[], int* error)
         else
         {
             int errorCode = 0;
-            int value1 = pop(&stack, &errorCode);
-            if (errorCode != 0)
-            {
-                *error = -4;
-                deleteStack(&stack);
-                return -1;
-            }
             int value2 = pop(&stack, &errorCode);
             if (errorCode != 0)
             {
                 *error = -4;
                 deleteStack(&stack);
-                return -1;
+                return 0;
+            }
+            int value1 = pop(&stack, &errorCode);
+            if (errorCode != 0)
+            {
+                *error = -4;
+                deleteStack(&stack);
+                return 0;
             }
             int result = operation(value1, value2, arraySymbols[i], &errorCode);
             if (errorCode == -1)
@@ -130,17 +130,29 @@ bool testOperation()
 
 bool testPostfixCalculator()
 {
-
+    char postfixCalculatorEnter1[30] = "4 6 + 5 / 3 * 8 2 - /";
+    char postfixCalculatorEnter2[30] = "4 6 + 5 / 3 * 8 2 - / -";
+    char postfixCalculatorEnter3[30] = "4 6 - 5 - 3 * 8 2 - /";
+    char postfixCalculatorEnter4[30] = "9 6 - 1 2 + * ";
+    int errors[4] = { 0 };
+    int result1 = postfixCalculator(postfixCalculatorEnter1, &errors[0]);
+    int result2 = postfixCalculator(postfixCalculatorEnter2, &errors[1]);
+    int result3 = postfixCalculator(postfixCalculatorEnter3, &errors[2]);
+    int result4 = postfixCalculator(postfixCalculatorEnter4, &errors[3]);
+    return result1 == 1 && errors[0] == 0 &&
+    result2 == 0 && errors[1] == -4 &&
+    result3 == -3 && errors[2] == 0 &&
+    result4 == 9 && errors[3] == 0;
 }
 
 int main() {
-    if (!testStack() && !testOperation())
+    if (!testStack() || !testOperation() || !testPostfixCalculator())
     {
         printf("Tests failed(\n");
         return 0;
     }
     int errorCode = 0;
-    printf("Enter the numbers and operations with a space:\n");
+    printf("Enter the digits and operations with a space:\n");
     char postfixCalculatorEnter[1000] = { 0 };
     scanf("%[^\n]s", postfixCalculatorEnter);
     int result = postfixCalculator(postfixCalculatorEnter, &errorCode);
