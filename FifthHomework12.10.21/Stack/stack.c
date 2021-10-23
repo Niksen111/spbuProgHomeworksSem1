@@ -29,7 +29,7 @@ int push(Stack** head, Value value)
 
 Value pop(Stack** head, int* errorCode)
 {
-    if (head == NULL)
+    if (*head == NULL)
     {
         *errorCode = -1;
         return 0;
