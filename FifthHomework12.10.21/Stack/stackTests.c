@@ -5,7 +5,10 @@
 bool testCreateStack()
 {
     Stack* head = createStack();
-    return head == NULL;
+    bool result = head == NULL;
+    deleteStack(&head);
+
+    return result;
 }
 
 bool testPush()
@@ -14,10 +17,12 @@ bool testPush()
     push(&head, 10);
     push(&head, 20);
     push(&head, 30);
+    bool result = head->value == 30 &&
+                  head->next->value == 20 &&
+                  head->next->next->value == 10;
+    deleteStack(&head);
 
-    return head->value == 30 &&
-    head->next->value == 20 &&
-    head->next->next->value == 10;
+    return result;
 
 }
 
@@ -30,9 +35,9 @@ bool testPop()
     int errorCode = 0;
 
     return pop(&head, &errorCode) == 30 &&
-    pop(&head, &errorCode) == 20 &&
-    pop(&head, &errorCode) == 10 &&
-    pop(&head, &errorCode) == 0 && errorCode == -1;
+        pop(&head, &errorCode) == 20 &&
+        pop(&head, &errorCode) == 10 &&
+        pop(&head, &errorCode) == 0 && errorCode == -1;
 }
 
 bool testStackIsEmpty()
@@ -40,8 +45,12 @@ bool testStackIsEmpty()
     Stack* stack1 = createStack();
     Stack* stack2 = createStack();
     push(&stack2, 10);
-    return stackIsEmpty(&stack1) == true &&
-            stackIsEmpty(&stack2) == false;
+    bool result = stackIsEmpty(&stack1) == true &&
+                stackIsEmpty(&stack2) == false;
+    deleteStack(&stack1);
+    deleteStack(&stack2);
+
+    return result;
 }
 
 bool testDeleteStack()
@@ -59,5 +68,5 @@ bool testDeleteStack()
 bool testStack()
 {
     return testCreateStack() && testDeleteStack() &&
-    testPop() && testPush() && testStackIsEmpty();
+        testPop() && testPush() && testStackIsEmpty();
 }
