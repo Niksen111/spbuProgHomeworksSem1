@@ -23,7 +23,6 @@ bool testPush()
     deleteStack(&head);
 
     return result;
-
 }
 
 bool testPop()
