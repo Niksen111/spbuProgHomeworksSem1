@@ -9,10 +9,10 @@ bool testCalculation()
     char postfixCalculatorEnter3[30] = "4 6 - 5 - 3 * 8 2 - /";
     char postfixCalculatorEnter4[30] = "9 6 - 1 2 + * ";
     int errors[4] = { 0 };
-    int result1 = postfixCalculator(postfixCalculatorEnter1, &errors[0]);
-    int result2 = postfixCalculator(postfixCalculatorEnter2, &errors[1]);
-    int result3 = postfixCalculator(postfixCalculatorEnter3, &errors[2]);
-    int result4 = postfixCalculator(postfixCalculatorEnter4, &errors[3]);
+    int result1 = calculatePostfixExpression(postfixCalculatorEnter1, &errors[0]);
+    int result2 = calculatePostfixExpression(postfixCalculatorEnter2, &errors[1]);
+    int result3 = calculatePostfixExpression(postfixCalculatorEnter3, &errors[2]);
+    int result4 = calculatePostfixExpression(postfixCalculatorEnter4, &errors[3]);
     return result1 == 1 && errors[0] == 0 &&
            result2 == 0 && errors[1] == -4 &&
            result3 == -3 && errors[2] == 0 &&

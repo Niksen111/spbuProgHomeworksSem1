@@ -47,7 +47,7 @@ int operation(int value1, int value2, int operation, int* errorCode)
     }
 }
 
-int postfixCalculator(const char arraySymbols[], int* error)
+int calculatePostfixExpression(const char arraySymbols[], int* error)
 {
     *error = 0;
     Stack* stack = createStack();
