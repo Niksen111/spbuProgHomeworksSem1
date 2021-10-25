@@ -2,7 +2,8 @@
 #include "stack.h"
 #include "stackTests.h"
 
-int main() {
+int main()
+{
     if (!testStack())
     {
         printf("No\n");
@@ -13,5 +14,4 @@ int main() {
     push(&stack, 20);
     push(&stack, 30);
     deleteStack(&stack);
-
 }
