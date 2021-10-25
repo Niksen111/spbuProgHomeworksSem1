@@ -4,8 +4,7 @@
 
 Stack* createStack()
 {
-    Stack* head = NULL;
-    return head;
+    return NULL;
 }
 
 bool stackIsEmpty(Stack** head)
