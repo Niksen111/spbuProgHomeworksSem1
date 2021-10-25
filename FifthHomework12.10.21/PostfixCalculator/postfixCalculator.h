@@ -4,4 +4,4 @@
 int calculatePostfixExpression(const char arraySymbols[], int* error);
 
 // Outputs to the console the decoding of the postfix calculator error
-void handleTheError(int errorCode);
+void handleErrorOfPostfixExpression(int errorCode);
