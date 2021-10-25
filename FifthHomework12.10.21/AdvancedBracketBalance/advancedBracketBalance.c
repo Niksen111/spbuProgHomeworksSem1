@@ -62,6 +62,11 @@ bool areBracketsBalanced(const char listCharacters[], int *errorCode)
             {
                 int error = 0;
                 pop(&stackBrackets, &error);
+                if (error != 0)
+                {
+                    *errorCode = -4;
+                    return false;
+                }
             }
             else
             {
