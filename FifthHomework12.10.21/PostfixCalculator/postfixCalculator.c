@@ -2,7 +2,7 @@
 #include "../Stack/stack.h"
 #include <stdio.h>
 
-void handleTheError(int errorCode)
+void handleErrorOfPostfixExpression(int errorCode)
 {
     switch (errorCode)
     {

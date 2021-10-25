@@ -14,7 +14,7 @@ int main()
     char postfixCalculatorEnter[1000] = { 0 };
     scanf("%[^\n]s", postfixCalculatorEnter);
     int result = calculatePostfixExpression(postfixCalculatorEnter, &errorCode);
-    handleTheError(errorCode);
+    handleErrorOfPostfixExpression(errorCode);
     if (errorCode == 0)
     {
         printf("The result of all operations is %d", result);
