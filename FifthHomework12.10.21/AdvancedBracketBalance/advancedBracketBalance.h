@@ -5,4 +5,4 @@
 bool areBracketsBalanced(const char bracketsList[], int *errorCode);
 
 // Outputs to the console the decoding of the bracketBalance error
-void handleTheError(int errorCode);
+void handleTheBracketError(int errorCode);

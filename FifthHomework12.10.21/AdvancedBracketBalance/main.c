@@ -19,6 +19,6 @@ int main()
         printf("All ok :)\n");
         return 0;
     }
-    handleTheError(errorCode);
+    handleTheBracketError(errorCode);
     return -1;
 }
