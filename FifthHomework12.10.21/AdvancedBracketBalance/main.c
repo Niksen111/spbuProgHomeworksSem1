@@ -2,7 +2,8 @@
 #include "advancedBracketBalance.h"
 #include "advancedBracketBalanceTests.h"
 
-int main() {
+int main()
+{
     if (!testAdvancedBracketBalance())
     {
         printf("Tests failed.\n");

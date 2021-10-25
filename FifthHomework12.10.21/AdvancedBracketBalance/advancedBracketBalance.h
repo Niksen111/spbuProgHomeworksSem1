@@ -1,5 +1,5 @@
 #pragma once
-#include "stdbool.h"
+#include <stdbool.h>
 
 // checks if the brackets are balanced
 bool areBracketsBalanced(const char bracketsList[], int *errorCode);
