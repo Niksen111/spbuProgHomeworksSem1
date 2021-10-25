@@ -32,11 +32,13 @@ bool testPop()
     push(&head, 20);
     push(&head, 30);
     int errorCode = 0;
+    bool result = pop(&head, &errorCode) == 30 &&
+                  pop(&head, &errorCode) == 20 &&
+                  pop(&head, &errorCode) == 10 &&
+                  pop(&head, &errorCode) == 0 && errorCode == -1;
+    deleteStack(&head);
 
-    return pop(&head, &errorCode) == 30 &&
-        pop(&head, &errorCode) == 20 &&
-        pop(&head, &errorCode) == 10 &&
-        pop(&head, &errorCode) == 0 && errorCode == -1;
+    return result;
 }
 
 bool testStackIsEmpty()
@@ -44,8 +46,8 @@ bool testStackIsEmpty()
     Stack* stack1 = createStack();
     Stack* stack2 = createStack();
     push(&stack2, 10);
-    bool result = stackIsEmpty(&stack1) == true &&
-                stackIsEmpty(&stack2) == false;
+    bool result = stackIsEmpty(&stack1) &&
+                !stackIsEmpty(&stack2);
     deleteStack(&stack1);
     deleteStack(&stack2);
 
