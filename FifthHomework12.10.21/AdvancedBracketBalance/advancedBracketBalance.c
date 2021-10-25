@@ -14,7 +14,7 @@ int findCharacter(const char list[], const char character)
     return -1;
 }
 
-void handleTheError(const int errorCode)
+void handleTheBracketError(const int errorCode)
 {
     switch (errorCode)
     {
