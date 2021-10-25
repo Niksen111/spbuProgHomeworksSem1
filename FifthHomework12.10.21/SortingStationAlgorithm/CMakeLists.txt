@@ -10,4 +10,7 @@ add_executable(SortingStationAlgorithm main.c
         sortingStationAlgorithm.c ../Stack/stackTests.c
         ../Stack/stack.c
         ../AdvancedBracketBalance/advancedBracketBalance.c
-        ../PostfixCalculator/postfixCalculator.c)
+        ../PostfixCalculator/postfixCalculator.c
+        sortingStationAlgorithmTests.c
+        ../AdvancedBracketBalance/advancedBracketBalanceTests.c
+        ../PostfixCalculator/postfixCalculatorTests.c)
