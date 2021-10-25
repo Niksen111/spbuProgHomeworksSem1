@@ -28,7 +28,6 @@ void handleTheBracketError(const int errorCode)
             printf("Not all brackets are closed.\n");
             return;
         default:
-            printf("Unknown error code.\n");
             return;
     }
 }
