@@ -1,6 +1,6 @@
 #include "advancedBracketBalance.h"
 #include "../Stack/stack.h"
-#include "stdio.h"
+#include <stdio.h>
 
 int findCharacter(const char list[], const char character)
 {
@@ -37,7 +37,7 @@ bool areBracketsBalanced(const char listCharacters[], int *errorCode)
 {
     *errorCode = 0;
     Stack* stackBrackets = createStack();
-    char brackets[6] = { '(', ')', '[', ']', '{', '}' };
+    char brackets[7] = { '(', ')', '[', ']', '{', '}', '\0' };
     for (int i = 0; listCharacters[i] != '\0'; ++i)
     {
         int indexCurrentCharacter = findCharacter(brackets, listCharacters[i]);
@@ -62,6 +62,11 @@ bool areBracketsBalanced(const char listCharacters[], int *errorCode)
             {
                 int error = 0;
                 pop(&stackBrackets, &error);
+                if (error != 0)
+                {
+                    *errorCode = -4;
+                    return false;
+                }
             }
             else
             {

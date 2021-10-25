@@ -1,5 +1,5 @@
 #pragma once
-#include "stdbool.h"
+#include <stdbool.h>
 
 // Tests the bracket balance checker function
 bool testAdvancedBracketBalance();
