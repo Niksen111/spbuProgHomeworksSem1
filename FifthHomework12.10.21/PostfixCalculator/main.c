@@ -2,7 +2,8 @@
 #include "postfixCalculator.h"
 #include "postfixCalculatorTests.h"
 
-int main() {
+int main()
+{
     if (!testPostfixCalculator())
     {
         printf("Tests failed(\n");

@@ -38,12 +38,9 @@ int operation(int value1, int value2, int operation, int* errorCode)
             if (value2 == 0)
             {
                 *errorCode = -1;
+                return 0;
             }
-            else
-            {
-                return value1 / value2;
-            }
-            return 0;
+            return value1 / value2;
         default:
             *errorCode = -2;
             return 0;
@@ -60,7 +57,7 @@ int postfixCalculator(const char arraySymbols[], int* error)
         {
             continue;
         }
-        if ((int) arraySymbols[i] >= (int) '0' && (int) arraySymbols[i] <= (int) '9')
+        if (arraySymbols[i] >= '0' && arraySymbols[i] <= '9')
         {
             push(&stack, (int) arraySymbols[i] - (int) '0');
         }
@@ -97,7 +94,7 @@ int postfixCalculator(const char arraySymbols[], int* error)
             push(&stack, result);
         }
     }
-    if ((stack->next) != NULL)
+    if (stack->next != NULL)
     {
         *error = -3;
         deleteStack(&stack);
