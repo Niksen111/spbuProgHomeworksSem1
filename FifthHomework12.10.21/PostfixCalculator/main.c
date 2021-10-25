@@ -2,7 +2,8 @@
 #include "postfixCalculator.h"
 #include "postfixCalculatorTests.h"
 
-int main() {
+int main()
+{
     if (!testPostfixCalculator())
     {
         printf("Tests failed(\n");
@@ -12,7 +13,7 @@ int main() {
     printf("Enter the digits and operations with a space:\n");
     char postfixCalculatorEnter[1000] = { 0 };
     scanf("%[^\n]s", postfixCalculatorEnter);
-    int result = postfixCalculator(postfixCalculatorEnter, &errorCode);
+    int result = calculatePostfixExpression(postfixCalculatorEnter, &errorCode);
     handleTheError(errorCode);
     if (errorCode == 0)
     {
