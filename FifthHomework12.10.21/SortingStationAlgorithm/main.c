@@ -22,7 +22,6 @@ int main() {
     int errorCode2 = 0;
     char* postfix = convertToPostfixForm(expression, &errorCode1);
     printf("%s\n", postfix);
-    printf("%d")
     handleTheBracketError(errorCode1);
     printf("%d\n", calculatePostfixExpression(postfix, &errorCode2));
     handleErrorOfPostfixExpression(errorCode2);
