@@ -40,16 +40,20 @@ char* convertToPostfixForm(char infix[], int* errorCode)
         int indexOfOperation = findElement(operations, infix[i]);
         if ( infix[i] >= '0' && infix[i] <= '9' )
         {
-            postfix[currentIndex++] = infix[i];
-            postfix[currentIndex++] = ' ';
+            postfix[currentIndex] = infix[i];
+            ++currentIndex;
+            postfix[currentIndex] = ' ';
+            ++currentIndex;
         }
         else if (indexOfOperation != -1)
         {
             while (!stackIsEmpty(&stack) && (stack->value) != '(' &&
                     findElement(operations, stack->value) % 2 >= indexOfOperation % 2)
             {
-                postfix[currentIndex++] = pop(&stack, errorCode);
-                postfix[currentIndex++] = ' ';
+                postfix[currentIndex] = pop(&stack, errorCode);
+                ++currentIndex;
+                postfix[currentIndex] = ' ';
+                ++currentIndex;
                 if (*errorCode != 0)
                 {
                     free(postfix);
@@ -67,8 +71,10 @@ char* convertToPostfixForm(char infix[], int* errorCode)
         {
             while ((stack->value) != '(')
             {
-                postfix[currentIndex++] = pop(&stack, errorCode);
-                postfix[currentIndex++] = ' ';
+                postfix[currentIndex] = pop(&stack, errorCode);
+                ++currentIndex;
+                postfix[currentIndex] = ' ';
+                ++currentIndex;
                 if (*errorCode != 0)
                 {
                     free(postfix);
@@ -87,8 +93,10 @@ char* convertToPostfixForm(char infix[], int* errorCode)
     }
     while (!stackIsEmpty(&stack))
     {
-        postfix[currentIndex++] = pop(&stack, errorCode);
-        postfix[currentIndex++] = ' ';
+        postfix[currentIndex] = pop(&stack, errorCode);
+        ++currentIndex;
+        postfix[currentIndex] = ' ';
+        ++currentIndex;
         if (*errorCode != 0)
         {
             free(postfix);
