@@ -3,4 +3,4 @@ project(Counting C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(Counting main.c)
+add_executable(Counting main.c circleList.c)
