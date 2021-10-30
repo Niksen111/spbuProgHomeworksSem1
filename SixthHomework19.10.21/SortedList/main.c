@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "sortedList.h"
+#include "sortedListTests.h"
 
 void printListOfOperations()
 {
@@ -60,7 +61,13 @@ int interactWithUser()
     }
 }
 
-int main() {
+int main()
+{
+    if (!testSortedList())
+    {
+        printf("Tests failed(\n");
+        return -1;
+    }
     printListOfOperations();
     interactWithUser();
     return 0;
