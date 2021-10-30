@@ -14,7 +14,7 @@ bool sortedListIsEmpty(SortedList** head)
 
 int push(SortedList** head, Value value)
 {
-    if ((*head)->value >= value)
+    if (sortedListIsEmpty(head) || (*head)->value >= value)
     {
         SortedList* newElement = calloc(1, sizeof(SortedList));
         if (newElement == NULL)
@@ -71,6 +71,10 @@ Value removeItemFromHead(SortedList** head, int* errorCode)
 
 int removeTheItem(SortedList** head, Value value)
 {
+    if (sortedListIsEmpty(head))
+    {
+        return -1;
+    }
     SortedList* currentElement = *head;
     if ((*head)->value == value)
     {
@@ -109,4 +113,5 @@ void printSortedList(SortedList** head)
         printf("%d ", (list->value));
         list = list->next;
     }
+    printf("\n");
 }
