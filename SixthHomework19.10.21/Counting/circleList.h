@@ -11,8 +11,18 @@ typedef struct CircleList
     struct CircleList* next;
 } CircleList;
 
+// head and tail of the CircleList
+typedef struct BoardersOfCircleList
+{
+    CircleList* head;
+    CircleList* tail;
+} BoardersOfCircleList;
+
 // created an empty CircleList
 CircleList* createCircleList();
+
+// created an empty BoardersOfCircleList
+BoardersOfCircleList* createBoardersOfCircleList();
 
 // checks if the CircleList is empty
 bool circleListIsEmpty(CircleList** head);
