@@ -11,30 +11,23 @@ typedef struct CircleList
     struct CircleList* next;
 } CircleList;
 
-// head and tail of the CircleList
-typedef struct BoardersOfCircleList
-{
-    CircleList* head;
-    CircleList* tail;
-} BoardersOfCircleList;
-
 // created an empty CircleList
 CircleList* createCircleList();
 
-// created an empty BoardersOfCircleList
-BoardersOfCircleList* createBoardersOfCircleList();
-
 // checks if the CircleList is empty
-bool circleListIsEmpty(CircleList** head);
+bool circleListIsEmpty(CircleList** currentPosition);
 
-// adds an element to the CircleList
-int push(CircleList** head, Value value);
+// adds an element after the current to the CircleList
+int push(CircleList** currentPosition, Value value);
 
-// removes an element form the head of the CircleList and returns it
-Value removeItemFromHead(CircleList** head, int* errorCode);
+// Moves the pointer to the next element
+void switchToNext(CircleList** currentPosition);
+
+// removes the current element and moves the pointer to the next
+int popCurrent(CircleList** currentPosition, int* errorCode);
 
 // removes the entire CircleList
-void deleteCircleList(CircleList** head);
+void deleteCircleList(CircleList** currentPosition);
 
 // prints the entire CircleList
-void printCircleList(CircleList** head); 
+void printCircleList(CircleList** currentPosition);
