@@ -23,8 +23,11 @@ int push(CircleList** currentPosition, Value value);
 // Moves the pointer to the next element
 void switchToNext(CircleList** currentPosition);
 
+
+void switchToN(CircleList** currentPosition, int n);
+
 // removes the current element and moves the pointer to the next
-int popCurrent(CircleList** currentPosition, int* errorCode);
+int popNext(CircleList** currentPosition, int* errorCode);
 
 // removes the entire CircleList
 void deleteCircleList(CircleList** currentPosition);
