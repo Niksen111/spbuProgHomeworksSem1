@@ -56,7 +56,9 @@ int popNext(CircleList** currentPosition, int* errorCode)
     if ((*currentPosition) == (*currentPosition)->next)
     {
         (*currentPosition)->next = NULL;
-        free(*currentPosition);
+        CircleList* deletedPosition = (*currentPosition);
+        free(deletedPosition);
+        (*currentPosition) = NULL;
         return returnedValue;
     }
     CircleList* deletedPosition = (*currentPosition)->next;
