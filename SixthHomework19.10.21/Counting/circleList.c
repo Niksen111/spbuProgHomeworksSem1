@@ -37,7 +37,22 @@ void switchToNext(CircleList** currentPosition)
     (*currentPosition) = (*currentPosition)->next;
 }
 
-int popCurrent(CircleList** currentPosition, int* errorCode);
+int popCurrent(CircleList** currentPosition, int* errorCode)
+{
+    if ((*currentPosition) == NULL)
+    {
+        return 0;
+    }
+    if ((*currentPosition) == (*currentPosition)->next)
+    {
+        free(*currentPosition);
+        return 0;
+    }
+    CircleList* deletedPosition = (*currentPosition);
+    switchToNext(currentPosition);
+    free(deletedPosition);
+    return 0;
+}
 
 void deleteCircleList(CircleList** currentPosition)
 {
@@ -54,7 +69,7 @@ void printCircleList(CircleList** currentPosition)
     while (list != *currentPosition)
     {
         printf("%d ", (list->value));
-        list = list->next;
+        switchToNext(&list);
     }
     printf("\n");
 }
