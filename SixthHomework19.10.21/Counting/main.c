@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "circleList.h"
+#include "circleListTests.h"
 
 int giveNumberOfSurvivor(CircleList** myList, int numberOfWarriors,
                          int killIndex)
@@ -16,7 +17,30 @@ int giveNumberOfSurvivor(CircleList** myList, int numberOfWarriors,
     return ((*myList)->value);
 }
 
+bool testGiveNumberOfSurvivor()
+{
+    CircleList* list1 = createCircleList();
+    for (int i = 0; i < 7; ++i)
+    {
+        push(&list1, i);
+    }
+    bool result = giveNumberOfSurvivor(&list1, 7, 3) == 3;
+    deleteCircleList(&list1);
+    for (int i = 0; i < 4; ++i)
+    {
+        push(&list1, i);
+    }
+    result = giveNumberOfSurvivor(&list1, 4, 5);
+    deleteCircleList(&list1);
+    return result;
+}
+
 int main() {
+    if (!testCircleList() || !testGiveNumberOfSurvivor())
+    {
+        printf("Tests failed(\n");
+        return -1;
+    }
     CircleList* myList = createCircleList();
     int numberOfWarriors = 0;
     int killIndex = 0;
