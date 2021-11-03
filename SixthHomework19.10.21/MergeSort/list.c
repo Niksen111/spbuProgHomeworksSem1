@@ -1,9 +1,50 @@
 #include "list.h"
 #include <stdlib.h>
+#include <string.h>
+
+int min(const int first, const int second)
+{
+    return first < second ? first : second;
+}
+
+bool isFirstEarlier(char* first, char* second)
+{
+    int lengthOfShorterString = min(strlen(first), strlen(second));
+    for (int i = 0; i < lengthOfShorterString; ++i)
+    {
+        if (first[i] < second[i])
+        {
+            return true;
+        }
+        if (first[i] > second[i])
+        {
+            return false;
+        }
+    }
+    return strlen(first) <= strlen(second);
+}
+
+void changePriorityValue(Position* position, char* newValue, Priority priority)
+{
+    free(getPriorityValue(position, priority));
+    if (priority == name)
+    {
+        position->position->directory->name = newValue;
+    }
+    else
+    {
+        position->position->directory->phoneNumber = newValue;
+    }
+}
 
 List* createList()
 {
     return calloc(1, sizeof(List));
+}
+
+Position* createPosition()
+{
+    return calloc(1, sizeof(Position));
 }
 
 void deleteList(List* list)
@@ -37,6 +78,33 @@ void add(List* list, Position* position, char* name, char* phone)
     position->position->next = newElement;
 }
 
+int lengthPartOfList(Position* start, Position* end)
+{
+    if (start == NULL)
+    {
+        return 0;
+    }
+    Position* position = calloc(1, sizeof(Position));
+    if (position == NULL)
+    {
+        return -1;
+    }
+    position->position = start->position;
+    int counter = 0;
+    while (position != end)
+    {
+        if (position == NULL)
+        {
+            free(position);
+            return -1;
+        }
+        ++counter;
+        position = next(position);
+    }
+    free(position);
+    return counter;
+}
+
 Position* first(List* list)
 {
     Position* positionFirst = calloc(1, sizeof(Position));
@@ -59,4 +127,10 @@ bool isLast(Position* position)
 Directory* get(List* list, Position* position)
 {
     return position->position->directory;
+}
+
+char* getPriorityValue(Position* position, Priority priority)
+{
+    return priority == name ? position->position->directory->name :
+           position->position->directory->phoneNumber;
 }

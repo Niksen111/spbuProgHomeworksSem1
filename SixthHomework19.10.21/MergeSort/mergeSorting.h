@@ -1,5 +1,5 @@
 #pragma once
 #include "list.h"
 
-List* mergeSorting(List* list, List* buffer,
-                   Position* leftBoarder, Position* rightBoarder);
+List* mergeSorting(List* list, List* buffer,Position* leftBoarder,
+                   Position* rightBoarder, Priority priority);
