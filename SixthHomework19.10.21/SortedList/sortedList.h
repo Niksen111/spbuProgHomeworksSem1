@@ -5,17 +5,16 @@
 typedef int Value;
 
 // sortedList structure
-typedef struct SortedList
-{
-    Value value;
-    struct SortedList* next;
-} SortedList;
+typedef struct SortedList SortedList;
 
 // created an empty sortedList
 SortedList* createSortedList();
 
 // checks if the sortedList is empty
 bool sortedListIsEmpty(SortedList** head);
+
+// created new element and returns it
+SortedList* createNewElement(Value value, SortedList* next);
 
 // adds an element to the sortedList
 int push(SortedList** head, Value value);
@@ -32,3 +31,6 @@ void deleteSortedList(SortedList** head);
 
 // prints the entire sortedList
 void printSortedList(SortedList** head);
+
+// returns value from head of the SortedList
+Value getValueFromHead(SortedList* head, int* errorCode);

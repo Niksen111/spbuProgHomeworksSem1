@@ -2,6 +2,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
+typedef struct SortedList
+{
+    Value value;
+    struct SortedList* next;
+} SortedList;
+
 SortedList* createSortedList()
 {
     return NULL;
@@ -12,18 +19,27 @@ bool sortedListIsEmpty(SortedList** head)
     return *head == NULL;
 }
 
+SortedList* createNewElement(Value value, SortedList* next)
+{
+    SortedList* newElement = calloc(1, sizeof(SortedList));
+    if (newElement == NULL)
+    {
+        return NULL;
+    }
+    newElement->value = value;
+    newElement->next = next;
+    return newElement;
+}
+
 int push(SortedList** head, Value value)
 {
     if (sortedListIsEmpty(head) || (*head)->value >= value)
     {
-        SortedList* newElement = calloc(1, sizeof(SortedList));
-        if (newElement == NULL)
+        *head = createNewElement(value, *head);
+        if (head == NULL)
         {
             return -1;
         }
-        newElement->value = value;
-        newElement->next = *head;
-        *head = newElement;
         return 0;
     }
     SortedList* currentElement = *head;
@@ -31,27 +47,13 @@ int push(SortedList** head, Value value)
     {
         if (currentElement->next->value >= value)
         {
-            SortedList* newElement = calloc(1, sizeof(SortedList));
-            if (newElement == NULL)
-            {
-                return -1;
-            }
-            newElement->value = value;
-            newElement->next = currentElement->next;
-            currentElement->next = newElement;
-            return 0;
+            currentElement->next = createNewElement(value, currentElement->next);
+            return currentElement->next == NULL ? -1 : 0;
         }
         currentElement = currentElement->next;
     }
-    SortedList* newElement = calloc(1, sizeof(SortedList));
-    if (newElement == NULL)
-    {
-        return -1;
-    }
-    newElement->value = value;
-    newElement->next = NULL;
-    currentElement->next = newElement;
-    return 0;
+    currentElement->next = createNewElement(value, NULL);
+    return currentElement->next == NULL ? -1 : 0;
 }
 
 Value removeItemFromHead(SortedList** head, int* errorCode)
@@ -114,4 +116,15 @@ void printSortedList(SortedList** head)
         list = list->next;
     }
     printf("\n");
+}
+
+Value getValueFromHead(SortedList* head, int *errorCode)
+{
+    if (head == NULL)
+    {
+
+        *errorCode = -1;
+        return 0;
+    }
+    return head->value;
 }
