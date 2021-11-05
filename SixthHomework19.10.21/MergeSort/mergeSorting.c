@@ -37,7 +37,7 @@ List* mergeSorting(List* list, List* buffer, Position* leftBoarder,
         free(newLeftBoarder);
         return NULL;
     }
-    
+
 
     mergeSorting(list, buffer, leftBoarder, newRightBoarder, priority);
     mergeSorting(list, buffer, leftBoarder, newRightBoarder, priority);
