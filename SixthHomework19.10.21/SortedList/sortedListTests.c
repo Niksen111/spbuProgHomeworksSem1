@@ -13,13 +13,13 @@ bool testCreateSortedList()
 
 bool testSortedListIsEmpty()
 {
-    SortedList* stack1 = createSortedList();
-    SortedList* stack2 = createSortedList();
-    push(&stack2, 10);
-    bool result = sortedListIsEmpty(&stack1) &&
-                  !sortedListIsEmpty(&stack2);
-    deleteSortedList(&stack1);
-    deleteSortedList(&stack2);
+    SortedList* list1 = createSortedList();
+    SortedList* list2 = createSortedList();
+    push(&list2, 10);
+    bool result = sortedListIsEmpty(&list1) &&
+            !sortedListIsEmpty(&list2);
+    deleteSortedList(&list1);
+    deleteSortedList(&list2);
 
     return result;
 }
@@ -35,8 +35,20 @@ bool testPush()
     bool result = true;
     for (int i = 0; !sortedListIsEmpty(&list1); ++i)
     {
-        result = result && list1->value == array1Answer[i];
-        list1 = list1->next;
+        int errorCode = 0;
+        result = result && getValueFromHead(list1, &errorCode) ==
+                array1Answer[i];
+        if (errorCode != 0)
+        {
+            deleteSortedList(&list1);
+            return false;
+        }
+        removeItemFromHead(&list1, &errorCode);
+        if (errorCode != 0)
+        {
+            deleteSortedList(&list1);
+            return false;
+        }
     }
     deleteSortedList(&list1);
 
@@ -95,9 +107,37 @@ bool testDeleteSortedList()
     return list2 == NULL && list1 == NULL;
 }
 
+bool testGetValueFromHead()
+{
+    SortedList* list1 = createSortedList();
+    push(&list1, 5);
+    push(&list1, -5);
+    push(&list1, 15);
+    push(&list1, -15);
+    int errorCode = 0;
+    bool result = getValueFromHead(list1, &errorCode) == -15
+            && errorCode == 0;
+    removeItemFromHead(&list1, &errorCode);
+    result = result && getValueFromHead(list1, &errorCode) == -5
+            && errorCode == 0;
+    removeItemFromHead(&list1, &errorCode);
+    result = result && getValueFromHead(list1, &errorCode) == 5
+            && errorCode == 0;
+    removeItemFromHead(&list1, &errorCode);
+    result = result && getValueFromHead(list1, &errorCode) == 15
+            && errorCode == 0;
+    removeItemFromHead(&list1, &errorCode);
+    result = result && getValueFromHead(list1, &errorCode) == 0
+            && errorCode == -1;
+    deleteSortedList(&list1);
+
+    return result;
+}
+
 bool testSortedList()
 {
-    return testSortedListIsEmpty() && testPush() &&
-        testCreateSortedList() &&testRemoveTheItem() &&
-        testDeleteSortedList() && testRemoveItemFromHead();
+    return testSortedListIsEmpty() && testPush()
+        && testCreateSortedList() && testRemoveTheItem()
+        && testDeleteSortedList() && testRemoveItemFromHead()
+        && testGetValueFromHead();
 }

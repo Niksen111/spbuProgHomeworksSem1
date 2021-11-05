@@ -20,43 +20,46 @@ int interactWithUser()
         printf("Введите нужную вам команду:\n");
         printf("(Введите 4 если хотите увидеть список команд)\n");
         scanf("%d", &currentOperation);
-        if (currentOperation == 1)
+        switch (currentOperation)
         {
-            Value addedValue = 0;
-            printf("Введите значение добавляемого элемента:\n");
-            scanf("%d", &addedValue);
-            if (push(&myList, addedValue) != 0)
+            case 0:
+                break;
+            case 1:
             {
-                printf("Недостаточно памяти, для");
-                printf("добавления нового элемента.\n");
-                return -1;
+                int addedValue = 0;
+                printf("Введите значение добавляемого элемента:\n");
+                scanf("%d", &addedValue);
+                if (push(&myList, addedValue) != 0) {
+                    printf("Недостаточно памяти, для добавления нового элемента.\n");
+                    return -1;
+                }
+                break;
             }
-        }
-        else if (currentOperation == 2)
-        {
-            Value deletedValue = 0;
-            printf("Введите значение удаляемого элемента:\n");
-            scanf("%d", &deletedValue);
-            if (removeTheItem(&myList, deletedValue) == -1)
+            case 2:
+                {
+                    Value deletedValue = 0;
+                    printf("Введите значение удаляемого элемента:\n");
+                    scanf("%d", &deletedValue);
+                    if (removeTheItem(&myList, deletedValue) == -1)
+                    {
+                        printf("Данного элемента нет в списке.\n");
+                    }
+                    break;
+                }
+            case 3:
             {
-                printf("Данного элемента нет в списке.\n");
+                printSortedList(&myList);
+                if (sortedListIsEmpty(&myList))
+                {
+                    printf("Список пуст.\n");
+                }
+                break;
             }
-        }
-        else if (currentOperation == 3)
-        {
-            printSortedList(&myList);
-            if (sortedListIsEmpty(&myList))
-            {
-                printf("Список пуст.\n");
-            }
-        }
-        else if (currentOperation == 4)
-        {
-            printListOfOperations();
-        }
-        else if (currentOperation != 0)
-        {
-            printf("Введена неизвестная операция.\n");
+            case 4:
+                printListOfOperations();
+                break;
+            default:
+                printf("Введена неизвестная операция.\n");
         }
     }
 }
