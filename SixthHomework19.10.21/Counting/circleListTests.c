@@ -35,7 +35,13 @@ bool testPush()
     switchToNext(&list1);
     for (int i = 0; i < 7; ++i)
     {
-        result = result && (list1->value) == i;
+        int errorCode = 0;
+        result = result && getCurrentPositionValue(list1, &errorCode) == i;
+        if (errorCode != 0)
+        {
+            deleteCircleList(&list1);
+            return false;
+        }
         switchToNext(&list1);
     }
     deleteCircleList(&list1);
@@ -50,11 +56,22 @@ bool testSwitchToNext()
     {
         push(&list1, i);
     }
-    bool result = (list1->value) == 4;
+    int errorCode = 0;
+    bool result = getCurrentPositionValue(list1, &errorCode) == 4;
+    if (errorCode != 0)
+    {
+        deleteCircleList(&list1);
+        return false;
+    }
     for (int i = 0; i < 4; ++i)
     {
         switchToNext(&list1);
-        result = result && (list1->value) == i;
+        result = result && getCurrentPositionValue(list1, &errorCode) == i;
+        if (errorCode != 0)
+        {
+            deleteCircleList(&list1);
+            return false;
+        }
     }
     deleteCircleList(&list1);
 
@@ -75,7 +92,13 @@ bool testSwitchToN()
     for (int i = 0; i < 5; ++i)
     {
         switchToN(&list1, arrayN[i]);
-        result = result && (list1->value) == arrayAnswers[i];
+        int errorCode = 0;
+        result = result && getCurrentPositionValue(list1, &errorCode) == arrayAnswers[i];
+        if (errorCode != 0)
+        {
+            deleteCircleList(&list1);
+            return false;
+        }
     }
     deleteCircleList(&list1);
     return result;
@@ -99,9 +122,14 @@ bool testPopNext()
     result = result && popNext(&list1, &errorCode) == 8
              && errorCode == 0;
     CircleList* m = list1;
-    while (m->next != list1)
+    while (getNext(m, &errorCode) != list1)
     {
-        result = result && !((m->value) == 0 || (m->value) == 5 || (m->value) == 8);
+        result = result && !(getCurrentPositionValue(m, &errorCode) == 0
+                && errorCode == 0
+                || getCurrentPositionValue(m, &errorCode) == 5
+                && errorCode == 0
+                || getCurrentPositionValue(m, &errorCode) == 8
+                && errorCode == 0);
         switchToNext(&m);
     }
     deleteCircleList(&list1);

@@ -5,7 +5,8 @@
 int giveNumberOfSurvivor(CircleList** myList, int numberOfWarriors,
                          int killIndex)
 {
-    while (*myList != (*myList)->next)
+    int errorCode1 = 0;
+    while (*myList != getNext(*myList, &errorCode1) && errorCode1 == 0)
     {
         int n = killIndex % numberOfWarriors + killIndex *
                 (killIndex % numberOfWarriors == 0) - 1;
@@ -14,7 +15,7 @@ int giveNumberOfSurvivor(CircleList** myList, int numberOfWarriors,
         popNext(myList, &errorCode);
         --numberOfWarriors;
     }
-    return ((*myList)->value);
+    return getCurrentPositionValue(myList, &errorCode1);
 }
 
 bool testGiveNumberOfSurvivor()
@@ -30,12 +31,13 @@ bool testGiveNumberOfSurvivor()
     {
         push(&list1, i);
     }
-    result = giveNumberOfSurvivor(&list1, 4, 5);
+    result = result && giveNumberOfSurvivor(&list1, 4, 5);
     deleteCircleList(&list1);
     return result;
 }
 
-int main() {
+int main()
+{
     if (!testCircleList() || !testGiveNumberOfSurvivor())
     {
         printf("Tests failed(\n");
