@@ -2,8 +2,8 @@
 #include "sortingStationAlgorithm.h"
 #include <stdlib.h>
 
-bool checkThatAnArraysAreIdentical(const int firstArray[],
-                                   const int secondArray[])
+bool checkThatAnArraysAreIdentical(const char firstArray[],
+                                   const char secondArray[])
 {
     for (int i = 0; firstArray[i] != '\0' || secondArray[i] != '\0'; ++i)
     {

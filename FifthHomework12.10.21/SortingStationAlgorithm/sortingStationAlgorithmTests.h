@@ -1,4 +1,5 @@
 #pragma once
+
 #include <stdbool.h>
 
 // Tests the algorithm for converting an expression
