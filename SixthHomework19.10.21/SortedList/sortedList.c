@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
 typedef struct SortedList
 {
     Value value;
@@ -36,11 +35,7 @@ int push(SortedList** head, Value value)
     if (sortedListIsEmpty(head) || (*head)->value >= value)
     {
         *head = createNewElement(value, *head);
-        if (head == NULL)
-        {
-            return -1;
-        }
-        return 0;
+        return head == NULL ? -1 : 0;
     }
     SortedList* currentElement = *head;
     while (currentElement->next != NULL)
@@ -122,7 +117,6 @@ Value getValueFromHead(SortedList* head, int *errorCode)
 {
     if (head == NULL)
     {
-
         *errorCode = -1;
         return 0;
     }

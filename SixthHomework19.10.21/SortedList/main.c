@@ -29,7 +29,8 @@ int interactWithUser()
                 int addedValue = 0;
                 printf("Введите значение добавляемого элемента:\n");
                 scanf("%d", &addedValue);
-                if (push(&myList, addedValue) != 0) {
+                if (push(&myList, addedValue) != 0)
+                {
                     printf("Недостаточно памяти, для добавления нового элемента.\n");
                     return -1;
                 }
