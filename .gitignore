@@ -389,3 +389,6 @@ FodyWeavers.xsd
 
 # JetBrains CLion
 cmake-build-debug/
+
+# My script
+printCode.sh
