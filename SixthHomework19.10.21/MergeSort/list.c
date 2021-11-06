@@ -2,6 +2,29 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef struct Directory
+{
+    char* name;
+    char* phoneNumber;
+} Directory;
+
+typedef struct ListElement
+{
+    Directory* directory;
+    struct ListElement* next;
+} ListElement;
+
+typedef struct List
+{
+    ListElement* head;
+} List;
+
+typedef struct Position
+{
+    ListElement* position;
+} Position;
+
+
 int min(const int first, const int second)
 {
     return first < second ? first : second;
@@ -124,7 +147,12 @@ bool isLast(Position* position)
     return position->position == NULL;
 }
 
-Directory* get(List* list, Position* position)
+ListElement* getListElement(Position* position)
+{
+
+}
+
+Directory* getDirectory(List* list, Position* position)
 {
     return position->position->directory;
 }
