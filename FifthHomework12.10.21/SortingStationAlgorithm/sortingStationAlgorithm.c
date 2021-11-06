@@ -15,13 +15,22 @@ int findElement(const char theArray[], const char element)
     return -1;
 }
 
-void addElementToPostfix(char postfix[], int *currentIndex,
-                         Stack* stack, int* errorCode)
+void addOperationToPostfix(char postfix[], int *currentIndex,
+                         Stack** stack, int* errorCode)
 {
-    postfix[*currentIndex] = pop(&stack, errorCode);
-    ++currentIndex;
+    postfix[*currentIndex] = pop(stack, errorCode);
+    ++*currentIndex;
     postfix[*currentIndex] = ' ';
-    ++currentIndex;
+    ++*currentIndex;
+}
+
+void addNumberToPostfix(char postfix[], int *currentIndex,
+                        const char number, int* errorCode)
+{
+    postfix[*currentIndex] = number;
+    ++*currentIndex;
+    postfix[*currentIndex] = ' ';
+    ++*currentIndex;
 }
 
 bool priorityFirstOverSecond(const char operations[], const int indexOfFirstOperation,
@@ -50,16 +59,16 @@ char *convertToPostfixForm(const char infix[], int *errorCode)
         const int indexOfOperation = findElement(operations, infix[i]);
         if (infix[i] >= '0' && infix[i] <= '9')
         {
-            addElementToPostfix(postfix, &currentIndex,
-                                stack, errorCode);
+            addNumberToPostfix(postfix, &currentIndex,
+                                infix[i], errorCode);
         }
         else if (indexOfOperation != -1)
         {
             while (!stackIsEmpty(&stack) && stack->value != '(' &&
-                    priorityFirstOverSecond(operations, stack->value, indexOfOperation))
+                    priorityFirstOverSecond(operations, findElement(operations, stack->value), indexOfOperation))
             {
-                addElementToPostfix(postfix, &currentIndex,
-                                    stack, errorCode);
+                addOperationToPostfix(postfix, &currentIndex,
+                                    &stack, errorCode);
                 if (*errorCode != 0)
                 {
                     free(postfix);
@@ -89,8 +98,8 @@ char *convertToPostfixForm(const char infix[], int *errorCode)
         {
             while ((stack->value) != '(')
             {
-                addElementToPostfix(postfix, &currentIndex,
-                                    stack, errorCode);
+                addOperationToPostfix(postfix, &currentIndex,
+                                    &stack, errorCode);
                 if (*errorCode != 0)
                 {
                     free(postfix);
@@ -109,8 +118,8 @@ char *convertToPostfixForm(const char infix[], int *errorCode)
     }
     while (!stackIsEmpty(&stack))
     {
-        addElementToPostfix(postfix, &currentIndex,
-                            stack, errorCode);
+        addOperationToPostfix(postfix, &currentIndex,
+                            &stack, errorCode);
         if (*errorCode != 0)
         {
             free(postfix);

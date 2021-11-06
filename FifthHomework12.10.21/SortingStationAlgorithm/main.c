@@ -2,14 +2,11 @@
 #include <stdlib.h>
 #include "sortingStationAlgorithm.h"
 #include "sortingStationAlgorithmTests.h"
-#include "advancedBracketBalanceTests.h"
 #include "stackTests.h"
-#include "advancedBracketBalance.h"
 
 int main()
 {
-    if (!testAdvancedBracketBalance() || !testStack()
-        || !testConvertToPostfixForm())
+    if (!testStack() || !testConvertToPostfixForm())
     {
         printf("Tests failed(\n");
         return -1;
