@@ -88,7 +88,7 @@ bool testSwitchToN()
     switchToNext(&list1);
     bool result = true;
     int arrayAnswers[5] = { 3, 1, 6, 6, 2 };
-    int arrayN[5] = { 3, 5, 5, 14, 10};
+    int arrayN[5] = { 3, 5, 5, 14, 10 };
     for (int i = 0; i < 5; ++i)
     {
         switchToN(&list1, arrayN[i]);
@@ -150,10 +150,47 @@ bool testDeleteCircleList()
     return list2 == NULL && list1 == NULL;
 }
 
+bool testGetCurrentPositionValue()
+{
+    CircleList* list1 = createCircleList();
+    for (int i = 0; i < 5; ++i)
+    {
+        push(&list1, i);
+    }
+    bool result = true;
+    switchToNext(&list1);
+    for (int i = 0; i < 5; ++i)
+    {
+        int errorCode = 0;
+        result = result && getCurrentPositionValue(list1, &errorCode) == i
+                && errorCode == 0;
+        switchToNext(&list1);
+    }
+    deleteCircleList(&list1);
+    int errorCode = 0;
+    result = result && getCurrentPositionValue(list1, &errorCode) == 0
+            && errorCode != 0;
+
+    return result;
+}
+
+bool testGetNext()
+{
+    CircleList* list = createCircleList();
+    int errorCode = 0;
+    bool result = getNext(list, &errorCode) == NULL && errorCode != 0;
+    push(&list, 5);
+    result = result && getNext(list, &errorCode) == list && errorCode == 0;
+    deleteCircleList(&list);
+
+    return result;
+}
+
 bool testCircleList()
 {
     return testPush() && testCircleListIsEmpty()
         && testCreateCircleList() && testDeleteCircleList()
         && testPopNext() && testSwitchToN()
-        && testSwitchToNext();
+        && testSwitchToNext() && testGetCurrentPositionValue()
+        && testGetNext();
 }

@@ -61,7 +61,6 @@ int popNext(CircleList** currentPosition, int* errorCode)
     Value returnedValue = ((*currentPosition)->next->value);
     if ((*currentPosition) == (*currentPosition)->next)
     {
-        (*currentPosition)->next = NULL;
         free(*currentPosition);
         *currentPosition = NULL;
         return returnedValue;
@@ -108,7 +107,7 @@ void printCircleList(CircleList** currentPosition)
     CircleList* list = (*currentPosition)->next;
     while (list != *currentPosition)
     {
-        printf("%d ", (list->value));
+        printf("%d ", list->value);
         switchToNext(&list);
     }
     printf("%d\n", ((*currentPosition)->value));
