@@ -13,7 +13,7 @@ typedef struct List List;
 //
 typedef struct Position Position;
 
-// 
+//
 typedef enum Priority
 {
     name,
