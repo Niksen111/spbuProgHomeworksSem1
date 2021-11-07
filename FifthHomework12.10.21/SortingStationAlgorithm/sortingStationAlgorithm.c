@@ -47,7 +47,7 @@ char *convertToPostfixForm(const char infix[], int *errorCode)
     const int lengthOfInfix = strlen(infix);
     const char operations[5] = {'+', '*', '-', '/', '\0'};
     Stack *stack = createStack();
-    char *postfix = calloc(lengthOfInfix, sizeof(char));
+    char *postfix = calloc(lengthOfInfix + 10, sizeof(char));
     if (postfix == NULL)
     {
         *errorCode = -1;
