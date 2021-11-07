@@ -12,7 +12,7 @@ int main()
         return -1;
     }
     char expression[1010] = { 0 };
-    printf("Enter an expression in infix form (less then 1000 symbols):\n");
+    printf("Enter an expression in infix form (less than 1000 symbols):\n");
     scanf("%[^\n]s", expression);
     int errorCode1 = 0;
     const char* postfix = convertToPostfixForm(expression, &errorCode1);

@@ -1,19 +1,7 @@
 #include "sortingStationAlgorithmTests.h"
 #include "sortingStationAlgorithm.h"
 #include <stdlib.h>
-
-bool checkThatAnArraysAreIdentical(const char firstArray[],
-                                   const char secondArray[])
-{
-    for (int i = 0; firstArray[i] != '\0' || secondArray[i] != '\0'; ++i)
-    {
-        if (firstArray[i] != secondArray[i])
-        {
-            return false;
-        }
-    }
-    return true;
-}
+#include <string.h>
 
 bool testConvertToPostfixForm()
 {
@@ -26,8 +14,8 @@ bool testConvertToPostfixForm()
     char* resultOfConverting1 = convertToPostfixForm(expression1, &errorCode1);
     char* resultOfConverting2 = convertToPostfixForm(expression2, &errorCode2);
     bool resultOfTheTest =
-            checkThatAnArraysAreIdentical(resultOfConverting1, answer1) &&
-            checkThatAnArraysAreIdentical(resultOfConverting2, answer2) &&
+            strcmp(resultOfConverting1, answer1) == 0 &&
+            strcmp(resultOfConverting2, answer2) == 0 &&
             errorCode1 == 0 && errorCode2 == 0;
     free(resultOfConverting1);
     free(resultOfConverting2);

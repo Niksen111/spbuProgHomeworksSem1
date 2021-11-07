@@ -3,8 +3,7 @@ project(SortingStationAlgorithm C)
 
 set(CMAKE_C_STANDARD 99)
 
-include_directories(../Stack ../AdvancedBracketBalance
-        ../PostfixCalculator)
+include_directories(../Stack ../PostfixCalculator)
 
 add_executable(SortingStationAlgorithm main.c
         sortingStationAlgorithm.c ../Stack/stackTests.c
