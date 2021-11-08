@@ -25,6 +25,28 @@ TreeRoot* createTreeRoot()
     return NULL;
 }
 
+typedef enum Direction
+{
+    left,
+    right
+} Direction;
+
+void attach(TreeNode* parent, TreeNode* child, Direction direction)
+{
+    if (direction == left)
+    {
+        parent->leftSon = child;
+    }
+    else
+    {
+        parent->rightSon = child;
+    }
+    if (child != NULL)
+    {
+    child->parent = parent;
+    }
+}
+
 void deleteBranch(CurrentTreeNode** branch)
 {
     if ((*branch)->currentTreeNode->leftSon != NULL)
@@ -56,6 +78,12 @@ void deleteTree(TreeRoot** root)
 
 void addTreeNode(TreeRoot* root, int key, char* value)
 {
+    if (root->treeRoot == NULL)
+    {
+        root->treeRoot->key = key;
+        root->treeRoot->value = value;
+        return;
+    }
     CurrentTreeNode* node = calloc(1, sizeof(CurrentTreeNode));
     node->currentTreeNode = root->treeRoot;
     while (true)
@@ -102,9 +130,10 @@ bool isLeftSon(CurrentTreeNode* currentTreeNode)
         == currentTreeNode->currentTreeNode;
 }
 
-char* removeTreeNode(CurrentTreeNode** retrievableNode)
+char* removeTreeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
 {
     char* currentValue = (*retrievableNode)->currentTreeNode->value;
+    bool isRoot = (*retrievableNode)->currentTreeNode == (*root)->treeRoot;
     if ((*retrievableNode)->currentTreeNode->leftSon == NULL
         && (*retrievableNode)->currentTreeNode->rightSon == NULL)
     {
@@ -127,9 +156,9 @@ char* removeTreeNode(CurrentTreeNode** retrievableNode)
         }
         (*retrievableNode)->currentTreeNode->parent->rightSon =
                 (*retrievableNode)->currentTreeNode->leftSon;
-        (*retrievableNode)->currentTreeNode->leftSon->parent =
+        (*retrievableNode)->currentTreeNode->rightSon->parent =
                 (*retrievableNode)->currentTreeNode->parent;
-        (*retrievableNode)->currentTreeNode->leftSon = NULL;
+        (*retrievableNode)->currentTreeNode->rightSon = NULL;
         deleteBranch(retrievableNode);
 
         return currentValue;
@@ -176,7 +205,7 @@ char* removeTreeNode(CurrentTreeNode** retrievableNode)
     return currentValue;
 }
 
-char* findValue(TreeRoot* root, int key)
+CurrentTreeNode* findNode(TreeRoot* root, int key)
 {
     CurrentTreeNode* node = calloc(1, sizeof(CurrentTreeNode));
     if (node == NULL)
@@ -188,9 +217,7 @@ char* findValue(TreeRoot* root, int key)
     {
         if (key == node->currentTreeNode->key)
         {
-            char* value = node->currentTreeNode->value;
-            free(node);
-            return value;
+            return node;
         }
         if (key > node->currentTreeNode->key)
         {
@@ -211,46 +238,38 @@ char* findValue(TreeRoot* root, int key)
             node->currentTreeNode = node->currentTreeNode->leftSon;
         }
     }
+}
+
+char* findValue(TreeRoot* root, int key)
+{
+    CurrentTreeNode* node = findNode(root, key);
+    if (node == NULL)
+    {
+        return NULL;
+    }
+    char* value = node->currentTreeNode->value;
+    free(node);
+
+    return value;
 }
 
 bool isKeyInTree(TreeRoot* root, int key)
 {
-    CurrentTreeNode* node = calloc(1, sizeof(CurrentTreeNode));
-    if (node == NULL)
+    CurrentTreeNode* node = findNode(root, key);
+    if (node != NULL)
     {
-        return false;
+        free(node);
+        return true;
     }
-    node->currentTreeNode = root->treeRoot;
-    while (true)
-    {
-        if (key == node->currentTreeNode->key)
-        {
-            free(node);
-            return true;
-        }
-        if (key > node->currentTreeNode->key)
-        {
-            if (node->currentTreeNode->rightSon == NULL)
-            {
-                free(node);
-                return false;
-            }
-            node->currentTreeNode = node->currentTreeNode->rightSon;
-        }
-        else
-        {
-            if (node->currentTreeNode->leftSon == NULL)
-            {
-                free(node);
-                return false;
-            }
-            node->currentTreeNode = node->currentTreeNode->leftSon;
-        }
-    }
+    return false;
 }
 
-// Deletes the given key and its associated value from the dictionary.
 void removeEntry(TreeRoot** root, int key)
 {
 
+    CurrentTreeNode* node = findNode(*root, key);
+    if (node != NULL)
+    {
+        removeTreeNode(root, &node);
+    }
 }
