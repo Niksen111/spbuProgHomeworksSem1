@@ -56,7 +56,44 @@ void deleteTree(TreeRoot** root)
 
 void addTreeNode(TreeRoot* root, int key, char* value)
 {
-
+    CurrentTreeNode* node = calloc(1, sizeof(CurrentTreeNode));
+    node->currentTreeNode = root->treeRoot;
+    while (true)
+    {
+        if (key == node->currentTreeNode->key)
+        {
+            free(node->currentTreeNode->value);
+            node->currentTreeNode->value = value;
+            free(node);
+            return;
+        }
+        if (key > node->currentTreeNode->key)
+        {
+            if (node->currentTreeNode->rightSon == NULL)
+            {
+                TreeNode* newNode = calloc(1, sizeof(TreeNode));
+                newNode->parent = node->currentTreeNode;
+                newNode->key = key;
+                newNode->value = value;
+                free(node);
+                return;
+            }
+            node->currentTreeNode = node->currentTreeNode->rightSon;
+        }
+        else
+        {
+            if (node->currentTreeNode->leftSon == NULL)
+            {
+                TreeNode* newNode = calloc(1, sizeof(TreeNode));
+                newNode->parent = node->currentTreeNode;
+                newNode->key = key;
+                newNode->value = value;
+                free(node);
+                return;
+            }
+            node->currentTreeNode = node->currentTreeNode->leftSon;
+        }
+    }
 }
 
 bool isLeftSon(CurrentTreeNode* currentTreeNode)
@@ -128,10 +165,15 @@ char* removeTreeNode(CurrentTreeNode** retrievableNode)
     }
     (*retrievableNode)->currentTreeNode->key = newNode->currentTreeNode->key;
     (*retrievableNode)->currentTreeNode->value = newNode->currentTreeNode->value;
+    newNode->currentTreeNode->parent->rightSon = newNode->currentTreeNode->leftSon;
     if (newNode->currentTreeNode->leftSon != NULL)
     {
-
+        newNode->currentTreeNode->leftSon = newNode->currentTreeNode->parent;
     }
+    newNode->currentTreeNode->leftSon = NULL;
+    deleteBranch(&newNode);
+
+    return currentValue;
 }
 
 char* findValue(TreeRoot* root, int key)
