@@ -74,7 +74,7 @@ void interactWithUser()
                 int key = 0;
                 printf("Введите ключ\n");
                 scanf("%d", &key);
-                removeTheKey(&myTree, key);
+                removeEntry(&myTree, key);
                 break;
             }
             case 5:
@@ -94,6 +94,6 @@ int main() {
         printf("Tests failed(\n");
         return -1;
     }
-    printf("Hello, World!\n");
+    interactWithUser();
     return 0;
 }

@@ -24,4 +24,4 @@ char* findValue(TreeRoot* root, int key);
 bool isKeyInTree(TreeRoot* root, int key);
 
 // Deletes the given key and its associated value from the dictionary.
-void removeTheKey(TreeRoot** root, int key);
+void removeEntry(TreeRoot** root, int key);

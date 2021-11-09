@@ -22,7 +22,9 @@ typedef struct CurrentTreeNode
 
 TreeRoot* createTreeRoot()
 {
-    return NULL;
+    TreeRoot* newRoot = calloc(1, sizeof(TreeRoot));
+    newRoot->treeRoot = NULL;
+    return newRoot;
 }
 
 typedef enum Direction
@@ -49,6 +51,11 @@ void attach(TreeNode* parent, TreeNode* child, Direction direction)
 
 void deleteBranch(CurrentTreeNode** branch)
 {
+    if ((*branch)->currentTreeNode == NULL)
+    {
+        free(*branch);
+        return;
+    }
     if ((*branch)->currentTreeNode->leftSon != NULL)
     {
         CurrentTreeNode* leftSon = calloc(1, sizeof(CurrentTreeNode));
@@ -61,10 +68,7 @@ void deleteBranch(CurrentTreeNode** branch)
         rightSon->currentTreeNode = (*branch)->currentTreeNode->rightSon;
         deleteBranch(&rightSon);
     }
-    free((*branch)->currentTreeNode->value);
-    free((*branch)->currentTreeNode->leftSon);
-    free((*branch)->currentTreeNode->rightSon);
-    free((*branch)->currentTreeNode->parent);
+    free((*branch)->currentTreeNode);
     free(*branch);
 }
 
