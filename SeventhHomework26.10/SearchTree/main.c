@@ -25,6 +25,7 @@ void interactWithUser()
         switch (operation)
         {
             case 0:
+                deleteTree(&myTree);
                 return;
             case 1:
             {
