@@ -149,7 +149,7 @@ int mergeSorting(List** list, Priority priority)
         }
         else
         {
-            add(&buffer, &position, NULL, NULL);
+            addAfter(&buffer, &position, NULL, NULL);
             moveToNext(&position);
         }
     }

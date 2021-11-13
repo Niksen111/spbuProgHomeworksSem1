@@ -65,14 +65,15 @@ void deletePosition(Position* position)
     free(position);
 }
 
-void add(List** list, Position** position, char* name, char* phone)
+void addAfter(List** list, Position** position, char* name, char* phone)
 {
     ListElement* newElement = calloc(1, sizeof(ListElement));
     newElement->directory->name = name;
     newElement->directory->phoneNumber = phone;
-    if ((*position)->position == NULL)
+    if ((*list)->head == NULL)
     {
         (*list)->head = newElement;
+        (*position)->position = newElement;
         return;
     }
     newElement->next = (*position)->position->next;

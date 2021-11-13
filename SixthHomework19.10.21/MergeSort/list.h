@@ -30,7 +30,7 @@ void deleteList(List* list);
 void deletePosition(Position* position);
 
 // adds an item to the list
-void add(List** list, Position** position, char* name, char* phone);
+void addAfter(List** list, Position** position, char* name, char* phone);
 
 // returns a pointer to the first position of the list
 Position* first(List* list);
