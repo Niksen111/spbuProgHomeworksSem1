@@ -25,28 +25,6 @@ typedef struct Position
 } Position;
 
 
-int min(const int first, const int second)
-{
-    return first < second ? first : second;
-}
-
-bool isFirstEarlier(char* first, char* second)
-{
-    int lengthOfShorterString = min(strlen(first), strlen(second));
-    for (int i = 0; i < lengthOfShorterString; ++i)
-    {
-        if (first[i] < second[i])
-        {
-            return true;
-        }
-        if (first[i] > second[i])
-        {
-            return false;
-        }
-    }
-    return strlen(first) <= strlen(second);
-}
-
 void changePriorityValue(Position* position, char* newValue, Priority priority)
 {
     free(getPriorityValue(position, priority));
@@ -87,59 +65,51 @@ void deletePosition(Position* position)
     free(position);
 }
 
-void add(List* list, Position* position, char* name, char* phone)
+void add(List** list, Position** position, char* name, char* phone)
 {
     ListElement* newElement = calloc(1, sizeof(ListElement));
     newElement->directory->name = name;
     newElement->directory->phoneNumber = phone;
-    if (position->position == NULL)
+    if ((*position)->position == NULL)
     {
-        list->head = newElement;
+        (*list)->head = newElement;
         return;
     }
-    newElement->next = position->position->next;
-    position->position->next = newElement;
-}
-
-int lengthPartOfList(Position* start, Position* end)
-{
-    if (start == NULL)
-    {
-        return 0;
-    }
-    Position* position = calloc(1, sizeof(Position));
-    if (position == NULL)
-    {
-        return -1;
-    }
-    position->position = start->position;
-    int counter = 0;
-    while (position != end)
-    {
-        if (position == NULL)
-        {
-            free(position);
-            return -1;
-        }
-        ++counter;
-        position = next(position);
-    }
-    free(position);
-    return counter;
+    newElement->next = (*position)->position->next;
+    (*position)->position->next = newElement;
 }
 
 Position* first(List* list)
 {
-    Position* positionFirst = calloc(1, sizeof(Position));
+    Position* positionFirst = createPosition();
     positionFirst->position = list->head;
     return positionFirst;
 }
 
-Position* next(Position* position)
+Position* last(List* list)
+{
+    Position* positionLast = first(list);
+    while (!isLast(positionLast))
+    {
+        moveToNext(&positionLast);
+    }
+    return positionLast;
+}
+
+Position* getNext(Position* position)
 {
     Position* newPosition = calloc(1, sizeof(Position));
     newPosition->position = position->position->next;
     return newPosition;
+}
+
+void moveToNext(Position** position)
+{
+    if ((*position)->position == NULL)
+    {
+        return;
+    }
+    (*position)->position = (*position)->position->next;
 }
 
 bool isLast(Position* position)
@@ -147,9 +117,31 @@ bool isLast(Position* position)
     return position->position == NULL;
 }
 
+bool arePointersEqual(Position* position1, Position* position2)
+{
+    return position1->position == position2->position;
+}
+
+Position* copyPointer(Position* position)
+{
+    Position* newPosition = createPosition();
+    if (newPosition == NULL)
+    {
+        return NULL;
+    }
+    newPosition->position = position->position;
+    return newPosition;
+}
+
+void copyValues(Position** where, Position* from)
+{
+    (*where)->position->directory->name = from->position->directory->name;
+    (*where)->position->directory->phoneNumber = from->position->directory->phoneNumber;
+}
+
 ListElement* getListElement(Position* position)
 {
-
+    return position->position;
 }
 
 Directory* getDirectory(List* list, Position* position)

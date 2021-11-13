@@ -1,45 +1,166 @@
 #include "mergeSorting.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-List* mergeSorting(List* list, List* buffer, Position* leftBoarder,
+unsigned long min(unsigned long first, unsigned long second)
+{
+    return first < second ? first : second;
+}
+
+bool isFirstEarlier(const char* first, const char* second)
+{
+    const unsigned long lengthOfShorterString = min(strlen(first), strlen(second));
+    for (int i = 0; i < lengthOfShorterString; ++i)
+    {
+        if (first[i] < second[i])
+        {
+            return true;
+        }
+        if (first[i] > second[i])
+        {
+            return false;
+        }
+    }
+    return strlen(first) <= strlen(second);
+}
+
+int getLengthPartOfList(Position* start, Position* end)
+{
+    if (start == NULL)
+    {
+        return 0;
+    }
+    Position* position = copyPointer(start);
+    if (position == NULL)
+    {
+        return -1;
+    }
+    int counter = 0;
+    while (position != end)
+    {
+        if (position == NULL)
+        {
+            free(position);
+            return -1;
+        }
+        ++counter;
+        moveToNext(&position);
+    }
+    ++counter;
+    free(position);
+    return counter;
+}
+
+int getLengthOfList(List* list)
+{
+    Position* position = first(list);
+    int counter = 0;
+    while (!isLast(position))
+    {
+        ++counter;
+        moveToNext(&position);
+    }
+    ++counter;
+    free(position);
+    return counter;
+}
+
+
+int mergeSortingRecursive(List** list, List** buffer, Position* leftBoarder,
                    Position* rightBoarder, Priority priority)
 {
-    if (leftBoarder->position == rightBoarder->position)
+    if (arePointersEqual(leftBoarder, rightBoarder))
     {
-        return list;
-    }
-    if (leftBoarder->position->next == rightBoarder->position)
-    {
-        if (!isFirstEarlier(getPriorityValue(leftBoarder, priority) ,
-                            getPriorityValue(rightBoarder, priority)))
-        {
-            char* name1 = getPriorityValue(leftBoarder, name);
-            char* phone1 = getPriorityValue(leftBoarder, phone);
-            changePriorityValue(leftBoarder,
-                                getPriorityValue(rightBoarder, name),
-                                name);
-            changePriorityValue(leftBoarder,
-                                getPriorityValue(rightBoarder, phone),
-                                phone);
-            changePriorityValue(rightBoarder, name1,name);
-            changePriorityValue(rightBoarder, phone1,phone);
-        }
-        return list;
+        return -1;
     }
 
-    int lengthOfSegment = lengthPartOfList(leftBoarder, rightBoarder);
+    int lengthOfSegment = getLengthPartOfList(leftBoarder, rightBoarder);
     Position* newRightBoarder = createPosition();
-    Position* newLeftBoarder = createPosition();
-    if (newLeftBoarder == NULL || newRightBoarder == NULL)
+    if (newRightBoarder == NULL)
     {
-        free(newRightBoarder);
-        free(newLeftBoarder);
-        return NULL;
+        return -2;
     }
+    for (int i = 0; i < lengthOfSegment / 2 - 1; ++i)
+    {
+        moveToNext(&newRightBoarder);
+    }
+    Position* newLeftBoarder = copyPointer(getNext(newRightBoarder));
+    mergeSortingRecursive(list, buffer, leftBoarder, newRightBoarder, priority);
+    mergeSortingRecursive(list, buffer, newLeftBoarder, rightBoarder, priority);
+    Position* start1 = copyPointer(leftBoarder);
+    Position* start2 = copyPointer(newLeftBoarder);
+    Position* myBuffer = NULL;
+    while (!arePointersEqual(start1, newRightBoarder)
+        || !arePointersEqual(start2, rightBoarder))
+    {
+        if (myBuffer == NULL)
+        {
+            myBuffer = first(*buffer);
+        }
+        else
+        {
+            moveToNext(&myBuffer);
+        }
+        if (arePointersEqual(start1, newRightBoarder))
+        {
+            copyValues(&myBuffer, start2);
+            moveToNext(&start2);
+        }
+        else if (arePointersEqual(start2, rightBoarder))
+        {
+            copyValues(&myBuffer, start1);
+            moveToNext(&start1);
+        }
+        else if (isFirstEarlier(getPriorityValue(start1, priority),
+                getPriorityValue(start2, priority)))
+        {
+            copyValues(&myBuffer, start1);
+            moveToNext(&start1);
+        }
+        else
+        {
+            copyValues(&myBuffer, start2);
+            moveToNext(&start2);
+        }
+    }
+    free(newRightBoarder);
+    free(newLeftBoarder);
+    free(start1);
+    free(start2);
+    free(myBuffer);
+}
 
+int mergeSorting(List** list, Priority priority)
+{
+    int lengthOfList = getLengthOfList(*list);
+    List* buffer = createList();
+    Position* position = NULL;
+    for (int i = 0; i < lengthOfList - 1; ++i)
+    {
+        if (position == NULL)
+        {
+            position = first(buffer);
+            if (position == NULL)
+            {
+                deleteList(buffer);
+                return -1;
+            }
+        }
+        else
+        {
+            add(&buffer, &position, NULL, NULL);
+            moveToNext(&position);
+        }
+    }
+    free(position);
+    Position* leftBoarder = first(*list);
+    Position* rightBoarder = last(*list);
+    int errorCode = mergeSortingRecursive(list, &buffer, leftBoarder,
+            rightBoarder, priority);
+    free(leftBoarder);
+    free(rightBoarder);
+    deleteList(buffer);
 
-    mergeSorting(list, buffer, leftBoarder, newRightBoarder, priority);
-    mergeSorting(list, buffer, leftBoarder, newRightBoarder, priority);
-
+    return errorCode;
 }
