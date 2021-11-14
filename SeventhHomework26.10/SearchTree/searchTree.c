@@ -33,19 +33,41 @@ typedef enum Direction
     right
 } Direction;
 
-void attach(TreeNode* parent, TreeNode* child, Direction direction)
+void transfer(CurrentTreeNode* node, Direction directionOfSon)
 {
-    if (direction == left)
+    if (node->currentTreeNode->parent == NULL)
     {
-        parent->leftSon = child;
+        return;
+    }
+    if (directionOfSon == right)
+    {
+        node->currentTreeNode->rightSon->parent = node->currentTreeNode->parent;
     }
     else
     {
-        parent->rightSon = child;
+        node->currentTreeNode->leftSon->parent = node->currentTreeNode->parent;
     }
-    if (child != NULL)
+    if (node->currentTreeNode->parent->rightSon == node->currentTreeNode)
     {
-        child->parent = parent;
+        if (directionOfSon == right)
+        {
+            node->currentTreeNode->parent->rightSon = node->currentTreeNode->rightSon;
+            node->currentTreeNode->rightSon = NULL;
+            return;
+        }
+        node->currentTreeNode->parent->rightSon = node->currentTreeNode->leftSon;
+        node->currentTreeNode->leftSon = NULL;
+    }
+    else
+    {
+        if (directionOfSon == right)
+        {
+            node->currentTreeNode->parent->leftSon = node->currentTreeNode->rightSon;
+            node->currentTreeNode->rightSon = NULL;
+            return;
+        }
+        node->currentTreeNode->parent->leftSon = node->currentTreeNode->leftSon;
+        node->currentTreeNode->leftSon = NULL;
     }
 }
 
@@ -82,6 +104,7 @@ void deleteTree(TreeRoot** root)
     removablePart->currentTreeNode = (*root)->treeRoot;
     deleteBranch(&removablePart);
     free(*root);
+    (*root) = NULL;
 }
 
 void addTreeNode(TreeRoot** root, int key, char* value)
@@ -142,61 +165,36 @@ bool isLeftSon(CurrentTreeNode* currentTreeNode)
         == currentTreeNode->currentTreeNode;
 }
 
-char* removeTreeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
+void removeTreeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
 {
-    char* currentValue = (*retrievableNode)->currentTreeNode->value;
+    if ((*root)->treeRoot == NULL)
+    {
+        return;
+    }
     bool isRoot = (*retrievableNode)->currentTreeNode == (*root)->treeRoot;
     if ((*retrievableNode)->currentTreeNode->leftSon == NULL
         && (*retrievableNode)->currentTreeNode->rightSon == NULL)
     {
         deleteBranch(retrievableNode);
-        return currentValue;
+        if (isRoot)
+        {
+            deleteTree(root);
+        }
+        return ;
     }
     if ((*retrievableNode)->currentTreeNode->leftSon != NULL
         && (*retrievableNode)->currentTreeNode->rightSon == NULL)
     {
-        if (isLeftSon(*retrievableNode))
-        {
-            (*retrievableNode)->currentTreeNode->parent->leftSon =
-                    (*retrievableNode)->currentTreeNode->leftSon;
-            (*retrievableNode)->currentTreeNode->leftSon->parent =
-                    (*retrievableNode)->currentTreeNode->parent;
-            (*retrievableNode)->currentTreeNode->leftSon = NULL;
-            deleteBranch(retrievableNode);
-
-            return currentValue;
-        }
-        (*retrievableNode)->currentTreeNode->parent->rightSon =
-                (*retrievableNode)->currentTreeNode->leftSon;
-        (*retrievableNode)->currentTreeNode->rightSon->parent =
-                (*retrievableNode)->currentTreeNode->parent;
-        (*retrievableNode)->currentTreeNode->rightSon = NULL;
+        transfer((*retrievableNode), right);
         deleteBranch(retrievableNode);
-
-        return currentValue;
+        return;
     }
     if ((*retrievableNode)->currentTreeNode->leftSon == NULL
         && (*retrievableNode)->currentTreeNode->rightSon != NULL)
     {
-        if (isLeftSon(*retrievableNode))
-        {
-            (*retrievableNode)->currentTreeNode->parent->leftSon =
-                    (*retrievableNode)->currentTreeNode->rightSon;
-            (*retrievableNode)->currentTreeNode->rightSon->parent =
-                    (*retrievableNode)->currentTreeNode->parent;
-            (*retrievableNode)->currentTreeNode->rightSon = NULL;
-            deleteBranch(retrievableNode);
-
-            return currentValue;
-        }
-        (*retrievableNode)->currentTreeNode->parent->rightSon =
-                (*retrievableNode)->currentTreeNode->rightSon;
-        (*retrievableNode)->currentTreeNode->rightSon->parent =
-                (*retrievableNode)->currentTreeNode->parent;
-        (*retrievableNode)->currentTreeNode->rightSon = NULL;
+        transfer((*retrievableNode), left);
         deleteBranch(retrievableNode);
-
-        return currentValue;
+        return;
     }
     CurrentTreeNode* newNode = calloc(1, sizeof(CurrentTreeNode));
     newNode->currentTreeNode = (*retrievableNode)->currentTreeNode->leftSon;
@@ -207,14 +205,7 @@ char* removeTreeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
     (*retrievableNode)->currentTreeNode->key = newNode->currentTreeNode->key;
     (*retrievableNode)->currentTreeNode->value = newNode->currentTreeNode->value;
     newNode->currentTreeNode->parent->rightSon = newNode->currentTreeNode->leftSon;
-    if (newNode->currentTreeNode->leftSon != NULL)
-    {
-        newNode->currentTreeNode->leftSon = newNode->currentTreeNode->parent;
-    }
-    newNode->currentTreeNode->leftSon = NULL;
-    deleteBranch(&newNode);
-
-    return currentValue;
+    removeTreeNode(root, &newNode);
 }
 
 CurrentTreeNode* findNode(TreeRoot* root, int key)
@@ -278,8 +269,7 @@ bool isKeyInTree(TreeRoot* root, int key)
 
 void removeEntry(TreeRoot** root, int key)
 {
-
-    CurrentTreeNode* node = findNode(*root, key);
+    CurrentTreeNode* node = findNode((*root), key);
     if (node != NULL)
     {
         removeTreeNode(root, &node);
