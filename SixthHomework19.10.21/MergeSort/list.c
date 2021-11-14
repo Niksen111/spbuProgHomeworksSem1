@@ -78,11 +78,16 @@ void addAfter(List** list, Position** position, char* name, char* phone)
     }
     newElement->next = (*position)->position->next;
     (*position)->position->next = newElement;
+    moveToNext(position);
 }
 
 Position* first(List* list)
 {
     Position* positionFirst = createPosition();
+    if (positionFirst == NULL)
+    {
+        return NULL;
+    }
     positionFirst->position = list->head;
     return positionFirst;
 }
