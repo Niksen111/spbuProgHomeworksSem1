@@ -15,7 +15,7 @@ void deleteTree(TreeRoot** root);
 
 // adds a new node to the tree or replaces the value
 // if a node with this key exists
-void addTreeNode(TreeRoot* root, int key, char* value);
+void addTreeNode(TreeRoot** root, int key, char* value);
 
 // finds a value for a given key in the dictionary
 char* findValue(TreeRoot* root, int key);

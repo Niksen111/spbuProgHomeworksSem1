@@ -1,12 +1,11 @@
 #include "searchTreeTests.h"
 #include "searchTree.h"
-#include <stdlib.h>
 #include <string.h>
 
 bool testCreateTreeRoot()
 {
     TreeRoot* root = createTreeRoot();
-    bool result = root == NULL;
+    bool result = root != NULL;
     deleteTree(&root);
 
     return result;
@@ -18,9 +17,9 @@ bool testDeleteTree()
     char s1[10] = "Abcdef";
     char s2[15] = "SearchTreeeee";
     char s3[5] = "Elle";
-    addTreeNode(root, 2, s2);
-    addTreeNode(root, 1, s1);
-    addTreeNode(root, 3, s3);
+    addTreeNode(&root, 2, s2);
+    addTreeNode(&root, 1, s1);
+    addTreeNode(&root, 3, s3);
     deleteTree(&root);
 
     return root == NULL;
@@ -52,7 +51,7 @@ bool testFindValue()
     addTreeNode(root, 2, s2);
     addTreeNode(root, 1, s1);
     addTreeNode(root, 3, s3);
-    bool result = strcmp(findValue(root, 3), s3)
+    bool result = strcmp(findValue(root, 3), s3) == 0
             && findValue(root, 4) == NULL;
     deleteTree(&root);
 

@@ -45,7 +45,7 @@ void attach(TreeNode* parent, TreeNode* child, Direction direction)
     }
     if (child != NULL)
     {
-    child->parent = parent;
+        child->parent = parent;
     }
 }
 
@@ -74,22 +74,28 @@ void deleteBranch(CurrentTreeNode** branch)
 
 void deleteTree(TreeRoot** root)
 {
+    if ((*root) == NULL)
+    {
+        return;
+    }
     CurrentTreeNode* removablePart = calloc(1, sizeof(CurrentTreeNode));
     removablePart->currentTreeNode = (*root)->treeRoot;
     deleteBranch(&removablePart);
     free(*root);
 }
 
-void addTreeNode(TreeRoot* root, int key, char* value)
+void addTreeNode(TreeRoot** root, int key, char* value)
 {
-    if (root->treeRoot == NULL)
+    if ((*root)->treeRoot == NULL)
     {
-        root->treeRoot->key = key;
-        root->treeRoot->value = value;
+        TreeNode* newTreeNode = calloc(1, sizeof(TreeNode));
+        newTreeNode->key = key;
+        newTreeNode->value = value;
+        (*root)->treeRoot = newTreeNode;
         return;
     }
     CurrentTreeNode* node = calloc(1, sizeof(CurrentTreeNode));
-    node->currentTreeNode = root->treeRoot;
+    node->currentTreeNode = (*root)->treeRoot;
     while (true)
     {
         if (key == node->currentTreeNode->key)
@@ -107,6 +113,7 @@ void addTreeNode(TreeRoot* root, int key, char* value)
                 newNode->parent = node->currentTreeNode;
                 newNode->key = key;
                 newNode->value = value;
+                node->currentTreeNode->rightSon = newNode;
                 free(node);
                 return;
             }
@@ -120,6 +127,7 @@ void addTreeNode(TreeRoot* root, int key, char* value)
                 newNode->parent = node->currentTreeNode;
                 newNode->key = key;
                 newNode->value = value;
+                node->currentTreeNode->leftSon = newNode;
                 free(node);
                 return;
             }
