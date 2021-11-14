@@ -187,6 +187,10 @@ void removeTreeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
     {
         transfer((*retrievableNode), right);
         deleteBranch(retrievableNode);
+        if (isRoot)
+        {
+            deleteTree(root);
+        }
         return;
     }
     if ((*retrievableNode)->currentTreeNode->leftSon == NULL
@@ -194,6 +198,10 @@ void removeTreeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
     {
         transfer((*retrievableNode), left);
         deleteBranch(retrievableNode);
+        if (isRoot)
+        {
+            deleteTree(root);
+        }
         return;
     }
     CurrentTreeNode* newNode = calloc(1, sizeof(CurrentTreeNode));

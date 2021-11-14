@@ -89,7 +89,7 @@ bool testRemoveTheKey()
     addTreeNode(&root, 3, s4);
     addTreeNode(&root, 5, s5);
 
-    removeEntry(&root, 5);
+    removeEntry(&root, 3);
 
     return true;
 }
