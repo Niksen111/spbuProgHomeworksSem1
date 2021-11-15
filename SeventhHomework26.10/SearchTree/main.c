@@ -35,7 +35,7 @@ void interactWithUser()
                 scanf("%d", &key);
                 printf("Введите значение (не более 10000 символов)\n");
                 scanf("%s", value);
-                addTreeNode(myTree, key, value);
+                addTreeNode(&myTree, key, value);
                 break;
             }
             case 2:
