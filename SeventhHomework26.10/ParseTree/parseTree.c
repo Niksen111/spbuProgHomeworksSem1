@@ -186,8 +186,10 @@ void printTree(ParseTree* root)
         rightTree->root = root->root->rightSon;
         printTree(leftTree);
         printTree(rightTree);
+        printf(") ");
         free(leftTree);
         free(rightTree);
+        return;
     }
-    printf("%d ", (root->root->value));
+    printf("%c ", (root->root->value));
 }
