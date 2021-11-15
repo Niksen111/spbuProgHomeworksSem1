@@ -91,6 +91,25 @@ int add(ParseTree** tree, ParseTree* root, char value)
     return -2;
 }
 
+void deleteTree(ParseTree* root)
+{
+    if (root->root->leftSon != NULL)
+    {
+        ParseTree* leftSon = calloc(1, sizeof(ParseTree));
+        leftSon->root = root->root->leftSon;
+        deleteTree(leftSon);
+        free(leftSon);
+    }
+    if (root->root->rightSon != NULL)
+    {
+        ParseTree* rightSon = calloc(1, sizeof(ParseTree));
+        rightSon->root = root->root->rightSon;
+        deleteTree(rightSon);
+        free(rightSon);
+    }
+    free(root->root);
+}
+
 ParseTree* createTree(const char expression[], int *errorCode)
 {
     *errorCode = 0;
@@ -104,21 +123,27 @@ ParseTree* createTree(const char expression[], int *errorCode)
     if (currentNode == NULL)
     {
         *errorCode = -1;
+        free(root);
         return NULL;
     }
     const char operations[5] = { '+', '-', '*', '/' };
     const unsigned long lengthOfExpression = strlen(expression);
     for (unsigned long i = 0; i < lengthOfExpression; ++i)
     {
-        if (inLine(operations, expression[i]))
+        if (inLine(operations, expression[i]) || expression[i] >= '0' && expression[i] <= '9')
         {
             *errorCode = add(&currentNode, root, expression[i]);
             if (errorCode != 0)
             {
+                deleteTree(root);
+                free(root);
+                free(currentNode);
                 return NULL;
             }
         }
     }
+    free(currentNode);
+    return root;
 }
 
 int calculateValueOfTree(ParseTree* root)
