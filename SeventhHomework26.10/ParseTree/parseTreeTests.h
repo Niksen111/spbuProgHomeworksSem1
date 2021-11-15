@@ -1,8 +1,5 @@
-//
-// Created by niksen111 on 15.11.2021.
-//
+#pragma once
+#include <stdbool.h>
 
-#ifndef PARSETREE_PARSETREETESTS_H
-#define PARSETREE_PARSETREETESTS_H
-
-#endif //PARSETREE_PARSETREETESTS_H
+// tests all functions of the ParseTree
+bool testParseTree();

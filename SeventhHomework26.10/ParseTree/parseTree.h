@@ -1,5 +1,6 @@
 #pragma once
 
+// root of ParseTree
 typedef struct ParseTree ParseTree;
 
 // creates a parse tree by the expression
@@ -12,4 +13,4 @@ int calculateValueOfTree(ParseTree* root);
 void printTree(ParseTree* root);
 
 // removes the entire tree
-void deleteTree(ParseTree* root);
+void deleteTree(ParseTree** root);

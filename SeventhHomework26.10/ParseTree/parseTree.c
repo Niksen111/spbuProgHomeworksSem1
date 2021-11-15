@@ -63,8 +63,15 @@ int add(ParseTree** tree, ParseTree* root, char value)
     }
     bool isDigit = value >= '0' && value <= '9';
     newNode->value = value;
+    if ((*tree)->root == NULL)
+    {
+        root->root = newNode;
+        (*tree)->root = newNode;
+        return 0;
+    }
     if ((*tree)->root->leftSon == NULL)
     {
+        newNode->parent = (*tree)->root;
         (*tree)->root->leftSon = newNode;
         if (!isDigit)
         {
@@ -74,6 +81,7 @@ int add(ParseTree** tree, ParseTree* root, char value)
     }
     if ((*tree)->root->rightSon == NULL)
     {
+        newNode->parent = (*tree)->root;
         (*tree)->root->rightSon = newNode;
         if (!isDigit)
         {
@@ -91,23 +99,21 @@ int add(ParseTree** tree, ParseTree* root, char value)
     return -2;
 }
 
-void deleteTree(ParseTree* root)
+void deleteTreeRecursive(TreeNode* root)
 {
-    if (root->root->leftSon != NULL)
+    if (root == NULL)
     {
-        ParseTree* leftSon = calloc(1, sizeof(ParseTree));
-        leftSon->root = root->root->leftSon;
-        deleteTree(leftSon);
-        free(leftSon);
+        return;
     }
-    if (root->root->rightSon != NULL)
-    {
-        ParseTree* rightSon = calloc(1, sizeof(ParseTree));
-        rightSon->root = root->root->rightSon;
-        deleteTree(rightSon);
-        free(rightSon);
-    }
-    free(root->root);
+    deleteTreeRecursive(root->leftSon);
+    deleteTreeRecursive(root->rightSon);
+    free(root);
+}
+
+void deleteTree(ParseTree** root)
+{
+    deleteTreeRecursive((*root)->root);
+    *root = NULL;
 }
 
 ParseTree* createTree(const char expression[], int *errorCode)
@@ -133,9 +139,9 @@ ParseTree* createTree(const char expression[], int *errorCode)
         if (inLine(operations, expression[i]) || expression[i] >= '0' && expression[i] <= '9')
         {
             *errorCode = add(&currentNode, root, expression[i]);
-            if (errorCode != 0)
+            if (*errorCode != 0)
             {
-                deleteTree(root);
+                deleteTree(&root);
                 free(root);
                 free(currentNode);
                 return NULL;
@@ -166,8 +172,7 @@ int calculateValueOfTree(ParseTree* root)
         free(rightTree);
         return result;
     }
-    int result = (root->root->value) - '0';
-    return result;
+    return (root->root->value) - '0';
 }
 
 void printTree(ParseTree* root)
