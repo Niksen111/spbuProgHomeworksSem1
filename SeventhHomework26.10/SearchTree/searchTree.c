@@ -22,9 +22,7 @@ typedef struct CurrentTreeNode
 
 TreeRoot* createTreeRoot()
 {
-    TreeRoot* newRoot = calloc(1, sizeof(TreeRoot));
-    newRoot->treeRoot = NULL;
-    return newRoot;
+    return calloc(1, sizeof(TreeRoot));
 }
 
 typedef enum Direction
@@ -71,27 +69,25 @@ void transfer(CurrentTreeNode* node, Direction directionOfSon)
     }
 }
 
-void deleteBranch(CurrentTreeNode** branch)
+void deleteBranchRecursive(TreeNode* branch)
 {
-    if ((*branch)->currentTreeNode == NULL)
+    if (branch == NULL)
     {
-        free(*branch);
         return;
     }
-    if ((*branch)->currentTreeNode->leftSon != NULL)
+    deleteBranchRecursive(branch->leftSon);
+    deleteBranchRecursive(branch->rightSon);
+    free(branch);
+}
+
+void deleteBranch(CurrentTreeNode** root)
+{
+    if ((*root) == NULL)
     {
-        CurrentTreeNode* leftSon = calloc(1, sizeof(CurrentTreeNode));
-        leftSon->currentTreeNode = (*branch)->currentTreeNode->leftSon;
-        deleteBranch(&leftSon);
+        return;
     }
-    if ((*branch)->currentTreeNode->rightSon != NULL)
-    {
-        CurrentTreeNode* rightSon = calloc(1, sizeof(CurrentTreeNode));
-        rightSon->currentTreeNode = (*branch)->currentTreeNode->rightSon;
-        deleteBranch(&rightSon);
-    }
-    free((*branch)->currentTreeNode);
-    free(*branch);
+    deleteBranchRecursive((*root)->currentTreeNode);
+    (*root) = NULL;
 }
 
 void deleteTree(TreeRoot** root)
@@ -100,10 +96,7 @@ void deleteTree(TreeRoot** root)
     {
         return;
     }
-    CurrentTreeNode* removablePart = calloc(1, sizeof(CurrentTreeNode));
-    removablePart->currentTreeNode = (*root)->treeRoot;
-    deleteBranch(&removablePart);
-    free(*root);
+    deleteBranchRecursive((*root)->treeRoot);
     (*root) = NULL;
 }
 
