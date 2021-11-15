@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "parseTreeTests.h"
 #include "parseTree.h"
 
@@ -23,14 +24,26 @@ char* readLineFromFile(char name[])
     return line;
 }
 
+bool testReadLineFromFile()
+{
+    FILE* file1 = fopen("test1.txt", "w");
+    fprintf(file1, "Lol kek mmm \n sldfds");
+    fclose(file1);
+    char* line = NULL;
+    line = readLineFromFile("test1.txt");
+    char lineAnswer[15] = "Lol kek mmm \0";
+
+    return strcmp(line, lineAnswer) == 0;
+}
+
 int main()
 {
-    if (!testParseTree())
+    if (!testParseTree() || !testReadLineFromFile())
     {
         printf("Tests failed(\n");
         return -1;
     }
-    char* line = readLineFromFile("../file.txt\0");
+    char* line = readLineFromFile("file.txt\0");
     if (line == NULL)
     {
         return -2;
