@@ -210,6 +210,10 @@ void removeTreeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
 
 CurrentTreeNode* findNode(TreeRoot* root, int key)
 {
+    if (root->treeRoot == NULL)
+    {
+        return NULL;
+    }
     CurrentTreeNode* node = calloc(1, sizeof(CurrentTreeNode));
     if (node == NULL)
     {

@@ -31,12 +31,15 @@ bool testAddTreeNode()
     char s1[10] = "Abcdef";
     char s2[15] = "SearchTreeeee";
     char s3[5] = "Elle";
+    char s4[5] = "Mrs";
     addTreeNode(&root, 2, s2);
     addTreeNode(&root, 1, s1);
     bool result = findValue(root, 2) != NULL
             && findValue(root, 4) == NULL;
     addTreeNode(&root, 4, s3);
-    result = result && findValue(root, 4) != NULL;
+    addTreeNode(&root, 1, s4);
+    result = result && findValue(root, 4) != NULL
+            && strcmp(findValue(root, 1), s4) == 0;
     deleteTree(&root);
 
     return result;
@@ -88,10 +91,11 @@ bool testRemoveTheKey()
     addTreeNode(&root, 4, s3);
     addTreeNode(&root, 3, s4);
     addTreeNode(&root, 5, s5);
-
+    bool result = isKeyInTree(root, 3);
     removeEntry(&root, 3);
+    result = result && !isKeyInTree(root, 3);
 
-    return true;
+    return result;
 }
 
 bool testSearchTree()
