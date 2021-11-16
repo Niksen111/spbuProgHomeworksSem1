@@ -116,7 +116,6 @@ void addTreeNode(TreeRoot** root, int key, char* value)
     {
         if (key == node->currentTreeNode->key)
         {
-            free(node->currentTreeNode->value);
             node->currentTreeNode->value = value;
             free(node);
             return;
