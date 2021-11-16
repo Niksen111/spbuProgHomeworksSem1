@@ -32,9 +32,9 @@ void interactWithUser()
                 int key = 0;
                 char value[10010] = { 0 };
                 printf("Введите ключ\n");
-                scanf("%d", &key);
+                scanf("%d%*c", &key);
                 printf("Введите значение (не более 10000 символов)\n");
-                scanf("%s", value);
+                scanf("%[^\n]", value);
                 addTreeNode(&myTree, key, value);
                 break;
             }
