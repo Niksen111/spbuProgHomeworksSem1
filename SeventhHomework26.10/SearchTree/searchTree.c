@@ -164,6 +164,7 @@ void freeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
         free((*root)->treeRoot);
         (*root) = NULL;
         (*retrievableNode) = NULL;
+        return;
     }
     if ((*retrievableNode)->currentTreeNode->parent != NULL)
     {
@@ -231,7 +232,7 @@ void removeTreeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
 
 CurrentTreeNode* findNode(TreeRoot* root, int key)
 {
-    if (root->treeRoot == NULL)
+    if (root == NULL || root->treeRoot == NULL)
     {
         return NULL;
     }
