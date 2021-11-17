@@ -80,14 +80,14 @@ void deleteBranchRecursive(TreeNode* branch)
     free(branch);
 }
 
-void deleteBranch(CurrentTreeNode** root)
+void deleteBranch(CurrentTreeNode** branch)
 {
-    if ((*root) == NULL)
+    if ((*branch) == NULL)
     {
         return;
     }
-    deleteBranchRecursive((*root)->currentTreeNode);
-    (*root) = NULL;
+    deleteBranchRecursive((*branch)->currentTreeNode);
+    (*branch) = NULL;
 }
 
 void deleteTree(TreeRoot** root)
@@ -157,6 +157,28 @@ bool isLeftSon(CurrentTreeNode* currentTreeNode)
         == currentTreeNode->currentTreeNode;
 }
 
+void freeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
+{
+    if ((*root)->treeRoot == (*retrievableNode)->currentTreeNode)
+    {
+        free((*root)->treeRoot);
+        (*root) = NULL;
+        (*retrievableNode) = NULL;
+    }
+    if ((*retrievableNode)->currentTreeNode->parent != NULL)
+    {
+        if ((*retrievableNode)->currentTreeNode->parent->rightSon == (*retrievableNode)->currentTreeNode)
+        {
+            (*retrievableNode)->currentTreeNode->parent->rightSon = NULL;
+            free((*retrievableNode)->currentTreeNode);
+            return;
+        }
+        (*retrievableNode)->currentTreeNode->parent->leftSon = NULL;
+        free((*retrievableNode)->currentTreeNode);
+    }
+}
+
+
 void removeTreeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
 {
     if ((*root)->treeRoot == NULL)
@@ -167,7 +189,7 @@ void removeTreeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
     if ((*retrievableNode)->currentTreeNode->leftSon == NULL
         && (*retrievableNode)->currentTreeNode->rightSon == NULL)
     {
-        deleteBranch(retrievableNode);
+        freeNode(root, retrievableNode);
         if (isRoot)
         {
             deleteTree(root);
@@ -177,8 +199,7 @@ void removeTreeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
     if ((*retrievableNode)->currentTreeNode->leftSon != NULL
         && (*retrievableNode)->currentTreeNode->rightSon == NULL)
     {
-        transfer((*retrievableNode), right);
-        deleteBranch(retrievableNode);
+        freeNode(root, retrievableNode);
         if (isRoot)
         {
             deleteTree(root);
@@ -189,7 +210,7 @@ void removeTreeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
         && (*retrievableNode)->currentTreeNode->rightSon != NULL)
     {
         transfer((*retrievableNode), left);
-        deleteBranch(retrievableNode);
+        freeNode(root, retrievableNode);
         if (isRoot)
         {
             deleteTree(root);

@@ -94,6 +94,7 @@ bool testRemoveTheKey()
     bool result = isKeyInTree(root, 3);
     removeEntry(&root, 3);
     result = result && !isKeyInTree(root, 3);
+    deleteTree(&root);
 
     return result;
 }
