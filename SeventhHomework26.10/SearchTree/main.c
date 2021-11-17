@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "searchTreeTests.h"
 #include "searchTree.h"
 
@@ -30,7 +31,7 @@ void interactWithUser()
             case 1:
             {
                 int key = 0;
-                char value[10010] = { 0 };
+                char* value = calloc(10010, sizeof(char));
                 printf("Введите ключ\n");
                 scanf("%d%*c", &key);
                 printf("Введите значение (не более 10000 символов)\n");
