@@ -1,28 +1,31 @@
 #include "avlTree.h"
 #include <stdlib.h>
+#define max(a,b) (((a) > (b)) ? (a) : (b))
 
 typedef struct TreeNode
 {
     int key;
     char* value;
+    int heightDifference;
+    int height;
     TreeNode* parent;
     TreeNode* leftSon;
     TreeNode* rightSon;
 } TreeNode;
 
-typedef struct TreeRoot
+typedef struct AVLTreeRoot
 {
-    TreeNode* treeRoot;
-} TreeRoot;
+    TreeNode* AVLTreeRoot;
+} AVLTreeRoot;
 
 typedef struct CurrentTreeNode
 {
     TreeNode* currentTreeNode;
 } CurrentTreeNode;
 
-TreeRoot* createTreeRoot()
+AVLTreeRoot* createAVLTreeRoot()
 {
-    return calloc(1, sizeof(TreeRoot));
+    return calloc(1, sizeof(AVLTreeRoot));
 }
 
 typedef enum Direction
@@ -30,6 +33,43 @@ typedef enum Direction
     left,
     right
 } Direction;
+
+int calculateNodeHigh(TreeNode* node)
+{
+    if (node->rightSon == NULL && node->leftSon == NULL)
+    {
+        return 0;
+    }
+    if (node->rightSon == NULL)
+    {
+        return node->leftSon->heightDifference;
+    }
+    if (node->leftSon == NULL)
+    {
+        return node->rightSon->heightDifference;
+    }
+    return max(node->leftSon->height, node->rightSon->height);
+}
+
+void recalculateHeightsRecursive(TreeNode* node)
+{
+    if (node == NULL)
+    {
+        return;
+    }
+    recalculateHeightsRecursive(node->leftSon);
+    recalculateHeightsRecursive(node->rightSon);
+    node->height = calculateNodeHigh(node);
+}
+
+void recalculateHeights(AVLTreeRoot* root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+    recalculateHeightsRecursive(root->AVLTreeRoot);
+}
 
 void transfer(CurrentTreeNode* node, Direction directionOfSon)
 {
@@ -90,28 +130,28 @@ void deleteBranch(CurrentTreeNode** branch)
     (*branch) = NULL;
 }
 
-void deleteTree(TreeRoot** root)
+void deleteTree(AVLTreeRoot** root)
 {
     if ((*root) == NULL)
     {
         return;
     }
-    deleteBranchRecursive((*root)->treeRoot);
+    deleteBranchRecursive((*root)->AVLTreeRoot);
     (*root) = NULL;
 }
 
-void addTreeNode(TreeRoot** root, int key, char* value)
+void addTreeNode(AVLTreeRoot** root, int key, char* value)
 {
-    if ((*root)->treeRoot == NULL)
+    if ((*root)->AVLTreeRoot == NULL)
     {
         TreeNode* newTreeNode = calloc(1, sizeof(TreeNode));
         newTreeNode->key = key;
         newTreeNode->value = value;
-        (*root)->treeRoot = newTreeNode;
+        (*root)->AVLTreeRoot = newTreeNode;
         return;
     }
     CurrentTreeNode* node = calloc(1, sizeof(CurrentTreeNode));
-    node->currentTreeNode = (*root)->treeRoot;
+    node->currentTreeNode = (*root)->AVLTreeRoot;
     while (true)
     {
         if (key == node->currentTreeNode->key)
@@ -157,11 +197,11 @@ bool isLeftSon(CurrentTreeNode* currentTreeNode)
             == currentTreeNode->currentTreeNode;
 }
 
-void freeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
+void freeNode(AVLTreeRoot** root, CurrentTreeNode** retrievableNode)
 {
-    if ((*root)->treeRoot == (*retrievableNode)->currentTreeNode)
+    if ((*root)->AVLTreeRoot == (*retrievableNode)->currentTreeNode)
     {
-        free((*root)->treeRoot);
+        free((*root)->AVLTreeRoot);
         (*root) = NULL;
         (*retrievableNode) = NULL;
         return;
@@ -179,27 +219,199 @@ void freeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
     }
 }
 
-
-void removeTreeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
+void smallLeftRotation(AVLTreeRoot* root, CurrentTreeNode* node)
 {
-    if ((*root)->treeRoot == NULL)
+    if (root->AVLTreeRoot == node->currentTreeNode)
+    {
+        root->AVLTreeRoot = node->currentTreeNode->rightSon;
+    }
+    if (node->currentTreeNode->parent != NULL)
+    {
+        if (node->currentTreeNode->parent->rightSon == node->currentTreeNode)
+        {
+            node->currentTreeNode->parent->rightSon = node->currentTreeNode->rightSon;
+        }
+        else
+        {
+            node->currentTreeNode->parent->leftSon = node->currentTreeNode->rightSon;
+        }
+        node->currentTreeNode->rightSon->parent = node->currentTreeNode->parent;
+    }
+    else
+    {
+        node->currentTreeNode->rightSon->parent = NULL;
+    }
+    node->currentTreeNode->rightSon->leftSon->parent = node->currentTreeNode;
+    node->currentTreeNode->parent = node->currentTreeNode->rightSon;
+    node->currentTreeNode->rightSon = node->currentTreeNode->rightSon->leftSon;
+    node->currentTreeNode->parent->leftSon = node->currentTreeNode;
+}
+
+void smallRightRotation(AVLTreeRoot* root, CurrentTreeNode* node)
+{
+    if (root->AVLTreeRoot == node->currentTreeNode)
+    {
+        root->AVLTreeRoot = node->currentTreeNode->leftSon;
+    }
+    if (node->currentTreeNode->parent != NULL)
+    {
+        if (node->currentTreeNode->parent->rightSon == node->currentTreeNode)
+        {
+            node->currentTreeNode->parent->rightSon = node->currentTreeNode->leftSon;
+        }
+        else
+        {
+            node->currentTreeNode->parent->leftSon = node->currentTreeNode->leftSon;
+        }
+        node->currentTreeNode->leftSon->parent = node->currentTreeNode->parent;
+    }
+    else
+    {
+        node->currentTreeNode->leftSon->parent = NULL;
+    }
+    node->currentTreeNode->leftSon->rightSon->parent = node->currentTreeNode;
+    node->currentTreeNode->parent = node->currentTreeNode->leftSon;
+    node->currentTreeNode->leftSon = node->currentTreeNode->leftSon->rightSon;
+    node->currentTreeNode->parent->rightSon = node->currentTreeNode;
+}
+
+void bigLeftRotation(AVLTreeRoot* root, CurrentTreeNode* node)
+{
+    if (root->AVLTreeRoot == node->currentTreeNode)
+    {
+        root->AVLTreeRoot = node->currentTreeNode->rightSon->leftSon;
+    }
+    if (node->currentTreeNode->parent != NULL)
+    {
+        if (node->currentTreeNode->parent->rightSon == node->currentTreeNode)
+        {
+            node->currentTreeNode->parent->rightSon = node->currentTreeNode->rightSon->leftSon;
+        }
+        else
+        {
+            node->currentTreeNode->parent->leftSon = node->currentTreeNode->rightSon->leftSon;
+        }
+        node->currentTreeNode->rightSon->leftSon->parent = node->currentTreeNode->parent;
+    }
+    else
+    {
+        node->currentTreeNode->rightSon->leftSon->parent = NULL;
+    }
+    node->currentTreeNode->rightSon->leftSon->leftSon->parent = node->currentTreeNode;
+    node->currentTreeNode->rightSon->leftSon->rightSon->parent = node->currentTreeNode->rightSon;
+    node->currentTreeNode->parent = node->currentTreeNode->rightSon->leftSon;
+    node->currentTreeNode->rightSon->leftSon = node->currentTreeNode->rightSon->leftSon->rightSon;
+    node->currentTreeNode->rightSon->parent = node->currentTreeNode->rightSon->leftSon;
+    node->currentTreeNode->parent->rightSon = node->currentTreeNode->rightSon;
+    node->currentTreeNode->rightSon = node->currentTreeNode->parent->leftSon;
+    node->currentTreeNode->parent->leftSon = node->currentTreeNode;
+}
+
+void bigRightRotation(AVLTreeRoot* root, CurrentTreeNode* node)
+{
+    if (root->AVLTreeRoot == node->currentTreeNode)
+    {
+        root->AVLTreeRoot = node->currentTreeNode->leftSon->rightSon;
+    }
+    if (node->currentTreeNode->parent != NULL)
+    {
+        if (node->currentTreeNode->parent->rightSon == node->currentTreeNode)
+        {
+            node->currentTreeNode->parent->rightSon = node->currentTreeNode->leftSon->rightSon;
+        }
+        else
+        {
+            node->currentTreeNode->parent->leftSon = node->currentTreeNode->leftSon->rightSon;
+        }
+        node->currentTreeNode->leftSon->rightSon->parent = node->currentTreeNode->parent;
+    }
+    else
+    {
+        node->currentTreeNode->leftSon->rightSon->parent = NULL;
+    }
+    node->currentTreeNode->leftSon->rightSon->rightSon->parent = node->currentTreeNode;
+    node->currentTreeNode->leftSon->rightSon->leftSon->parent = node->currentTreeNode->leftSon;
+    node->currentTreeNode->parent = node->currentTreeNode->leftSon->rightSon;
+    node->currentTreeNode->leftSon->rightSon = node->currentTreeNode->leftSon->rightSon->leftSon;
+    node->currentTreeNode->leftSon->parent = node->currentTreeNode->leftSon->rightSon;
+    node->currentTreeNode->parent->leftSon = node->currentTreeNode->leftSon;
+    node->currentTreeNode->leftSon = node->currentTreeNode->parent->rightSon;
+    node->currentTreeNode->parent->rightSon = node->currentTreeNode;
+}
+
+void rebalanceNode(AVLTreeRoot* root, CurrentTreeNode* node)
+{
+    if (node->currentTreeNode->heightDifference < 0)
+    {
+        if (node->currentTreeNode->leftSon->heightDifference < 0)
+        {
+            smallRightRotation(root, node);
+            return;
+        }
+        bigRightRotation(root, node);
+        return;
+    }
+    if (node->currentTreeNode->leftSon->heightDifference)
+    {
+        smallLeftRotation(root, node);
+        return;
+    }
+    bigLeftRotation(root, node);
+}
+
+void rebalanceTree(AVLTreeRoot* root, CurrentTreeNode* node)
+{
+    if (abs(node->currentTreeNode->heightDifference) > 1)
+    {
+        rebalanceNode(root, node);
+        recalculateHeights(root);
+        return;
+    }
+    if (node->currentTreeNode->parent != NULL)
+    {
+        node->currentTreeNode = node->currentTreeNode->parent;
+        rebalanceTree(root, node);
+    }
+}
+
+void removeTreeNode(AVLTreeRoot** root, CurrentTreeNode** retrievableNode)
+{
+    if ((*root)->AVLTreeRoot == NULL)
     {
         return;
     }
-    bool isRoot = (*retrievableNode)->currentTreeNode == (*root)->treeRoot;
+    bool isRoot = (*retrievableNode)->currentTreeNode == (*root)->AVLTreeRoot;
     if ((*retrievableNode)->currentTreeNode->leftSon == NULL
             && (*retrievableNode)->currentTreeNode->rightSon == NULL)
     {
+        if ((*retrievableNode)->currentTreeNode->parent != NULL)
+        {
+            CurrentTreeNode* balanceNode = calloc(1, sizeof(CurrentTreeNode));
+            balanceNode->currentTreeNode = (*retrievableNode)->currentTreeNode->parent;
+            freeNode(root, retrievableNode);
+            recalculateHeights(*root);
+            rebalanceTree(*root, balanceNode);
+            return;
+        }
         freeNode(root, retrievableNode);
         if (isRoot)
         {
             deleteTree(root);
         }
-        return ;
+        return;
     }
     if ((*retrievableNode)->currentTreeNode->leftSon != NULL
             && (*retrievableNode)->currentTreeNode->rightSon == NULL)
     {
+        if ((*retrievableNode)->currentTreeNode->parent != NULL)
+        {
+            CurrentTreeNode* balanceNode = calloc(1, sizeof(CurrentTreeNode));
+            balanceNode->currentTreeNode = (*retrievableNode)->currentTreeNode->parent;
+            freeNode(root, retrievableNode);
+            recalculateHeights(*root);
+            rebalanceTree(*root, balanceNode);
+            return;
+        }
         freeNode(root, retrievableNode);
         if (isRoot)
         {
@@ -230,9 +442,9 @@ void removeTreeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
     removeTreeNode(root, &newNode);
 }
 
-CurrentTreeNode* findNode(TreeRoot* root, int key)
+CurrentTreeNode* findNode(AVLTreeRoot* root, int key)
 {
-    if (root == NULL || root->treeRoot == NULL)
+    if (root == NULL || root->AVLTreeRoot == NULL)
     {
         return NULL;
     }
@@ -241,7 +453,7 @@ CurrentTreeNode* findNode(TreeRoot* root, int key)
     {
         return NULL;
     }
-    node->currentTreeNode = root->treeRoot;
+    node->currentTreeNode = root->AVLTreeRoot;
     while (true)
     {
         if (key == node->currentTreeNode->key)
@@ -269,7 +481,7 @@ CurrentTreeNode* findNode(TreeRoot* root, int key)
     }
 }
 
-char* findValue(TreeRoot* root, int key)
+char* findValue(AVLTreeRoot* root, int key)
 {
     CurrentTreeNode* node = findNode(root, key);
     if (node == NULL)
@@ -282,7 +494,7 @@ char* findValue(TreeRoot* root, int key)
     return value;
 }
 
-bool isKeyInTree(TreeRoot* root, int key)
+bool isKeyInTree(AVLTreeRoot* root, int key)
 {
     CurrentTreeNode* node = findNode(root, key);
     if (node != NULL)
@@ -293,7 +505,7 @@ bool isKeyInTree(TreeRoot* root, int key)
     return false;
 }
 
-void removeEntry(TreeRoot** root, int key)
+void removeEntry(AVLTreeRoot** root, int key)
 {
     CurrentTreeNode* node = findNode((*root), key);
     if (node != NULL)

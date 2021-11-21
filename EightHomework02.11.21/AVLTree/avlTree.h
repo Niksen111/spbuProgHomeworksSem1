@@ -5,23 +5,23 @@
 typedef struct TreeNode TreeNode;
 
 // root of tree
-typedef struct TreeRoot TreeRoot;
+typedef struct AVLTreeRoot AVLTreeRoot;
 
-// create empty TreeRoot
-TreeRoot* createTreeRoot();
+// create empty AVLTreeRoot
+AVLTreeRoot* createAVLTreeRoot();
 
 // removes the entire Tree
-void deleteTree(TreeRoot** root);
+void deleteTree(AVLTreeRoot** root);
 
 // adds a new node to the tree or replaces the value
 // if a node with this key exists
-void addTreeNode(TreeRoot** root, int key, char* value);
+void addTreeNode(AVLTreeRoot** root, int key, char* value);
 
 // finds a value for a given key in the dictionary
-char* findValue(TreeRoot* root, int key);
+char* findValue(AVLTreeRoot* root, int key);
 
 // checks if the given key is in the dictionary
-bool isKeyInTree(TreeRoot* root, int key);
+bool isKeyInTree(AVLTreeRoot* root, int key);
 
 // Deletes the given key and its associated value from the dictionary
-void removeEntry(TreeRoot** root, int key);
+void removeEntry(AVLTreeRoot** root, int key);
