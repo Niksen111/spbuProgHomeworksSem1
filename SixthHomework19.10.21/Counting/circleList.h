@@ -5,34 +5,34 @@
 typedef int Value;
 
 // CircleList structure
-typedef struct CircleList CircleList;
+typedef struct CircleListRoot CircleListRoot;
 
 // created an empty CircleList
-CircleList* createCircleList();
+CircleListRoot* createCircleList();
 
 // checks if the CircleList is empty
-bool circleListIsEmpty(CircleList** currentPosition);
+bool circleListIsEmpty(CircleListRoot* root);
 
 // adds an element after the current to the CircleList
-int push(CircleList** currentPosition, Value value);
+int push(CircleListRoot** root, Value value);
 
 // Moves the pointer to the next element
-void switchToNext(CircleList** currentPosition);
+void switchRootToNext(CircleListRoot** root);
 
 // moves the pointer to n elements
-void switchToN(CircleList** currentPosition, int n);
+void moveNPositionsForward(CircleListRoot** root, int n);
 
 // removes the current element and moves the pointer to the next
-int popNext(CircleList** currentPosition, int* errorCode);
+int popNext(CircleListRoot** root, int* errorCode);
 
 // removes the entire CircleList
-void deleteCircleList(CircleList** currentPosition);
+void deleteCircleList(CircleListRoot** root);
 
 // gets value from current position of CircleList
-Value getCurrentPositionValue(CircleList* currentPosition, int *errorCode);
+Value getCurrentPositionValue(CircleListRoot* root, int *errorCode);
 
 // gets next position
-CircleList* getNext(CircleList* currentPosition, int* errorCode);
+CircleListRoot* getNext(CircleListRoot* root, int* errorCode);
 
 // prints the entire CircleList
-void printCircleList(CircleList** currentPosition);
+void printCircleList(CircleListRoot* root);

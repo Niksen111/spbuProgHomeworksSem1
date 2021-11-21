@@ -4,7 +4,7 @@
 
 int giveNumberOfSurvivor(int numberOfWarriors, int killIndex)
 {
-    CircleList* myList = createCircleList();
+    CircleListRoot* myList = createCircleList();
     for (int i = 0; i < numberOfWarriors; ++i)
     {
         push(&myList, i);
@@ -12,9 +12,12 @@ int giveNumberOfSurvivor(int numberOfWarriors, int killIndex)
     int errorCode1 = 0;
     while (myList != getNext(myList, &errorCode1) && errorCode1 == 0)
     {
-        int n = killIndex % numberOfWarriors + killIndex *
-                (killIndex % numberOfWarriors == 0) - 1;
-        switchToN(&myList, n);
+        int n = killIndex % numberOfWarriors - 1;
+        if (n < 0)
+        {
+            n += killIndex;
+        }
+        moveNPositionsForward(&myList, n);
         int errorCode = 0;
         popNext(&myList, &errorCode);
         --numberOfWarriors;
@@ -42,7 +45,7 @@ int main()
     int killIndex = 0;
     printf("Enter n and m:\n");
     scanf("%d %d", &numberOfWarriors, &killIndex);
-    int indexOfSurvivor = giveNumberOfSurvivor(numberOfWarriors, killIndex);
+    const int indexOfSurvivor = giveNumberOfSurvivor(numberOfWarriors, killIndex);
     printf("Index of survivor equals %d", indexOfSurvivor);
     return 0;
 }

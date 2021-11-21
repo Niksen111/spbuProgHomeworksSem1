@@ -2,25 +2,25 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef struct CircleList
+typedef struct CircleListRoot
 {
     Value value;
-    struct CircleList* next;
+    struct CircleListRoot* next;
 } CircleList;
 
-CircleList* createCircleList()
+CircleListRoot* createCircleList()
 {
     return NULL;
 }
 
-bool circleListIsEmpty(CircleList** currentPosition)
+bool circleListIsEmpty(CircleListRoot* currentPosition)
 {
-    return *currentPosition == NULL;
+    return currentPosition == NULL;
 }
 
-int push(CircleList** currentPosition, Value value)
+int push(CircleListRoot** currentPosition, Value value)
 {
-    CircleList* newElement = calloc(1, sizeof(CircleList));
+    CircleListRoot* newElement = calloc(1, sizeof(CircleList));
     if (newElement == NULL)
     {
         return -1;
@@ -38,49 +38,49 @@ int push(CircleList** currentPosition, Value value)
     return 0;
 }
 
-void switchToNext(CircleList** currentPosition)
+void switchRootToNext(CircleListRoot** currentPosition)
 {
     *currentPosition = (*currentPosition)->next;
 }
 
-void switchToN(CircleList** currentPosition, int n)
+void moveNPositionsForward(CircleListRoot** currentPosition, int n)
 {
     for (int i = 0; i < n; ++i)
     {
-        switchToNext(currentPosition);
+        switchRootToNext(currentPosition);
     }
 }
 
-int popNext(CircleList** currentPosition, int* errorCode)
+int popNext(CircleListRoot** currentPosition, int* errorCode)
 {
     if ((*currentPosition) == NULL)
     {
         *errorCode = -1;
         return 0;
     }
-    Value returnedValue = ((*currentPosition)->next->value);
-    if ((*currentPosition) == (*currentPosition)->next)
+    Value returnedValue = (*currentPosition)->next->value;
+    if (*currentPosition == (*currentPosition)->next)
     {
         free(*currentPosition);
         *currentPosition = NULL;
         return returnedValue;
     }
-    CircleList* deletedPosition = (*currentPosition)->next;
+    CircleListRoot* deletedPosition = (*currentPosition)->next;
     (*currentPosition)->next = (*currentPosition)->next->next;
     free(deletedPosition);
     return returnedValue;
 }
 
-void deleteCircleList(CircleList** currentPosition)
+void deleteCircleList(CircleListRoot** currentPosition)
 {
-    while (!circleListIsEmpty(currentPosition))
+    while (!circleListIsEmpty(*currentPosition))
     {
         int errorCode = 0;
         popNext(currentPosition, &errorCode);
     }
 }
 
-Value getCurrentPositionValue(CircleList* currentPosition, int *errorCode)
+Value getCurrentPositionValue(CircleListRoot* currentPosition, int *errorCode)
 {
     *errorCode = 0;
     if (currentPosition == NULL)
@@ -91,7 +91,7 @@ Value getCurrentPositionValue(CircleList* currentPosition, int *errorCode)
     return currentPosition->value;
 }
 
-CircleList* getNext(CircleList* currentPosition, int* errorCode)
+CircleListRoot* getNext(CircleListRoot* currentPosition, int* errorCode)
 {
     *errorCode = 0;
     if (currentPosition == NULL)
@@ -102,13 +102,13 @@ CircleList* getNext(CircleList* currentPosition, int* errorCode)
     return currentPosition->next;
 }
 
-void printCircleList(CircleList** currentPosition)
+void printCircleList(CircleListRoot* currentPosition)
 {
-    CircleList* list = (*currentPosition)->next;
-    while (list != *currentPosition)
+    CircleListRoot* list = currentPosition->next;
+    while (list != currentPosition)
     {
         printf("%d ", list->value);
-        switchToNext(&list);
+        switchRootToNext(&list);
     }
-    printf("%d\n", ((*currentPosition)->value));
+    printf("%d\n", currentPosition->value);
 }
