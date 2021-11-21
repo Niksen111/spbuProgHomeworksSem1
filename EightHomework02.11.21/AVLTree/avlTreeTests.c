@@ -32,10 +32,12 @@ bool testAddTreeNode()
     char s2[15] = "SearchTreeeee";
     char s3[5] = "Elle";
     char s4[5] = "Mrs";
+    char s5[9] = "Ella";
     addTreeNode(&root, 2, s2);
-    addTreeNode(&root, 1, s1);
+    //addTreeNode(&root, 1, s1);
     bool result = findValue(root, 2) != NULL
             && findValue(root, 4) == NULL;
+    addTreeNode(&root, 3, s5);
     addTreeNode(&root, 4, s3);
     addTreeNode(&root, 1, s4);
     result = result && findValue(root, 4) != NULL

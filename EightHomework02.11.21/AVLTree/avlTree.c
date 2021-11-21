@@ -207,18 +207,31 @@ void bigRightRotation(AVLTreeRoot* root, CurrentTreeNode* node)
 
 void rebalanceNode(AVLTreeRoot* root, CurrentTreeNode* node)
 {
-    if (node->currentTreeNode->heightDifference < 0)
+    if (node->currentTreeNode->heightDifference == 0)
     {
-        if (node->currentTreeNode->leftSon->heightDifference < 0)
+        return;
+    }
+    if (node->currentTreeNode->heightDifference > 0)
+    {
+        if (node->currentTreeNode->rightSon->heightDifference > 0)
         {
+            if (node->currentTreeNode->rightSon->leftSon == NULL)
+            {
+
+                return;
+            }
             smallRightRotation(root, node);
             return;
         }
         bigRightRotation(root, node);
         return;
     }
-    if (node->currentTreeNode->leftSon->heightDifference)
+    if (node->currentTreeNode->leftSon->heightDifference < 0)
     {
+        if (node->currentTreeNode->leftSon->rightSon == NULL)
+        {
+            return;
+        }
         smallLeftRotation(root, node);
         return;
     }
