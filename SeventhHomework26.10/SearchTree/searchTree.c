@@ -200,6 +200,7 @@ void removeTreeNode(TreeRoot** root, CurrentTreeNode** retrievableNode)
     if ((*retrievableNode)->currentTreeNode->leftSon != NULL
         && (*retrievableNode)->currentTreeNode->rightSon == NULL)
     {
+        transfer((*retrievableNode), right);
         freeNode(root, retrievableNode);
         if (isRoot)
         {
