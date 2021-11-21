@@ -42,13 +42,13 @@ int calculateNodeHigh(TreeNode* node)
     }
     if (node->rightSon == NULL)
     {
-        return node->leftSon->heightDifference;
+        return node->leftSon->height + 1;
     }
     if (node->leftSon == NULL)
     {
-        return node->rightSon->heightDifference;
+        return node->rightSon->height + 1;
     }
-    return max(node->leftSon->height, node->rightSon->height);
+    return max(node->leftSon->height, node->rightSon->height) + 1;
 }
 
 void recalculateHeightsRecursive(TreeNode* node)
@@ -60,6 +60,20 @@ void recalculateHeightsRecursive(TreeNode* node)
     recalculateHeightsRecursive(node->leftSon);
     recalculateHeightsRecursive(node->rightSon);
     node->height = calculateNodeHigh(node);
+    if (node->rightSon != NULL && node->leftSon != NULL)
+    {
+        node->heightDifference = node->rightSon->height - node->leftSon->height;
+        return;
+    }
+    if (node->rightSon != NULL)
+    {
+        node->heightDifference = node->rightSon->height + 1;
+        return;
+    }
+    if (node->leftSon != NULL)
+    {
+        node->heightDifference = -node->leftSon->height + 1;
+    }
 }
 
 void recalculateHeights(AVLTreeRoot* root)
@@ -69,154 +83,6 @@ void recalculateHeights(AVLTreeRoot* root)
         return;
     }
     recalculateHeightsRecursive(root->AVLTreeRoot);
-}
-
-void transfer(CurrentTreeNode* node, Direction directionOfSon)
-{
-    if (node->currentTreeNode->parent == NULL)
-    {
-        return;
-    }
-    if (directionOfSon == right)
-    {
-        node->currentTreeNode->rightSon->parent = node->currentTreeNode->parent;
-    }
-    else
-    {
-        node->currentTreeNode->leftSon->parent = node->currentTreeNode->parent;
-    }
-    if (node->currentTreeNode->parent->rightSon == node->currentTreeNode)
-    {
-        if (directionOfSon == right)
-        {
-            node->currentTreeNode->parent->rightSon = node->currentTreeNode->rightSon;
-            node->currentTreeNode->rightSon = NULL;
-            return;
-        }
-        node->currentTreeNode->parent->rightSon = node->currentTreeNode->leftSon;
-        node->currentTreeNode->leftSon = NULL;
-    }
-    else
-    {
-        if (directionOfSon == right)
-        {
-            node->currentTreeNode->parent->leftSon = node->currentTreeNode->rightSon;
-            node->currentTreeNode->rightSon = NULL;
-            return;
-        }
-        node->currentTreeNode->parent->leftSon = node->currentTreeNode->leftSon;
-        node->currentTreeNode->leftSon = NULL;
-    }
-}
-
-void deleteBranchRecursive(TreeNode* branch)
-{
-    if (branch == NULL)
-    {
-        return;
-    }
-    deleteBranchRecursive(branch->leftSon);
-    deleteBranchRecursive(branch->rightSon);
-    free(branch);
-}
-
-void deleteBranch(CurrentTreeNode** branch)
-{
-    if ((*branch) == NULL)
-    {
-        return;
-    }
-    deleteBranchRecursive((*branch)->currentTreeNode);
-    (*branch) = NULL;
-}
-
-void deleteTree(AVLTreeRoot** root)
-{
-    if ((*root) == NULL)
-    {
-        return;
-    }
-    deleteBranchRecursive((*root)->AVLTreeRoot);
-    (*root) = NULL;
-}
-
-void addTreeNode(AVLTreeRoot** root, int key, char* value)
-{
-    if ((*root)->AVLTreeRoot == NULL)
-    {
-        TreeNode* newTreeNode = calloc(1, sizeof(TreeNode));
-        newTreeNode->key = key;
-        newTreeNode->value = value;
-        (*root)->AVLTreeRoot = newTreeNode;
-        return;
-    }
-    CurrentTreeNode* node = calloc(1, sizeof(CurrentTreeNode));
-    node->currentTreeNode = (*root)->AVLTreeRoot;
-    while (true)
-    {
-        if (key == node->currentTreeNode->key)
-        {
-            node->currentTreeNode->value = value;
-            free(node);
-            return;
-        }
-        if (key > node->currentTreeNode->key)
-        {
-            if (node->currentTreeNode->rightSon == NULL)
-            {
-                TreeNode* newNode = calloc(1, sizeof(TreeNode));
-                newNode->parent = node->currentTreeNode;
-                newNode->key = key;
-                newNode->value = value;
-                node->currentTreeNode->rightSon = newNode;
-                free(node);
-                return;
-            }
-            node->currentTreeNode = node->currentTreeNode->rightSon;
-        }
-        else
-        {
-            if (node->currentTreeNode->leftSon == NULL)
-            {
-                TreeNode* newNode = calloc(1, sizeof(TreeNode));
-                newNode->parent = node->currentTreeNode;
-                newNode->key = key;
-                newNode->value = value;
-                node->currentTreeNode->leftSon = newNode;
-                free(node);
-                return;
-            }
-            node->currentTreeNode = node->currentTreeNode->leftSon;
-        }
-    }
-}
-
-bool isLeftSon(CurrentTreeNode* currentTreeNode)
-{
-    return currentTreeNode->currentTreeNode->parent->leftSon
-            == currentTreeNode->currentTreeNode;
-}
-
-void freeNode(AVLTreeRoot** root, CurrentTreeNode** retrievableNode)
-{
-    if ((*root)->AVLTreeRoot == (*retrievableNode)->currentTreeNode)
-    {
-        free((*root)->AVLTreeRoot);
-        (*root) = NULL;
-        (*retrievableNode) = NULL;
-        return;
-    }
-    if ((*retrievableNode)->currentTreeNode->parent != NULL)
-    {
-        if ((*retrievableNode)->currentTreeNode->parent->rightSon == (*retrievableNode)->currentTreeNode)
-        {
-            (*retrievableNode)->currentTreeNode->parent->rightSon = NULL;
-            free((*retrievableNode)->currentTreeNode);
-            return;
-        }
-        (*retrievableNode)->currentTreeNode->parent->leftSon = NULL;
-        free((*retrievableNode)->currentTreeNode);
-    }
 }
 
 void smallLeftRotation(AVLTreeRoot* root, CurrentTreeNode* node)
@@ -374,6 +240,159 @@ void rebalanceTree(AVLTreeRoot* root, CurrentTreeNode* node)
     }
 }
 
+void transfer(CurrentTreeNode* node, Direction directionOfSon)
+{
+    if (node->currentTreeNode->parent == NULL)
+    {
+        return;
+    }
+    if (directionOfSon == right)
+    {
+        node->currentTreeNode->rightSon->parent = node->currentTreeNode->parent;
+    }
+    else
+    {
+        node->currentTreeNode->leftSon->parent = node->currentTreeNode->parent;
+    }
+    if (node->currentTreeNode->parent->rightSon == node->currentTreeNode)
+    {
+        if (directionOfSon == right)
+        {
+            node->currentTreeNode->parent->rightSon = node->currentTreeNode->rightSon;
+            node->currentTreeNode->rightSon = NULL;
+            return;
+        }
+        node->currentTreeNode->parent->rightSon = node->currentTreeNode->leftSon;
+        node->currentTreeNode->leftSon = NULL;
+    }
+    else
+    {
+        if (directionOfSon == right)
+        {
+            node->currentTreeNode->parent->leftSon = node->currentTreeNode->rightSon;
+            node->currentTreeNode->rightSon = NULL;
+            return;
+        }
+        node->currentTreeNode->parent->leftSon = node->currentTreeNode->leftSon;
+        node->currentTreeNode->leftSon = NULL;
+    }
+}
+
+void deleteBranchRecursive(TreeNode* branch)
+{
+    if (branch == NULL)
+    {
+        return;
+    }
+    deleteBranchRecursive(branch->leftSon);
+    deleteBranchRecursive(branch->rightSon);
+    free(branch);
+}
+
+void deleteBranch(CurrentTreeNode** branch)
+{
+    if ((*branch) == NULL)
+    {
+        return;
+    }
+    deleteBranchRecursive((*branch)->currentTreeNode);
+    (*branch) = NULL;
+}
+
+void deleteTree(AVLTreeRoot** root)
+{
+    if ((*root) == NULL)
+    {
+        return;
+    }
+    deleteBranchRecursive((*root)->AVLTreeRoot);
+    (*root) = NULL;
+}
+
+void addTreeNode(AVLTreeRoot** root, int key, char* value)
+{
+    if ((*root)->AVLTreeRoot == NULL)
+    {
+        TreeNode* newTreeNode = calloc(1, sizeof(TreeNode));
+        newTreeNode->key = key;
+        newTreeNode->value = value;
+        (*root)->AVLTreeRoot = newTreeNode;
+        return;
+    }
+    CurrentTreeNode* node = calloc(1, sizeof(CurrentTreeNode));
+    node->currentTreeNode = (*root)->AVLTreeRoot;
+    while (true)
+    {
+        if (key == node->currentTreeNode->key)
+        {
+            node->currentTreeNode->value = value;
+            free(node);
+            return;
+        }
+        if (key > node->currentTreeNode->key)
+        {
+            if (node->currentTreeNode->rightSon == NULL)
+            {
+                TreeNode* newNode = calloc(1, sizeof(TreeNode));
+                newNode->parent = node->currentTreeNode;
+                newNode->key = key;
+                newNode->value = value;
+                node->currentTreeNode->rightSon = newNode;
+                node->currentTreeNode = newNode;
+                recalculateHeights(*root);
+                rebalanceTree(*root, node);
+                free(node);
+                return;
+            }
+            node->currentTreeNode = node->currentTreeNode->rightSon;
+        }
+        else
+        {
+            if (node->currentTreeNode->leftSon == NULL)
+            {
+                TreeNode* newNode = calloc(1, sizeof(TreeNode));
+                newNode->parent = node->currentTreeNode;
+                newNode->key = key;
+                newNode->value = value;
+                node->currentTreeNode->leftSon = newNode;
+                recalculateHeights(*root);
+                rebalanceTree(*root, node);
+                free(node);
+                return;
+            }
+            node->currentTreeNode = node->currentTreeNode->leftSon;
+        }
+    }
+}
+
+bool isLeftSon(CurrentTreeNode* currentTreeNode)
+{
+    return currentTreeNode->currentTreeNode->parent->leftSon
+            == currentTreeNode->currentTreeNode;
+}
+
+void freeNode(AVLTreeRoot** root, CurrentTreeNode** retrievableNode)
+{
+    if ((*root)->AVLTreeRoot == (*retrievableNode)->currentTreeNode)
+    {
+        free((*root)->AVLTreeRoot);
+        (*root) = NULL;
+        (*retrievableNode) = NULL;
+        return;
+    }
+    if ((*retrievableNode)->currentTreeNode->parent != NULL)
+    {
+        if ((*retrievableNode)->currentTreeNode->parent->rightSon == (*retrievableNode)->currentTreeNode)
+        {
+            (*retrievableNode)->currentTreeNode->parent->rightSon = NULL;
+            free((*retrievableNode)->currentTreeNode);
+            return;
+        }
+        (*retrievableNode)->currentTreeNode->parent->leftSon = NULL;
+        free((*retrievableNode)->currentTreeNode);
+    }
+}
+
 void removeTreeNode(AVLTreeRoot** root, CurrentTreeNode** retrievableNode)
 {
     if ((*root)->AVLTreeRoot == NULL)
@@ -391,6 +410,7 @@ void removeTreeNode(AVLTreeRoot** root, CurrentTreeNode** retrievableNode)
             freeNode(root, retrievableNode);
             recalculateHeights(*root);
             rebalanceTree(*root, balanceNode);
+            free(balanceNode);
             return;
         }
         freeNode(root, retrievableNode);
@@ -407,11 +427,14 @@ void removeTreeNode(AVLTreeRoot** root, CurrentTreeNode** retrievableNode)
         {
             CurrentTreeNode* balanceNode = calloc(1, sizeof(CurrentTreeNode));
             balanceNode->currentTreeNode = (*retrievableNode)->currentTreeNode->parent;
+            transfer((*retrievableNode), right);
             freeNode(root, retrievableNode);
             recalculateHeights(*root);
             rebalanceTree(*root, balanceNode);
+            free(balanceNode);
             return;
         }
+        transfer((*retrievableNode), right);
         freeNode(root, retrievableNode);
         if (isRoot)
         {
@@ -422,6 +445,17 @@ void removeTreeNode(AVLTreeRoot** root, CurrentTreeNode** retrievableNode)
     if ((*retrievableNode)->currentTreeNode->leftSon == NULL
             && (*retrievableNode)->currentTreeNode->rightSon != NULL)
     {
+        if ((*retrievableNode)->currentTreeNode->parent != NULL)
+        {
+            CurrentTreeNode* balanceNode = calloc(1, sizeof(CurrentTreeNode));
+            balanceNode->currentTreeNode = (*retrievableNode)->currentTreeNode->parent;
+            transfer((*retrievableNode), left);
+            freeNode(root, retrievableNode);
+            recalculateHeights(*root);
+            rebalanceTree(*root, balanceNode);
+            free(balanceNode);
+            return;
+        }
         transfer((*retrievableNode), left);
         freeNode(root, retrievableNode);
         if (isRoot)
