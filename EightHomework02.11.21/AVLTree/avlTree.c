@@ -60,6 +60,7 @@ void recalculateHeightsRecursive(TreeNode* node)
     recalculateHeightsRecursive(node->leftSon);
     recalculateHeightsRecursive(node->rightSon);
     node->height = calculateNodeHigh(node);
+    node->heightDifference = 0;
     if (node->rightSon != NULL && node->leftSon != NULL)
     {
         node->heightDifference = node->rightSon->height - node->leftSon->height;
@@ -72,7 +73,7 @@ void recalculateHeightsRecursive(TreeNode* node)
     }
     if (node->leftSon != NULL)
     {
-        node->heightDifference = -node->leftSon->height + 1;
+        node->heightDifference = -node->leftSon->height - 1;
     }
 }
 
@@ -107,7 +108,10 @@ void smallLeftRotation(AVLTreeRoot* root, CurrentTreeNode* node)
     {
         node->currentTreeNode->rightSon->parent = NULL;
     }
-    node->currentTreeNode->rightSon->leftSon->parent = node->currentTreeNode;
+    if (node->currentTreeNode->rightSon->leftSon != NULL)
+    {
+        node->currentTreeNode->rightSon->leftSon->parent = node->currentTreeNode;
+    }
     node->currentTreeNode->parent = node->currentTreeNode->rightSon;
     node->currentTreeNode->rightSon = node->currentTreeNode->rightSon->leftSon;
     node->currentTreeNode->parent->leftSon = node->currentTreeNode;
@@ -135,7 +139,10 @@ void smallRightRotation(AVLTreeRoot* root, CurrentTreeNode* node)
     {
         node->currentTreeNode->leftSon->parent = NULL;
     }
-    node->currentTreeNode->leftSon->rightSon->parent = node->currentTreeNode;
+    if (node->currentTreeNode->leftSon->rightSon->parent != NULL)
+    {
+        node->currentTreeNode->leftSon->rightSon->parent = node->currentTreeNode;
+    }
     node->currentTreeNode->parent = node->currentTreeNode->leftSon;
     node->currentTreeNode->leftSon = node->currentTreeNode->leftSon->rightSon;
     node->currentTreeNode->parent->rightSon = node->currentTreeNode;
@@ -163,8 +170,14 @@ void bigLeftRotation(AVLTreeRoot* root, CurrentTreeNode* node)
     {
         node->currentTreeNode->rightSon->leftSon->parent = NULL;
     }
-    node->currentTreeNode->rightSon->leftSon->leftSon->parent = node->currentTreeNode;
-    node->currentTreeNode->rightSon->leftSon->rightSon->parent = node->currentTreeNode->rightSon;
+    if (node->currentTreeNode->rightSon->leftSon->leftSon != NULL)
+    {
+        node->currentTreeNode->rightSon->leftSon->leftSon->parent = node->currentTreeNode;
+    }
+    if (node->currentTreeNode->rightSon->leftSon->rightSon != NULL)
+    {
+        node->currentTreeNode->rightSon->leftSon->rightSon->parent = node->currentTreeNode->rightSon;
+    }
     node->currentTreeNode->parent = node->currentTreeNode->rightSon->leftSon;
     node->currentTreeNode->rightSon->leftSon = node->currentTreeNode->rightSon->leftSon->rightSon;
     node->currentTreeNode->rightSon->parent = node->currentTreeNode->rightSon->leftSon;
@@ -195,8 +208,14 @@ void bigRightRotation(AVLTreeRoot* root, CurrentTreeNode* node)
     {
         node->currentTreeNode->leftSon->rightSon->parent = NULL;
     }
-    node->currentTreeNode->leftSon->rightSon->rightSon->parent = node->currentTreeNode;
-    node->currentTreeNode->leftSon->rightSon->leftSon->parent = node->currentTreeNode->leftSon;
+    if (node->currentTreeNode->leftSon->rightSon->rightSon != NULL)
+    {
+        node->currentTreeNode->leftSon->rightSon->rightSon->parent = node->currentTreeNode;
+    }
+    if (node->currentTreeNode->leftSon->rightSon->leftSon != NULL)
+    {
+        node->currentTreeNode->leftSon->rightSon->leftSon->parent = node->currentTreeNode->leftSon;
+    }
     node->currentTreeNode->parent = node->currentTreeNode->leftSon->rightSon;
     node->currentTreeNode->leftSon->rightSon = node->currentTreeNode->leftSon->rightSon->leftSon;
     node->currentTreeNode->leftSon->parent = node->currentTreeNode->leftSon->rightSon;
@@ -215,27 +234,18 @@ void rebalanceNode(AVLTreeRoot* root, CurrentTreeNode* node)
     {
         if (node->currentTreeNode->rightSon->heightDifference > 0)
         {
-            if (node->currentTreeNode->rightSon->leftSon == NULL)
-            {
-
-                return;
-            }
-            smallRightRotation(root, node);
+            smallLeftRotation(root, node);
             return;
         }
-        bigRightRotation(root, node);
+        bigLeftRotation(root, node);
         return;
     }
     if (node->currentTreeNode->leftSon->heightDifference < 0)
     {
-        if (node->currentTreeNode->leftSon->rightSon == NULL)
-        {
-            return;
-        }
-        smallLeftRotation(root, node);
+        smallRightRotation(root, node);
         return;
     }
-    bigLeftRotation(root, node);
+    bigRightRotation(root, node);
 }
 
 void rebalanceTree(AVLTreeRoot* root, CurrentTreeNode* node)
