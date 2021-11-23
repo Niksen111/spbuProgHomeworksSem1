@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "list.h"
+#include "listTests.h"
 
 void printList(List* list)
 {
