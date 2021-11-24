@@ -1,8 +1,5 @@
-//
-// Created by niksen111 on 13.11.2021.
-//
+#pragma once
+#include <stdbool.h>
 
-#ifndef MERGESORT_LISTTESTS_H
-#define MERGESORT_LISTTESTS_H
-
-#endif //MERGESORT_LISTTESTS_H
+// tests all functions of list.h
+bool testList();
