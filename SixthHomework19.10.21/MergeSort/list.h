@@ -33,10 +33,10 @@ void deletePosition(Position* position);
 void addAfter(List* list, Position* position, char* name, char* phone);
 
 // returns a pointer to the first position of the list
-Position* first(List* list);
+Position* getFirst(List* list);
 
 // returns a pointer to the last position of the list
-Position* last(List* list);
+Position* getLast(List* list);
 
 // returns a pointer to the next element
 Position* getNext(Position* position);

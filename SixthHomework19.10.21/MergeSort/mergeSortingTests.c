@@ -7,7 +7,7 @@
 
 bool checkThatListAreSorted(List* list, Priority priority)
 {
-    Position* position1 = first(list);
+    Position* position1 = getFirst(list);
     if (position1 == NULL)
     {
         return false;
@@ -46,11 +46,11 @@ bool testMergeSorting()
     char phone4[30] = "12345";
     char name5[30] = "bcdef";
     char phone5[30] = "12345";
-    addAfter(&list1, &position1, name1, phone1);
-    addAfter(&list1, &position1, name2, phone2);
-    addAfter(&list1, &position1, name3, phone3);
-    addAfter(&list1, &position1, name4, phone4);
-    addAfter(&list1, &position1, name5, phone5);
+    addAfter(list1, position1, name1, phone1);
+    addAfter(list1, position1, name2, phone2);
+    addAfter(list1, position1, name3, phone3);
+    addAfter(list1, position1, name4, phone4);
+    addAfter(list1, position1, name5, phone5);
     mergeSorting(&list1, name);
     bool result = checkThatListAreSorted(list1, name);
     mergeSorting(&list1, phone);

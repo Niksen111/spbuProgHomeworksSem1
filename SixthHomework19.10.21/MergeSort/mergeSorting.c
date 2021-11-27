@@ -32,7 +32,7 @@ int getLengthPartOfList(Position* start, Position* end)
 
 int getLengthOfList(List* list)
 {
-    Position* position = first(list);
+    Position* position = getFirst(list);
     int counter = 0;
     while (!isLast(position))
     {
@@ -74,7 +74,7 @@ int mergeSortingRecursive(List** list, List** buffer, Position* leftBoarder,
     {
         if (myBuffer == NULL)
         {
-            myBuffer = first(*buffer);
+            myBuffer = getFirst(*buffer);
         }
         else
         {
@@ -118,7 +118,7 @@ int mergeSorting(List** list, Priority priority)
     {
         if (position == NULL)
         {
-            position = first(buffer);
+            position = getFirst(buffer);
             if (position == NULL)
             {
                 deleteList(buffer);
@@ -127,13 +127,13 @@ int mergeSorting(List** list, Priority priority)
         }
         else
         {
-            addAfter(&buffer, &position, NULL, NULL);
+            addAfter(buffer, position, NULL, NULL);
             moveToNext(&position);
         }
     }
     free(position);
-    Position* leftBoarder = first(*list);
-    Position* rightBoarder = last(*list);
+    Position* leftBoarder = getFirst(*list);
+    Position* rightBoarder = getLast(*list);
     int errorCode = mergeSortingRecursive(list, &buffer, leftBoarder,
             rightBoarder, priority);
     free(leftBoarder);
