@@ -4,7 +4,7 @@
 
 int main()
 {
-    if (!testMergeSorting() || !testList())
+    if (!testList() || !testMergeSorting())
     {
         printf("Tests failed(\n");
         return -1;

@@ -64,7 +64,8 @@ int mergeSortingRecursive(List** list, List** buffer, Position* leftBoarder,
     {
         moveToNext(&newRightBoarder);
     }
-    Position* newLeftBoarder = copyPointer(getNext(newRightBoarder));
+    Position* newLeftBoarder = copyPointer(newRightBoarder);
+    moveToNext(&newLeftBoarder);
     mergeSortingRecursive(list, buffer, leftBoarder, newRightBoarder, priority);
     mergeSortingRecursive(list, buffer, newLeftBoarder, rightBoarder, priority);
     Position* start1 = copyPointer(leftBoarder);
@@ -83,23 +84,23 @@ int mergeSortingRecursive(List** list, List** buffer, Position* leftBoarder,
         }
         if (arePointersEqual(start1, newRightBoarder))
         {
-            copyValues(&myBuffer, start2);
+            copyValues(myBuffer, start2);
             moveToNext(&start2);
         }
         else if (arePointersEqual(start2, rightBoarder))
         {
-            copyValues(&myBuffer, start1);
+            copyValues(myBuffer, start1);
             moveToNext(&start1);
         }
         else if (isFirstEarlier(getPriorityValue(start1, priority),
                 getPriorityValue(start2, priority)))
         {
-            copyValues(&myBuffer, start1);
+            copyValues(myBuffer, start1);
             moveToNext(&start1);
         }
         else
         {
-            copyValues(&myBuffer, start2);
+            copyValues(myBuffer, start2);
             moveToNext(&start2);
         }
     }

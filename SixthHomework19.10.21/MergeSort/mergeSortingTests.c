@@ -16,7 +16,8 @@ bool checkThatListAreSorted(List* list, Priority priority)
     {
         return true;
     }
-    Position* position2 = getNext(position1);
+    Position* position2 = copyPointer(position1);
+    moveToNext(&position2);
     while (!isLast(position1))
     {
         if (!isFirstEarlier(getPriorityValue(position1, priority),

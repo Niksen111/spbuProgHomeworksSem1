@@ -27,7 +27,7 @@ Position* createPosition();
 void deleteList(List* list);
 
 // removes a pointer of type Position
-void deletePosition(Position* position);
+void deletePosition(Position** position);
 
 // adds an item to the head of the list
 void addToHead(List* list, char* name, char* phone);
@@ -40,9 +40,6 @@ Position* getFirst(List* list);
 
 // returns a pointer to the last position of the list
 Position* getLast(List* list);
-
-// returns a pointer to the next element
-Position* getNext(Position* position);
 
 // moves the pointer to the next element
 void moveToNext(Position** position);
@@ -57,10 +54,13 @@ bool isLast(Position* position);
 bool arePointersEqual(Position* position1, Position* position2);
 
 // copies the values of one element to another
-void copyValues(Position** where, Position* from);
+void copyValues(Position* whereTo, Position* from);
 
 // returns priority value
 char* getPriorityValue(Position* position, Priority priority);
 
 // copies the pointer
 Position* copyPointer(Position* position);
+
+// returns true if the list is empty
+bool isListEmpty(List* list);
