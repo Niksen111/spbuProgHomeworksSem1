@@ -47,7 +47,7 @@ bool areBracketsBalanced(const char listCharacters[], int *errorCode)
         // if the current bracket is opening
         if (indexCurrentCharacter % 2 == 0)
         {
-            push(&stackBrackets, (int) listCharacters[i]);
+            push(&stackBrackets, listCharacters[i]);
         }
         else
         {
@@ -57,7 +57,7 @@ bool areBracketsBalanced(const char listCharacters[], int *errorCode)
                 deleteStack(&stackBrackets);
                 return false;
             }
-            if ((stackBrackets->value) == (int) brackets[indexCurrentCharacter - 1])
+            if ((stackBrackets->value) == brackets[indexCurrentCharacter - 1])
             {
                 int error = 0;
                 pop(&stackBrackets, &error);
