@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "supportFunctions.h"
+#include "list.h"
 
 int getLengthPartOfList(Position* start, Position* end)
 {

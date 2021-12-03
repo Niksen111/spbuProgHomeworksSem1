@@ -65,6 +65,20 @@ void deletePosition(Position* position)
     free(position);
 }
 
+void addToHead(List* list, char* name, char* phone)
+{
+    ListElement* newElement = calloc(1, sizeof(ListElement));
+    newElement->directory->name = name;
+    newElement->directory->phoneNumber = phone;
+    if (list->head == NULL)
+    {
+        list->head = newElement;
+        return;
+    }
+    newElement->next = list->head;
+    list->head = newElement;
+}
+
 void addAfter(List* list, Position* position, char* name, char* phone)
 {
     ListElement* newElement = calloc(1, sizeof(ListElement));
@@ -81,7 +95,7 @@ void addAfter(List* list, Position* position, char* name, char* phone)
     moveToNext(&position);
 }
 
-Position* first(List* list)
+Position* getFirst(List* list)
 {
     Position* positionFirst = createPosition();
     if (positionFirst == NULL)
@@ -92,9 +106,9 @@ Position* first(List* list)
     return positionFirst;
 }
 
-Position* last(List* list)
+Position* getLast(List* list)
 {
-    Position* positionLast = first(list);
+    Position* positionLast = getFirst(list);
     while (!isLast(positionLast))
     {
         moveToNext(&positionLast);

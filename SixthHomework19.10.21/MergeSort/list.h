@@ -29,6 +29,9 @@ void deleteList(List* list);
 // removes a pointer of type Position
 void deletePosition(Position* position);
 
+// adds an item to the head of the list
+void addToHead(List* list, char* name, char* phone);
+
 // adds an item to the list
 void addAfter(List* list, Position* position, char* name, char* phone);
 
