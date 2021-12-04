@@ -16,18 +16,18 @@ int getLengthPartOfList(Position* start, Position* end)
         return -1;
     }
     int counter = 0;
-    while (position != end)
+    while (!arePointersEqual(position, end))
     {
         if (position == NULL)
         {
-            free(position);
+            deletePosition(&position);
             return -1;
         }
         ++counter;
         moveToNext(&position);
     }
     ++counter;
-    free(position);
+    deletePosition(&position);
     return counter;
 }
 
@@ -53,9 +53,8 @@ int mergeSortingRecursive(List** list, List** buffer, Position* leftBoarder,
     {
         return -1;
     }
-
     int lengthOfSegment = getLengthPartOfList(leftBoarder, rightBoarder);
-    Position* newRightBoarder = createPosition();
+    Position* newRightBoarder = copyPointer(leftBoarder);
     if (newRightBoarder == NULL)
     {
         return -2;
@@ -71,8 +70,11 @@ int mergeSortingRecursive(List** list, List** buffer, Position* leftBoarder,
     Position* start1 = copyPointer(leftBoarder);
     Position* start2 = copyPointer(newLeftBoarder);
     Position* myBuffer = NULL;
+    moveToNext(&newRightBoarder);
+    Position* position = copyPointer(rightBoarder);
+    moveToNext(&position);
     while (!arePointersEqual(start1, newRightBoarder)
-        || !arePointersEqual(start2, rightBoarder))
+        || !arePointersEqual(start2, position))
     {
         if (myBuffer == NULL)
         {
@@ -87,7 +89,7 @@ int mergeSortingRecursive(List** list, List** buffer, Position* leftBoarder,
             copyValues(myBuffer, start2);
             moveToNext(&start2);
         }
-        else if (arePointersEqual(start2, rightBoarder))
+        else if (arePointersEqual(start2, position))
         {
             copyValues(myBuffer, start1);
             moveToNext(&start1);
@@ -115,25 +117,10 @@ int mergeSorting(List** list, Priority priority)
 {
     int lengthOfList = getLengthOfList(*list);
     List* buffer = createList();
-    Position* position = NULL;
     for (int i = 0; i < lengthOfList - 1; ++i)
     {
-        if (position == NULL)
-        {
-            position = getFirst(buffer);
-            if (position == NULL)
-            {
-                deleteList(buffer);
-                return -1;
-            }
-        }
-        else
-        {
-            addAfter(buffer, position, NULL, NULL);
-            moveToNext(&position);
-        }
+        addToHead(buffer, NULL, NULL);
     }
-    free(position);
     Position* leftBoarder = getFirst(*list);
     Position* rightBoarder = getLast(*list);
     int errorCode = mergeSortingRecursive(list, &buffer, leftBoarder,
