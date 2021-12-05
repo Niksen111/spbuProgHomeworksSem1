@@ -2,15 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct Directory
-{
-    char* name;
-    char* phoneNumber;
-} Directory;
-
 typedef struct ListElement
 {
-    Directory* directory;
+    char* value;
     struct ListElement* next;
 } ListElement;
 
@@ -25,16 +19,9 @@ typedef struct Position
 } Position;
 
 
-void changePriorityValue(Position* position, char* newValue, Priority priority)
+void changeValue(Position* position, char* newValue)
 {
-    if (priority == name)
-    {
-        position->position->directory->name = newValue;
-    }
-    else
-    {
-        position->position->directory->phoneNumber = newValue;
-    }
+    position->position->value = newValue;
 }
 
 List* createList()
@@ -53,10 +40,6 @@ void deleteList(List* list)
     while (element != NULL)
     {
         list->head = list->head->next;
-        if (element->directory != NULL)
-        {
-            free(element->directory);
-        }
         free(element);
         element = list->head;
     }
@@ -68,12 +51,10 @@ void deletePosition(Position** position)
     *position = NULL;
 }
 
-void addToHead(List* list, char* name, char* phone)
+void addToHead(List* list, char* value)
 {
     ListElement* newElement = calloc(1, sizeof(ListElement));
-    newElement->directory = calloc(1, sizeof(Directory));
-    newElement->directory->name = name;
-    newElement->directory->phoneNumber = phone;
+    newElement->value = value;
     if (list->head == NULL)
     {
         list->head = newElement;
@@ -83,12 +64,10 @@ void addToHead(List* list, char* name, char* phone)
     list->head = newElement;
 }
 
-void addAfter(List* list, Position* position, char* name, char* phone)
+void addAfter(List* list, Position* position, char* value)
 {
     ListElement* newElement = calloc(1, sizeof(ListElement));
-    newElement->directory = calloc(1, sizeof(Directory));
-    newElement->directory->name = name;
-    newElement->directory->phoneNumber = phone;
+    newElement->value = value;
     if (list->head == NULL)
     {
         list->head = newElement;
@@ -119,13 +98,6 @@ Position* getLast(List* list)
         moveToNext(&positionLast);
     }
     return positionLast;
-}
-
-Position* getNext(Position* position)
-{
-    Position* newPosition = calloc(1, sizeof(Position));
-    newPosition->position = position->position->next;
-    return newPosition;
 }
 
 void moveToNext(Position** position)
@@ -163,20 +135,9 @@ Position* copyPointer(Position* position)
     return newPosition;
 }
 
-ListElement* getListElement(Position* position)
+char* getValue(Position* position)
 {
-    return position->position;
-}
-
-Directory* getDirectory(List* list, Position* position)
-{
-    return position->position->directory;
-}
-
-char* getPriorityValue(Position* position, Priority priority)
-{
-    return priority == name ? position->position->directory->name :
-           position->position->directory->phoneNumber;
+    return position->position->value;
 }
 
 bool isListEmpty(List* list)

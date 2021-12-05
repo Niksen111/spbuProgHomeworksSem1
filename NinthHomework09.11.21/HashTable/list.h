@@ -7,15 +7,8 @@ typedef struct List List;
 // pointer to a list item
 typedef struct Position Position;
 
-//
-typedef enum Priority
-{
-    name,
-    phone
-} Priority;
-
 // returns true if the first line comes first in the lexicographical order
-void changePriorityValue(Position* position, char* newValue, Priority priority);
+void changeValue(Position* position, char* newValue);
 
 // creates an empty list
 List* createList();
@@ -30,10 +23,10 @@ void deleteList(List* list);
 void deletePosition(Position** position);
 
 // adds an item to the head of the list
-void addToHead(List* list, char* name, char* phone);
+void addToHead(List* list, char* value);
 
 // adds an item to the list
-void addAfter(List* list, Position* position, char* name, char* phone);
+void addAfter(List* list, Position* position, char* value);
 
 // returns a pointer to the first position of the list
 Position* getFirst(List* list);
@@ -54,7 +47,7 @@ bool isLast(Position* position);
 bool arePointersEqual(Position* position1, Position* position2);
 
 // returns priority value
-char* getPriorityValue(Position* position, Priority priority);
+char* getValue(Position* position);
 
 // copies the pointer
 Position* copyPointer(Position* position);
