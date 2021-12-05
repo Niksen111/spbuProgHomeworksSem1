@@ -49,16 +49,16 @@ Position* createPosition()
 
 void deleteList(List* list)
 {
-    ListElement* position = list->head;
-    while (position != NULL)
+    ListElement* element = list->head;
+    while (element != NULL)
     {
         list->head = list->head->next;
-        if (position->directory != NULL)
+        if (element->directory != NULL)
         {
-            free(position->directory);
+            free(element->directory);
         }
-        deletePosition(&position);
-        position = list->head;
+        free(element);
+        element = list->head;
     }
 }
 
@@ -121,13 +121,6 @@ Position* getLast(List* list)
     return positionLast;
 }
 
-Position* getNext(Position* position)
-{
-    Position* newPosition = calloc(1, sizeof(Position));
-    newPosition->position = position->position->next;
-    return newPosition;
-}
-
 void moveToNext(Position** position)
 {
     if ((*position)->position == NULL)
@@ -161,16 +154,6 @@ Position* copyPointer(Position* position)
     }
     newPosition->position = position->position;
     return newPosition;
-}
-
-ListElement* getListElement(Position* position)
-{
-    return position->position;
-}
-
-Directory* getDirectory(List* list, Position* position)
-{
-    return position->position->directory;
 }
 
 char* getPriorityValue(Position* position, Priority priority)
