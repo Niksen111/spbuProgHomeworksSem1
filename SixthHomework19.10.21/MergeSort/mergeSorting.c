@@ -66,7 +66,9 @@ int mergeSortingRecursive(List** list, List** buffer, Position* leftBoarder,
     Position* newLeftBoarder = copyPointer(newRightBoarder);
     moveToNext(&newLeftBoarder);
     mergeSortingRecursive(list, buffer, leftBoarder, newRightBoarder, priority);
+    // need to copy the value from the buffer to the sheet
     mergeSortingRecursive(list, buffer, newLeftBoarder, rightBoarder, priority);
+    // need to copy the value from the buffer to the sheet
     Position* start1 = copyPointer(leftBoarder);
     Position* start2 = copyPointer(newLeftBoarder);
     Position* myBuffer = NULL;
