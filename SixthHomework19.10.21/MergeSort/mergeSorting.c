@@ -1,8 +1,36 @@
 #include "mergeSorting.h"
-#include <stdlib.h>
 #include <string.h>
 #include "supportFunctions.h"
 #include "list.h"
+
+void copyValues(Position* whereTo, Position* from)
+{
+    changePriorityValue(whereTo, getPriorityValue(from, name), name);
+    changePriorityValue(whereTo, getPriorityValue(from, phone), phone);
+}
+
+void changeSegmentOfList(Position* from,
+        Position* leftBoarder, Position* rightBoarder)
+{
+    if (arePointersEqual(leftBoarder, rightBoarder))
+    {
+        return;
+    }
+    Position* reallyRightBoarder = copyPointer(rightBoarder);
+    moveToNext(&reallyRightBoarder);
+    Position* positionFrom = copyPointer(from);
+    Position* positionTo = copyPointer(leftBoarder);
+    while (!arePointersEqual(positionTo, reallyRightBoarder))
+    {
+        changePriorityValue(positionTo, getPriorityValue(positionFrom, name), name);
+        changePriorityValue(positionTo, getPriorityValue(positionFrom, phone), phone);
+        moveToNext(&positionTo);
+        moveToNext(&positionFrom);
+    }
+    deletePosition(&reallyRightBoarder);
+    deletePosition(&positionTo);
+    deletePosition(&positionFrom);
+}
 
 int getLengthPartOfList(Position* start, Position* end)
 {
@@ -41,10 +69,9 @@ int getLengthOfList(List* list)
         moveToNext(&position);
     }
     ++counter;
-    free(position);
+    deletePosition(&position);
     return counter;
 }
-
 
 int mergeSortingRecursive(List** list, List** buffer, Position* leftBoarder,
                    Position* rightBoarder, Priority priority)
@@ -65,13 +92,19 @@ int mergeSortingRecursive(List** list, List** buffer, Position* leftBoarder,
     }
     Position* newLeftBoarder = copyPointer(newRightBoarder);
     moveToNext(&newLeftBoarder);
+
+    Position* myBuffer = getFirst(*buffer);
     mergeSortingRecursive(list, buffer, leftBoarder, newRightBoarder, priority);
-    // need to copy the value from the buffer to the sheet
+    changeSegmentOfList(myBuffer, leftBoarder, newRightBoarder);
+    deletePosition(&myBuffer);
+
+    myBuffer = getFirst(*buffer);
     mergeSortingRecursive(list, buffer, newLeftBoarder, rightBoarder, priority);
-    // need to copy the value from the buffer to the sheet
+    changeSegmentOfList(myBuffer, newLeftBoarder, rightBoarder);
+    deletePosition(&myBuffer);
+
     Position* start1 = copyPointer(leftBoarder);
     Position* start2 = copyPointer(newLeftBoarder);
-    Position* myBuffer = NULL;
     moveToNext(&newRightBoarder);
     Position* position = copyPointer(rightBoarder);
     moveToNext(&position);
@@ -108,18 +141,19 @@ int mergeSortingRecursive(List** list, List** buffer, Position* leftBoarder,
             moveToNext(&start2);
         }
     }
-    free(newRightBoarder);
-    free(newLeftBoarder);
-    free(start1);
-    free(start2);
-    free(myBuffer);
+    deletePosition(&newRightBoarder);
+    deletePosition(&newLeftBoarder);
+    deletePosition(&start1);
+    deletePosition(&start2);
+    deletePosition(&myBuffer);
+    return 0;
 }
 
 int mergeSorting(List** list, Priority priority)
 {
     int lengthOfList = getLengthOfList(*list);
     List* buffer = createList();
-    for (int i = 0; i < lengthOfList - 1; ++i)
+    for (int i = 0; i < lengthOfList; ++i)
     {
         addToHead(buffer, NULL, NULL);
     }
@@ -127,8 +161,11 @@ int mergeSorting(List** list, Priority priority)
     Position* rightBoarder = getLast(*list);
     int errorCode = mergeSortingRecursive(list, &buffer, leftBoarder,
             rightBoarder, priority);
-    free(leftBoarder);
-    free(rightBoarder);
+    Position* bufferPointer = getFirst(buffer);
+    changeSegmentOfList(bufferPointer, leftBoarder, rightBoarder);
+    deletePosition(&bufferPointer);
+    deletePosition(&leftBoarder);
+    deletePosition(&rightBoarder);
     deleteList(buffer);
 
     return errorCode;

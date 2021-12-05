@@ -161,22 +161,6 @@ bool testArePointersEqual(void)
     return result;
 }
 
-bool testCopyValues(void)
-{
-    List* list = createList();
-    addToHead(list, "MMM", "MMMM");
-    Position* position2048 = getFirst(list);
-    addToHead(list, "Hochu", "Domoi");
-    Position* position4096 = getFirst(list);
-    copyValues(position2048, position4096);
-    bool result = strcmp(getPriorityValue(position2048, name), getPriorityValue(position4096, name)) == 0
-            && strcmp(getPriorityValue(position2048, phone), getPriorityValue(position4096, phone)) == 0;
-    deletePosition(&position2048);
-    deletePosition(&position4096);
-    deleteList(list);
-    return result;
-}
-
 bool testChangePriorityValue(void)
 {
     List* list = createList();
@@ -222,6 +206,6 @@ bool testList(void)
         && testGetFirst() && testGetLast()
         && testMoveToNext() && testIsFirst()
         && testIsLast() && testArePointersEqual()
-        && testCopyValues() && testChangePriorityValue()
+        && testChangePriorityValue()
         && testGetPriorityValue() && testCopyPointer();
 }

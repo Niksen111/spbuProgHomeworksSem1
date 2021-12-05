@@ -53,9 +53,6 @@ bool isLast(Position* position);
 // checks if the pointers are equal
 bool arePointersEqual(Position* position1, Position* position2);
 
-// copies the values of one element to another
-void copyValues(Position* whereTo, Position* from);
-
 // returns priority value
 char* getPriorityValue(Position* position, Priority priority);
 

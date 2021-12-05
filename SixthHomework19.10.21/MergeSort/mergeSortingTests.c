@@ -2,7 +2,6 @@
 #include "list.h"
 #include "mergeSorting.h"
 #include <string.h>
-#include <stdlib.h>
 #include "supportFunctions.h"
 
 bool checkThatListAreSorted(List* list, Priority priority)
@@ -18,18 +17,27 @@ bool checkThatListAreSorted(List* list, Priority priority)
     }
     Position* position2 = copyPointer(position1);
     moveToNext(&position2);
-    while (!isLast(position1))
+    while (!isLast(position2))
     {
         if (!isFirstEarlier(getPriorityValue(position1, priority),
                 getPriorityValue(position2, priority)))
         {
-            free(position1);
-            free(position2);
+            deletePosition(&position1);
+            deletePosition(&position2);
             return false;
         }
+        moveToNext(&position1);
+        moveToNext(&position2);
     }
-    free(position1);
-    free(position2);
+    if (!isFirstEarlier(getPriorityValue(position1, priority),
+            getPriorityValue(position2, priority)))
+    {
+        deletePosition(&position1);
+        deletePosition(&position2);
+        return false;
+    }
+    deletePosition(&position1);
+    deletePosition(&position2);
     return true;
 }
 
@@ -41,7 +49,7 @@ bool testMergeSorting()
     char phone1[30] = "34567";
     char name2[30] = "eFghc";
     char phone2[30] = "589";
-    char name3[30] = "Cdefg";
+    char name3[30] = "cDefg";
     char phone3[30] = "12345";
     char name4[30] = "abcdef";
     char phone4[30] = "4578";
@@ -57,7 +65,7 @@ bool testMergeSorting()
     mergeSorting(&list1, phone);
     result = result && checkThatListAreSorted(list1, phone);
     deleteList(list1);
-    free(position1);
+    deletePosition(&position1);
 
     return result;
 }

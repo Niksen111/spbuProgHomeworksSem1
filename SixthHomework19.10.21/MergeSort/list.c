@@ -57,7 +57,7 @@ void deleteList(List* list)
         {
             free(position->directory);
         }
-        free(position);
+        deletePosition(&position);
         position = list->head;
     }
 }
@@ -161,12 +161,6 @@ Position* copyPointer(Position* position)
     }
     newPosition->position = position->position;
     return newPosition;
-}
-
-void copyValues(Position* whereTo, Position* from)
-{
-    whereTo->position->directory->name = from->position->directory->name;
-    whereTo->position->directory->phoneNumber = from->position->directory->phoneNumber;
 }
 
 ListElement* getListElement(Position* position)
