@@ -19,12 +19,6 @@ typedef struct Position
     ListElement* position;
 } Position;
 
-
-void changeValue(Position* position, char* newValue)
-{
-    position->position->value = newValue;
-}
-
 List* createList()
 {
     return calloc(1, sizeof(List));
@@ -37,6 +31,10 @@ Position* createPosition()
 
 void deleteList(List* list)
 {
+    if (list == NULL)
+    {
+        return;
+    }
     ListElement* element = list->head;
     while (element != NULL)
     {
@@ -138,11 +136,6 @@ char* getValue(Position* position)
 bool isListEmpty(List* list)
 {
     return list->head == NULL;
-}
-
-bool isPositionEmpty(Position* position)
-{
-    return position->position == NULL;
 }
 
 void increaseCounter(Position* position)

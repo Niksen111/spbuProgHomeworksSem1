@@ -12,6 +12,9 @@ void addToHashTable(HashTable* hashTable, char* string);
 // prints table statistics
 void printTableStatistics(HashTable* hashTable);
 
+// returns the number of repetitions of the word in the text
+int giveNumberOfRepetitionsOfWord(HashTable* table, char* word);
+
 // deletes HashTable
 void deleteHashTable(HashTable** hashTable);
 

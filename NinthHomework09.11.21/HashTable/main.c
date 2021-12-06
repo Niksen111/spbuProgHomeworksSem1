@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "hashTable.h"
+#include "listTests.h"
 
 HashTable* createHashTableFromFile(char name[])
 {
@@ -22,7 +23,14 @@ HashTable* createHashTableFromFile(char name[])
 
 int main()
 {
-    HashTable* myTable = createHashTableFromFile("text.txt");
+    if (!testList())
+    {
+        printf("Tests failed(\n");
+        return -1;
+    }
+    HashTable* myTable = createHashTableFromFile("test.txt");
     printTableStatistics(myTable);
+    printHashTable(myTable);
+    deleteHashTable(&myTable);
     return 0;
 }
