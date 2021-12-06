@@ -37,9 +37,6 @@ Position* getLast(List* list);
 // moves the pointer to the next element
 void moveToNext(Position** position);
 
-// checks if the current element is the first
-bool isFirst(Position* position, List* list);
-
 // checks if the current element is the last
 bool isLast(Position* position);
 
@@ -54,3 +51,6 @@ Position* copyPointer(Position* position);
 
 // returns true if the list is empty
 bool isListEmpty(List* list);
+
+// increments the counter at this position
+void increaseCounter(Position* position);

@@ -5,6 +5,7 @@
 typedef struct ListElement
 {
     char* value;
+    int counter;
     struct ListElement* next;
 } ListElement;
 
@@ -109,11 +110,6 @@ void moveToNext(Position** position)
     (*position)->position = (*position)->position->next;
 }
 
-bool isFirst(Position* position, List* list)
-{
-    return position->position == list->head;
-}
-
 bool isLast(Position* position)
 {
     return position->position->next == NULL;
@@ -143,4 +139,9 @@ char* getValue(Position* position)
 bool isListEmpty(List* list)
 {
     return list->head == NULL;
+}
+
+void increaseCounter(Position* position)
+{
+    position->position->counter += 1;
 }
