@@ -77,7 +77,6 @@ void addAfter(List* list, Position* position, char* value)
     }
     newElement->next = position->position->next;
     position->position->next = newElement;
-    moveToNext(&position);
 }
 
 Position* getFirst(List* list)
@@ -141,7 +140,17 @@ bool isListEmpty(List* list)
     return list->head == NULL;
 }
 
+bool isPositionEmpty(Position* position)
+{
+    return position->position == NULL;
+}
+
 void increaseCounter(Position* position)
 {
     position->position->counter += 1;
+}
+
+int getCounter(Position* position)
+{
+    return position->position->counter;
 }

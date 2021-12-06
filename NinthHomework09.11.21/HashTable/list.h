@@ -54,3 +54,6 @@ bool isListEmpty(List* list);
 
 // increments the counter at this position
 void increaseCounter(Position* position);
+
+// returns the counter value of the position
+int getCounter(Position* position);
