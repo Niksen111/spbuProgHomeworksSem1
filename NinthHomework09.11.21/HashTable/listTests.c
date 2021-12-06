@@ -63,10 +63,11 @@ bool testAddAfter(void)
     addToHead(list, "MMM");
     Position* position1 = getFirst(list);
     addAfter(list, position1, "Oleg");
+    moveToNext(&position1);
     Position* position2 = getFirst(list);
     result = result && !isListEmpty(list)
             && strcmp("Oleg", getValue(position1)) == 0
-            && strcmp("MMMM", getValue(position2)) == 0;
+            && strcmp("MMM", getValue(position2)) == 0;
     deletePosition(&position1);
     deletePosition(&position2);
     deleteList(list);
