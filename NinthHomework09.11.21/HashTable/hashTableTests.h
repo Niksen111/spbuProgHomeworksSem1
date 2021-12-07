@@ -1,0 +1,8 @@
+//
+// Created by niksen111 on 07.12.2021.
+//
+
+#ifndef HASHTABLE_HASHTABLETESTS_H
+#define HASHTABLE_HASHTABLETESTS_H
+
+#endif //HASHTABLE_HASHTABLETESTS_H
