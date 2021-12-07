@@ -6,20 +6,26 @@
 
 typedef struct HashTable
 {
-    List* hashTable[1553];
+    List** hashTable;
+    int tableSize;
+    int voidCounter;
+    int listLengths;
+    int maxListLength;
 } HashTable;
 
-HashTable* createHashTable()
+HashTable* createHashTable(int tableSize)
 {
-    return calloc(1, sizeof(HashTable));
+    HashTable* hashTable = calloc(1, sizeof(HashTable));
+    hashTable->hashTable = calloc(tableSize, sizeof(List*));
+    hashTable->tableSize = tableSize;
+    return hashTable;
 }
 
-int calculateHashFunction(char* line)
+int calculateHashFunction(char* line, int mod)
 {
     int result = 0;
     int length = strlen(line);
     int currentMultiplier = 1;
-    int mod = 1553;
     for (int i = 0; i < length; ++i)
     {
         result = (result + abs((((int)line[i]) * currentMultiplier) % mod)) % mod;
@@ -37,7 +43,7 @@ int calculateHashFunction(char* line)
 
 void addToHashTable(HashTable* hashTable, char* line)
 {
-    int i = calculateHashFunction(line);
+    int i = calculateHashFunction(line, hashTable->tableSize);
     if (hashTable->hashTable[i] == NULL)
     {
         hashTable->hashTable[i] = createList();
@@ -73,7 +79,7 @@ void printTableStatistics(HashTable* hashTable)
     int voidCounter = 0;
     int listLengths = 0;
     int maxListLength = 0;
-    for (int i = 0; i < 1553; ++i)
+    for (int i = 0; i < hashTable->tableSize; ++i)
     {
         if (hashTable->hashTable[i] != NULL)
         {
@@ -95,14 +101,14 @@ void printTableStatistics(HashTable* hashTable)
             ++voidCounter;
         }
     }
-    printf("Table occupancy rate - %lf\n", (double) (voidCounter) / (double) 1553);
-    printf("Average list length - %lf\n", (double) (listLengths) / (double) 1553);
+    printf("Table occupancy rate - %lf\n", (double) (voidCounter) / (double) hashTable->tableSize);
+    printf("Average list length - %lf\n", (double) (listLengths) / (double) hashTable->tableSize);
     printf("Maximum list length - %d\n", maxListLength);
 }
 
 void deleteHashTable(HashTable** hashTable)
 {
-    for (int i = 0; i < 1553; ++i)
+    for (int i = 0; i < (*hashTable)->tableSize; ++i)
     {
         deleteList((*hashTable)->hashTable[i]);
         free((*hashTable)->hashTable[i]);
@@ -112,7 +118,7 @@ void deleteHashTable(HashTable** hashTable)
 
 void printHashTable(HashTable* hashTable)
 {
-    for (int i = 0; i < 1553; ++i)
+    for (int i = 0; i < hashTable->tableSize; ++i)
     {
         if (hashTable->hashTable[i] != NULL)
         {

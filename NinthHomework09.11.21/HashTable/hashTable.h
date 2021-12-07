@@ -4,7 +4,7 @@
 typedef struct HashTable HashTable;
 
 // creates HashTable
-HashTable* createHashTable();
+HashTable* createHashTable(int tableSize);
 
 // adds string to the hashTable
 void addToHashTable(HashTable* hashTable, char* string);

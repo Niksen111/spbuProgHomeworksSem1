@@ -6,7 +6,7 @@
 HashTable* createHashTableFromFile(char name[])
 {
     FILE* file = fopen(name, "r");
-    HashTable* hashTable = createHashTable();
+    HashTable* hashTable = createHashTable(1553);
     while (!feof(file))
     {
         char* buffer = calloc(100, sizeof(char));
