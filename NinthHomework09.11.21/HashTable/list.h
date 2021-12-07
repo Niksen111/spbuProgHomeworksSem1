@@ -55,5 +55,8 @@ bool isListEmpty(List* list);
 // increments the counter at this position
 void increaseCounter(Position* position);
 
+// replaces the counter value with the given number
+void changeCounter(Position* position, int number);
+
 // returns the counter value of the position
 int getCounter(Position* position);

@@ -35,7 +35,7 @@ int calculateHashFunction(char* line, int mod)
         }
         else
         {
-            currentMultiplier *= 3;
+            currentMultiplier *= 59;
         }
     }
     return result;
@@ -49,26 +49,26 @@ void addToHashTable(HashTable* hashTable, char* word, int numberOfTheWord)
         hashTable->hashTable[i] = createList();
         addToHead(hashTable->hashTable[i], word);
         Position* position = getFirst(hashTable->hashTable[i]);
-        increaseCounter(position);
+        changeCounter(position, numberOfTheWord);
         deletePosition(&position);
     }
     else
     {
         Position* position = getFirst(hashTable->hashTable[i]);
-        while (strcmp(getValue(position), line) != 0 && !isLast(position))
+        while (strcmp(getValue(position), word) != 0 && !isLast(position))
         {
             moveToNext(&position);
         }
-        if (strcmp(getValue(position), line) == 0)
+        if (strcmp(getValue(position), word) == 0)
         {
             increaseCounter(position);
             deletePosition(&position);
         }
         else
         {
-            addAfter(hashTable->hashTable[i], position, line);
+            addAfter(hashTable->hashTable[i], position, word);
             moveToNext(&position);
-            increaseCounter(position);
+            changeCounter(position, numberOfTheWord);
             deletePosition(&position);
         }
     }
@@ -108,9 +108,12 @@ void recalculateTableStatistics(HashTable* hashTable)
 
 void printTableStatistics(HashTable* hashTable)
 {
-    printf("Table occupancy rate - %lf\n", (double) (hashTable->voidCounter) / (double) hashTable->tableSize);
-    printf("Average list length - %lf\n", (double) (hashTable->listLengths) / (double) hashTable->tableSize);
-    printf("Maximum list length - %d\n", hashTable->maxListLength);
+    printf("Table size: %d\n", hashTable->tableSize);
+    printf("Total of different words: %d\n", hashTable->listLengths);
+    printf("Table occupancy rate: %lf\n", 1 - (double) (hashTable->voidCounter) / (double) hashTable->tableSize);
+    printf("Average list length \n");
+    printf("(not including zero-length lists): %lf\n", (double) (hashTable->listLengths) / (double) (hashTable->tableSize - hashTable->voidCounter));
+    printf("Maximum list length: %d\n", hashTable->maxListLength);
 }
 
 void deleteHashTable(HashTable** hashTable)
@@ -123,8 +126,9 @@ void deleteHashTable(HashTable** hashTable)
     free(*hashTable);
 }
 
-void redoHashTable(HashTable** hashTable, int newTableSize)
+void redoHashTable(HashTable** hashTable)
 {
+    int newTableSize = (*hashTable)->listLengths;
     HashTable* newTable = createHashTable(newTableSize);
     for (int i = 0; i < (*hashTable)->tableSize; ++i)
     {
@@ -133,13 +137,15 @@ void redoHashTable(HashTable** hashTable, int newTableSize)
             Position* position = getFirst((*hashTable)->hashTable[i]);
             while(!isLast(position))
             {
-                printf("%s - %d\n", getValue(position), getCounter(position));
+                addToHashTable(newTable, getValue(position), getCounter(position));
                 moveToNext(&position);
             }
-            printf("%s - %d\n", getValue(position), getCounter(position));
+            addToHashTable(newTable, getValue(position), getCounter(position));
             deletePosition(&position);
         }
     }
+    deleteHashTable(hashTable);
+    (*hashTable) = newTable;
 }
 
 void printHashTable(HashTable* hashTable)

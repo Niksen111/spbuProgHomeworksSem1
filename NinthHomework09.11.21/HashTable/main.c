@@ -15,10 +15,10 @@ HashTable* createHashTableFromFile(char name[])
         {
             break;
         }
-        addToHashTable(hashTable, buffer);
+        addToHashTable(hashTable, buffer, 1);
     }
     recalculateTableStatistics(hashTable);
-
+    redoHashTable(&hashTable);
     recalculateTableStatistics(hashTable);
     fclose(file);
     return hashTable;
@@ -33,7 +33,7 @@ int main()
     }
     HashTable* myTable = createHashTableFromFile("test.txt");
     printTableStatistics(myTable);
-    printHashTable(myTable);
+    //printHashTable(myTable);
     deleteHashTable(&myTable);
     return 0;
 }

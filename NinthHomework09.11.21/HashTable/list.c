@@ -143,6 +143,11 @@ void increaseCounter(Position* position)
     position->position->counter += 1;
 }
 
+void changeCounter(Position* position, int number)
+{
+    position->position->counter= number;
+}
+
 int getCounter(Position* position)
 {
     return position->position->counter;
