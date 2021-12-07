@@ -7,7 +7,11 @@ typedef struct HashTable HashTable;
 HashTable* createHashTable(int tableSize);
 
 // adds string to the hashTable
-void addToHashTable(HashTable* hashTable, char* string);
+void addToHashTable(HashTable* hashTable, char* line, int numberOfTheLines);
+
+// recalculates the number of voids, the length of all lists and
+// the length of the maximum list of the hash table.
+void recalculateTableStatistics(HashTable* hashTable);
 
 // prints table statistics
 void printTableStatistics(HashTable* hashTable);

@@ -17,6 +17,9 @@ HashTable* createHashTableFromFile(char name[])
         }
         addToHashTable(hashTable, buffer);
     }
+    recalculateTableStatistics(hashTable);
+
+    recalculateTableStatistics(hashTable);
     fclose(file);
     return hashTable;
 }

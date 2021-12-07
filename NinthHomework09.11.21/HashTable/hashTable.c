@@ -41,13 +41,13 @@ int calculateHashFunction(char* line, int mod)
     return result;
 }
 
-void addToHashTable(HashTable* hashTable, char* line)
+void addToHashTable(HashTable* hashTable, char* word, int numberOfTheWord)
 {
-    int i = calculateHashFunction(line, hashTable->tableSize);
+    int i = calculateHashFunction(word, hashTable->tableSize);
     if (hashTable->hashTable[i] == NULL)
     {
         hashTable->hashTable[i] = createList();
-        addToHead(hashTable->hashTable[i], line);
+        addToHead(hashTable->hashTable[i], word);
         Position* position = getFirst(hashTable->hashTable[i]);
         increaseCounter(position);
         deletePosition(&position);
@@ -74,7 +74,7 @@ void addToHashTable(HashTable* hashTable, char* line)
     }
 }
 
-void printTableStatistics(HashTable* hashTable)
+void recalculateTableStatistics(HashTable* hashTable)
 {
     int voidCounter = 0;
     int listLengths = 0;
@@ -101,9 +101,16 @@ void printTableStatistics(HashTable* hashTable)
             ++voidCounter;
         }
     }
-    printf("Table occupancy rate - %lf\n", (double) (voidCounter) / (double) hashTable->tableSize);
-    printf("Average list length - %lf\n", (double) (listLengths) / (double) hashTable->tableSize);
-    printf("Maximum list length - %d\n", maxListLength);
+    hashTable->maxListLength = maxListLength;
+    hashTable->voidCounter = voidCounter;
+    hashTable->listLengths = listLengths;
+}
+
+void printTableStatistics(HashTable* hashTable)
+{
+    printf("Table occupancy rate - %lf\n", (double) (hashTable->voidCounter) / (double) hashTable->tableSize);
+    printf("Average list length - %lf\n", (double) (hashTable->listLengths) / (double) hashTable->tableSize);
+    printf("Maximum list length - %d\n", hashTable->maxListLength);
 }
 
 void deleteHashTable(HashTable** hashTable)
@@ -114,6 +121,25 @@ void deleteHashTable(HashTable** hashTable)
         free((*hashTable)->hashTable[i]);
     }
     free(*hashTable);
+}
+
+void redoHashTable(HashTable** hashTable, int newTableSize)
+{
+    HashTable* newTable = createHashTable(newTableSize);
+    for (int i = 0; i < (*hashTable)->tableSize; ++i)
+    {
+        if ((*hashTable)->hashTable[i] != NULL)
+        {
+            Position* position = getFirst((*hashTable)->hashTable[i]);
+            while(!isLast(position))
+            {
+                printf("%s - %d\n", getValue(position), getCounter(position));
+                moveToNext(&position);
+            }
+            printf("%s - %d\n", getValue(position), getCounter(position));
+            deletePosition(&position);
+        }
+    }
 }
 
 void printHashTable(HashTable* hashTable)
