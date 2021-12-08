@@ -165,14 +165,14 @@ int giveNumberOfRepetitionsOfWord(HashTable* hashTable, char* word)
     return -1;
 }
 
-void deleteHashTable(HashTable** hashTable)
+void deleteHashTable(HashTable* hashTable)
 {
-    for (int i = 0; i < (*hashTable)->tableSize; ++i)
+    for (int i = 0; i < hashTable->tableSize; ++i)
     {
-        deleteList((*hashTable)->hashTable[i]);
-        free((*hashTable)->hashTable[i]);
+        deleteList(hashTable->hashTable[i]);
+        free(hashTable->hashTable[i]);
     }
-    free(*hashTable);
+    free(hashTable);
 }
 
 void redoHashTable(HashTable** hashTable)

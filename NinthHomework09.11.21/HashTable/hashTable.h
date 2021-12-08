@@ -20,7 +20,7 @@ void printTableStatistics(HashTable* hashTable);
 int giveNumberOfRepetitionsOfWord(HashTable* table, char* word);
 
 // deletes HashTable
-void deleteHashTable(HashTable** hashTable);
+void deleteHashTable(HashTable* hashTable);
 
 // redesigns the table to the "optimal size"
 void redoHashTable(HashTable** hashTable);

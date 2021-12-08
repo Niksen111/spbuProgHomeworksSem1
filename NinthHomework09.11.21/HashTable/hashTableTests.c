@@ -5,8 +5,13 @@
 bool testCreateHashTable()
 {
     HashTable* hashTable = createHashTable(35);
+    addToHashTable(hashTable, "Dog", 5);
+    addToHashTable(hashTable, "Cat", 10);
+    bool result = giveNumberOfRepetitionsOfWord(hashTable, "Dog") == 5
+            && giveNumberOfRepetitionsOfWord(hashTable, "Cat") == 10;
+    deleteHashTable(hashTable);
 
-    return true;
+    return result;
 }
 
 bool testAddToHashTable()
