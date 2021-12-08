@@ -1,14 +1,58 @@
 #include "hashTableTests.h"
 #include "hashTable.h"
+#include "listTests.h"
 
-HashTable* testCreateHashTable(int tableSize);
+bool testCreateHashTable()
+{
+    return true;
+}
 
-void testAddToHashTable(HashTable* hashTable, char* line, int numberOfTheLines);
+bool testAddToHashTable()
+{
+    return true;
+}
 
-void testRecalculateTableStatistics(HashTable* hashTable);
+bool testRecalculateTableStatistics()
+{
+    return true;
+}
 
-int testGiveNumberOfRepetitionsOfWord(HashTable* table, char* word);
+bool testGiveNumberOfRepetitionsOfWord()
+{
+    HashTable* hashTable = createHashTableFromFile("file.txt");
+    bool result = giveNumberOfRepetitionsOfWord(hashTable, "hello") == 3
+            && giveNumberOfRepetitionsOfWord(hashTable, "mama") == 1
+            && giveNumberOfRepetitionsOfWord(hashTable, "ABCD") == -1;
+    deleteHashTable(&hashTable);
+    return result;
+}
 
-void testDeleteHashTable(HashTable** hashTable);
+bool testDeleteHashTable()
+{
+    return true;
+}
 
-void testRedoHashTable(HashTable** hashTable);
+bool testRedoHashTable()
+{
+    return true;
+}
+
+bool testCreateHashTableFromFile(void)
+{
+    HashTable* hashTable1 = createHashTableFromFile("file.txt");
+    bool result = giveNumberOfRepetitionsOfWord(hashTable1, "hello") == 3;
+    deleteHashTable(&hashTable1);
+    HashTable* hashTable2 = createHashTableFromFile("test.txt");
+    result = result && giveNumberOfRepetitionsOfWord(hashTable2, "The") == 30;
+    deleteHashTable(&hashTable2);
+    return result;
+}
+
+bool testHashTable(void)
+{
+    return testCreateHashTable() && testAddToHashTable()
+        && testRecalculateTableStatistics()
+        && testGiveNumberOfRepetitionsOfWord()
+        && testDeleteHashTable() && testRedoHashTable()
+        && testCreateHashTableFromFile() && testList();
+}

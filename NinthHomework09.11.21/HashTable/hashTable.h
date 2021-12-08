@@ -27,3 +27,6 @@ void redoHashTable(HashTable** hashTable);
 
 // prints all the words from the hash table
 void printHashTable(HashTable* hashTable);
+
+
+HashTable* createHashTableFromFile(char name[]);
