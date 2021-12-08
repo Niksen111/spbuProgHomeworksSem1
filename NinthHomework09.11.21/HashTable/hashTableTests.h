@@ -1,8 +1,5 @@
-//
-// Created by niksen111 on 07.12.2021.
-//
+#pragma once
+#include <stdbool.h>
 
-#ifndef HASHTABLE_HASHTABLETESTS_H
-#define HASHTABLE_HASHTABLETESTS_H
-
-#endif //HASHTABLE_HASHTABLETESTS_H
+// test all the function of HashTable structure
+bool testHashTable(void);

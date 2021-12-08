@@ -13,6 +13,27 @@ typedef struct HashTable
     int maxListLength;
 } HashTable;
 
+bool isPrime(int number)
+{
+    int i;
+    for (i = 2; i*i <= number; ++i)
+    {
+        if (number % i == 0){
+            return false;
+        }
+    }
+    return true;
+}
+
+int findPrime(int number)
+{
+    while (!isPrime(number))
+    {
+        ++number;
+    }
+    return number;
+}
+
 HashTable* createHashTable(int tableSize)
 {
     HashTable* hashTable = calloc(1, sizeof(HashTable));
@@ -28,14 +49,14 @@ int calculateHashFunction(char* line, int mod)
     int currentMultiplier = 1;
     for (int i = 0; i < length; ++i)
     {
-        result = (result + abs((((int)line[i]) * currentMultiplier) % mod)) % mod;
+        result = (result + abs((line[i] * currentMultiplier) % mod)) % mod;
         if (currentMultiplier > 1000000000)
         {
             currentMultiplier = 1;
         }
         else
         {
-            currentMultiplier *= 59;
+            currentMultiplier *= 31;
         }
     }
     return result;
@@ -116,6 +137,34 @@ void printTableStatistics(HashTable* hashTable)
     printf("Maximum list length: %d\n", hashTable->maxListLength);
 }
 
+int giveNumberOfRepetitionsOfWord(HashTable* hashTable, char* word)
+{
+    for (int i = 0; i < hashTable->tableSize; ++i)
+    {
+        if (hashTable->hashTable[i] != NULL)
+        {
+            Position* position = getFirst(hashTable->hashTable[i]);
+            while(!isLast(position))
+            {
+                if (strcmp(getValue(position), word) == 0)
+                {
+                    int result = getCounter(position);
+                    deletePosition(&position);
+                    return result;
+                }
+                moveToNext(&position);
+            }
+            if (strcmp(getValue(position), word) == 0)
+            {
+                int result = getCounter(position);
+                deletePosition(&position);
+                return result;
+            }
+            deletePosition(&position);
+        }
+    }
+}
+
 void deleteHashTable(HashTable** hashTable)
 {
     for (int i = 0; i < (*hashTable)->tableSize; ++i)
@@ -128,7 +177,7 @@ void deleteHashTable(HashTable** hashTable)
 
 void redoHashTable(HashTable** hashTable)
 {
-    int newTableSize = (*hashTable)->listLengths;
+    int newTableSize = findPrime((*hashTable)->listLengths);
     HashTable* newTable = createHashTable(newTableSize);
     for (int i = 0; i < (*hashTable)->tableSize; ++i)
     {

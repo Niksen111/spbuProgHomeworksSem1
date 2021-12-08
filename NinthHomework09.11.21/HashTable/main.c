@@ -24,16 +24,26 @@ HashTable* createHashTableFromFile(char name[])
     return hashTable;
 }
 
+bool testCreateHashTableFromFile(void)
+{
+    HashTable* hashTable1 = createHashTableFromFile("file.txt");
+    bool result = giveNumberOfRepetitionsOfWord(hashTable1, "hello") == 3;
+    deleteHashTable(&hashTable1);
+    HashTable* hashTable2 = createHashTableFromFile("test.txt");
+    result = result && giveNumberOfRepetitionsOfWord(hashTable2, "The") == 30;
+    deleteHashTable(&hashTable2);
+    return result;
+}
+
 int main()
 {
-    if (!testList())
+    if (!testList() || !testCreateHashTableFromFile())
     {
         printf("Tests failed(\n");
         return -1;
     }
     HashTable* myTable = createHashTableFromFile("test.txt");
     printTableStatistics(myTable);
-    //printHashTable(myTable);
     deleteHashTable(&myTable);
     return 0;
 }
