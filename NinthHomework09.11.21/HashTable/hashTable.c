@@ -139,30 +139,30 @@ void printTableStatistics(HashTable* hashTable)
 
 int giveNumberOfRepetitionsOfWord(HashTable* hashTable, char* word)
 {
-    for (int i = 0; i < hashTable->tableSize; ++i)
+    int index = calculateHashFunction(word, hashTable->tableSize);
+    if (hashTable->hashTable[index] == NULL)
     {
-        if (hashTable->hashTable[i] != NULL)
-        {
-            Position* position = getFirst(hashTable->hashTable[i]);
-            while(!isLast(position))
-            {
-                if (strcmp(getValue(position), word) == 0)
-                {
-                    int result = getCounter(position);
-                    deletePosition(&position);
-                    return result;
-                }
-                moveToNext(&position);
-            }
-            if (strcmp(getValue(position), word) == 0)
-            {
-                int result = getCounter(position);
-                deletePosition(&position);
-                return result;
-            }
-            deletePosition(&position);
-        }
+        return -1;
     }
+    Position* position = getFirst(hashTable->hashTable[index]);
+    while(!isLast(position))
+    {
+        if (strcmp(getValue(position), word) == 0)
+        {
+            int result = getCounter(position);
+            deletePosition(&position);
+            return result;
+        }
+        moveToNext(&position);
+    }
+    if (strcmp(getValue(position), word) == 0)
+    {
+        int result = getCounter(position);
+        deletePosition(&position);
+        return result;
+    }
+    deletePosition(&position);
+    return -1;
 }
 
 void deleteHashTable(HashTable** hashTable)
