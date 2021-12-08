@@ -4,16 +4,20 @@
 
 bool testCreateHashTable()
 {
+    HashTable* hashTable = createHashTable(35);
+
     return true;
 }
 
 bool testAddToHashTable()
 {
+    HashTable* hashTable = createHashTableFromFile("file.txt");
     return true;
 }
 
 bool testRecalculateTableStatistics()
 {
+    HashTable* hashTable = createHashTableFromFile("file.txt");
     return true;
 }
 
@@ -29,11 +33,13 @@ bool testGiveNumberOfRepetitionsOfWord()
 
 bool testDeleteHashTable()
 {
+    HashTable* hashTable = createHashTableFromFile("file.txt");
     return true;
 }
 
 bool testRedoHashTable()
 {
+    HashTable* hashTable = createHashTableFromFile("file.txt");
     return true;
 }
 
