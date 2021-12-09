@@ -1,27 +1,24 @@
 #pragma once
 #include <stdbool.h>
 
-// node of tree
-typedef struct TreeNode TreeNode;
-
 // root of tree
-typedef struct TreeRoot TreeRoot;
+typedef struct Dictionary Dictionary;
 
 // create empty TreeRoot
-TreeRoot* createTreeRoot();
+Dictionary* createDictionary();
 
 // removes the entire Tree
-void deleteTree(TreeRoot** root);
+void deleteDictionary(Dictionary** dictionary);
 
 // adds a new node to the tree or replaces the value
 // if a node with this key exists
-void addTreeNode(TreeRoot** root, int key, char* value);
+void addEntry(Dictionary* dictionary, int key, char* value);
 
 // finds a value for a given key in the dictionary
-char* findValue(TreeRoot* root, int key);
+char* findValue(Dictionary* dictionary, int key);
 
 // checks if the given key is in the dictionary
-bool isKeyInTree(TreeRoot* root, int key);
+bool isKeyInDictionary(Dictionary* dictionary, int key);
 
 // Deletes the given key and its associated value from the dictionary.
-void removeEntry(TreeRoot** root, int key);
+void removeEntry(Dictionary* dictionary, int key);

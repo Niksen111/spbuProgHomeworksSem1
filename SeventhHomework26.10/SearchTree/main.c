@@ -15,7 +15,7 @@ void printOperations()
 
 void interactWithUser()
 {
-    TreeRoot* myTree = createTreeRoot();
+    Dictionary* myTree = createDictionary();
     printOperations();
     while (true)
     {
@@ -26,7 +26,7 @@ void interactWithUser()
         switch (operation)
         {
             case 0:
-                deleteTree(&myTree);
+                deleteDictionary(&myTree);
                 return;
             case 1:
             {
@@ -36,7 +36,7 @@ void interactWithUser()
                 scanf("%d%*c", &key);
                 printf("Введите значение (не более 10000 символов)\n");
                 scanf("%[^\n]", value);
-                addTreeNode(&myTree, key, value);
+                addEntry(myTree, key, value);
                 break;
             }
             case 2:
@@ -44,7 +44,7 @@ void interactWithUser()
                 int key = 0;
                 printf("Введите ключ\n");
                 scanf("%d", &key);
-                char* value = findValue(myTree, key);
+                const char* value = findValue(myTree, key);
                 if (value == NULL)
                 {
                     printf("Запись не найдена.\n");
@@ -61,7 +61,7 @@ void interactWithUser()
                 int key = 0;
                 printf("Введите ключ\n");
                 scanf("%d", &key);
-                if (isKeyInTree(myTree, key))
+                if (isKeyInDictionary(myTree, key))
                 {
                     printf("Данный ключ присутствует в словаре.\n");
                 }
@@ -76,7 +76,7 @@ void interactWithUser()
                 int key = 0;
                 printf("Введите ключ\n");
                 scanf("%d", &key);
-                removeEntry(&myTree, key);
+                removeEntry(myTree, key);
                 break;
             }
             case 5:
@@ -90,7 +90,8 @@ void interactWithUser()
     }
 }
 
-int main() {
+int main()
+{
     if (!testSearchTree())
     {
         printf("Tests failed(\n");
