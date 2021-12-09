@@ -12,6 +12,6 @@ int main()
     }
     HashTable* myTable = createHashTableFromFile("test.txt");
     printTableStatistics(myTable);
-    deleteHashTable(&myTable);
+    deleteHashTable(myTable);
     return 0;
 }
