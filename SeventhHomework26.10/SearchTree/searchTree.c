@@ -15,11 +15,6 @@ typedef struct Dictionary
     TreeNode* treeRoot;
 } Dictionary;
 
-typedef struct CurrentTreeNode
-{
-    TreeNode* currentTreeNode;
-} CurrentTreeNode;
-
 Dictionary* createDictionary()
 {
     return calloc(1, sizeof(Dictionary));
@@ -31,41 +26,41 @@ typedef enum Direction
     right
 } Direction;
 
-void transfer(CurrentTreeNode* node, Direction directionOfSon)
+void transfer(TreeNode** node, Direction directionOfSon)
 {
-    if (node->currentTreeNode->parent == NULL)
+    if ((*node)->parent == NULL)
     {
         return;
     }
     if (directionOfSon == right)
     {
-        node->currentTreeNode->rightSon->parent = node->currentTreeNode->parent;
+        (*node)->rightSon->parent = (*node)->parent;
     }
     else
     {
-        node->currentTreeNode->leftSon->parent = node->currentTreeNode->parent;
+        (*node)->leftSon->parent = (*node)->parent;
     }
-    if (node->currentTreeNode->parent->rightSon == node->currentTreeNode)
+    if ((*node)->parent->rightSon == (*node))
     {
         if (directionOfSon == right)
         {
-            node->currentTreeNode->parent->rightSon = node->currentTreeNode->rightSon;
-            node->currentTreeNode->rightSon = NULL;
+            (*node)->parent->rightSon = (*node)->rightSon;
+            (*node)->rightSon = NULL;
             return;
         }
-        node->currentTreeNode->parent->rightSon = node->currentTreeNode->leftSon;
-        node->currentTreeNode->leftSon = NULL;
+        (*node)->parent->rightSon = (*node)->leftSon;
+        (*node)->leftSon = NULL;
     }
     else
     {
         if (directionOfSon == right)
         {
-            node->currentTreeNode->parent->leftSon = node->currentTreeNode->rightSon;
-            node->currentTreeNode->rightSon = NULL;
+            (*node)->parent->leftSon = (*node)->rightSon;
+            (*node)->rightSon = NULL;
             return;
         }
-        node->currentTreeNode->parent->leftSon = node->currentTreeNode->leftSon;
-        node->currentTreeNode->leftSon = NULL;
+        (*node)->parent->leftSon = (*node)->leftSon;
+        (*node)->leftSon = NULL;
     }
 }
 
@@ -80,18 +75,6 @@ void deleteBranchRecursive(TreeNode* branch)
     deleteBranchRecursive(branch->rightSon);
     free(branch->rightSon);
     free(branch->value);
-}
-
-void deleteBranch(CurrentTreeNode** branch)
-{
-    if ((*branch) == NULL)
-    {
-        return;
-    }
-    deleteBranchRecursive((*branch)->currentTreeNode);
-    free((*branch)->currentTreeNode);
-    free(*branch);
-    (*branch) = NULL;
 }
 
 void deleteDictionary(Dictionary** dictionary)
@@ -116,103 +99,97 @@ void addEntry(Dictionary* dictionary, int key, char* value)
         dictionary->treeRoot = newTreeNode;
         return;
     }
-    CurrentTreeNode* node = calloc(1, sizeof(CurrentTreeNode));
-    node->currentTreeNode = dictionary->treeRoot;
+    TreeNode** node = calloc(1, sizeof(TreeNode**));
+    (*node) = dictionary->treeRoot;
     while (true)
     {
-        if (key == node->currentTreeNode->key)
+        if (key == (*node)->key)
         {
-            free(node->currentTreeNode->value);
-            node->currentTreeNode->value = value;
+            free((*node)->value);
+            (*node)->value = value;
             free(node);
             return;
         }
-        if (key > node->currentTreeNode->key)
+        if (key > (*node)->key)
         {
-            if (node->currentTreeNode->rightSon == NULL)
+            if ((*node)->rightSon == NULL)
             {
                 TreeNode* newNode = calloc(1, sizeof(TreeNode));
-                newNode->parent = node->currentTreeNode;
+                newNode->parent = (*node);
                 newNode->key = key;
                 newNode->value = value;
-                node->currentTreeNode->rightSon = newNode;
+                (*node)->rightSon = newNode;
                 free(node);
                 return;
             }
-            node->currentTreeNode = node->currentTreeNode->rightSon;
+            (*node) = (*node)->rightSon;
         }
         else
         {
-            if (node->currentTreeNode->leftSon == NULL)
+            if ((*node)->leftSon == NULL)
             {
                 TreeNode* newNode = calloc(1, sizeof(TreeNode));
-                newNode->parent = node->currentTreeNode;
+                newNode->parent = (*node);
                 newNode->key = key;
                 newNode->value = value;
-                node->currentTreeNode->leftSon = newNode;
+                (*node)->leftSon = newNode;
                 free(node);
                 return;
             }
-            node->currentTreeNode = node->currentTreeNode->leftSon;
+            (*node) = (*node)->leftSon;
         }
     }
 }
 
-bool isLeftSon(CurrentTreeNode* currentTreeNode)
+void freeNode(Dictionary** root, TreeNode*** retrievableNode)
 {
-    return currentTreeNode->currentTreeNode->parent->leftSon
-        == currentTreeNode->currentTreeNode;
-}
-
-void freeNode(Dictionary** root, CurrentTreeNode** retrievableNode)
-{
-    if ((*root)->treeRoot == (*retrievableNode)->currentTreeNode)
+    if ((*root)->treeRoot == (**retrievableNode))
     {
-        free((*retrievableNode)->currentTreeNode->value);
+        free((**retrievableNode)->value);
         free((*root)->treeRoot);
         free(*root);
         free(*retrievableNode);
         return;
     }
-    if ((*retrievableNode)->currentTreeNode->parent != NULL)
+    if ((**retrievableNode)->parent != NULL)
     {
-        if ((*retrievableNode)->currentTreeNode->parent->rightSon == (*retrievableNode)->currentTreeNode)
+        if ((**retrievableNode)->parent->rightSon == (**retrievableNode))
         {
-            (*retrievableNode)->currentTreeNode->parent->rightSon = NULL;
-            free((*retrievableNode)->currentTreeNode->value);
-            free((*retrievableNode)->currentTreeNode);
+            (**retrievableNode)->parent->rightSon = NULL;
+            free((**retrievableNode)->value);
+            free(**retrievableNode);
             free(*retrievableNode);
             return;
         }
-        (*retrievableNode)->currentTreeNode->parent->leftSon = NULL;
-        free((*retrievableNode)->currentTreeNode->value);
-        free((*retrievableNode)->currentTreeNode);
+        (**retrievableNode)->parent->leftSon = NULL;
+        free((**retrievableNode)->value);
+        free(**retrievableNode);
         free(*retrievableNode);
     }
     else
     {
-        free((*retrievableNode)->currentTreeNode->value);
-        free((*retrievableNode)->currentTreeNode);
+        free((**retrievableNode)->value);
+        free(**retrievableNode);
         free(*retrievableNode);
     }
 }
 
 
-void removeTreeNode(Dictionary** root, CurrentTreeNode** retrievableNode)
+void removeTreeNode(Dictionary** root, TreeNode*** retrievableNode)
 {
     if ((*root)->treeRoot == NULL)
     {
         return;
     }
-    bool isRoot = (*retrievableNode)->currentTreeNode == (*root)->treeRoot;
-    if ((*retrievableNode)->currentTreeNode->leftSon == NULL
-        && (*retrievableNode)->currentTreeNode->rightSon == NULL)
+    bool isRoot = (**retrievableNode) == (*root)->treeRoot;
+    if ((**retrievableNode)->leftSon == NULL
+        && (**retrievableNode)->rightSon == NULL)
     {
         freeNode(root, retrievableNode);
         return;
     }
-    if ((*retrievableNode)->currentTreeNode->leftSon != NULL
-        && (*retrievableNode)->currentTreeNode->rightSon == NULL)
+    if ((**retrievableNode)->leftSon != NULL
+        && (**retrievableNode)->rightSon == NULL)
     {
         transfer((*retrievableNode), left);
         if (isRoot)
@@ -223,8 +200,8 @@ void removeTreeNode(Dictionary** root, CurrentTreeNode** retrievableNode)
         freeNode(root, retrievableNode);
         return;
     }
-    if ((*retrievableNode)->currentTreeNode->leftSon == NULL
-        && (*retrievableNode)->currentTreeNode->rightSon != NULL)
+    if ((**retrievableNode)->leftSon == NULL
+        && (**retrievableNode)->rightSon != NULL)
     {
         transfer((*retrievableNode), right);
         if (isRoot)
@@ -235,80 +212,80 @@ void removeTreeNode(Dictionary** root, CurrentTreeNode** retrievableNode)
         freeNode(root, retrievableNode);
         return;
     }
-    CurrentTreeNode* newNode = calloc(1, sizeof(CurrentTreeNode));
-    newNode->currentTreeNode = (*retrievableNode)->currentTreeNode->leftSon;
-    if (newNode->currentTreeNode->rightSon == NULL)
+    TreeNode** newNode = calloc(1, sizeof(TreeNode*));
+    (*newNode) = (**retrievableNode)->leftSon;
+    if ((*newNode)->rightSon == NULL)
     {
-        (*retrievableNode)->currentTreeNode->key = newNode->currentTreeNode->key;
-        free((*retrievableNode)->currentTreeNode->value);
-        (*retrievableNode)->currentTreeNode->value = newNode->currentTreeNode->value;
-        newNode->currentTreeNode->parent->leftSon = newNode->currentTreeNode->leftSon;
-        if (newNode->currentTreeNode->leftSon != NULL)
+        (**retrievableNode)->key = (*newNode)->key;
+        free((**retrievableNode)->value);
+        (**retrievableNode)->value = (*newNode)->value;
+        (*newNode)->parent->leftSon = (*newNode)->leftSon;
+        if ((*newNode)->leftSon != NULL)
         {
-            newNode->currentTreeNode->leftSon->parent = newNode->currentTreeNode->parent;
+            (*newNode)->leftSon->parent = (*newNode)->parent;
         }
         freeNode(root, &newNode);
         free(*retrievableNode);
     }
-    while (newNode->currentTreeNode->rightSon != NULL)
+    while ((*newNode)->rightSon != NULL)
     {
-        newNode->currentTreeNode = newNode->currentTreeNode->rightSon;
+        (*newNode) = (*newNode)->rightSon;
     }
-    (*retrievableNode)->currentTreeNode->key = newNode->currentTreeNode->key;
-    free((*retrievableNode)->currentTreeNode->value);
-    (*retrievableNode)->currentTreeNode->value = newNode->currentTreeNode->value;
-    newNode->currentTreeNode->parent->rightSon = newNode->currentTreeNode->leftSon;
+    (**retrievableNode)->key = (*newNode)->key;
+    free((**retrievableNode)->value);
+    (**retrievableNode)->value = (*newNode)->value;
+    (*newNode)->parent->rightSon = (*newNode)->leftSon;
     removeTreeNode(root, &newNode);
     free(*retrievableNode);
 }
 
-CurrentTreeNode* findNode(Dictionary* root, int key)
+TreeNode** findNode(Dictionary* root, int key)
 {
     if (root == NULL || root->treeRoot == NULL)
     {
         return NULL;
     }
-    CurrentTreeNode* node = calloc(1, sizeof(CurrentTreeNode));
+    TreeNode** node = calloc(1, sizeof(TreeNode*));
     if (node == NULL)
     {
         return NULL;
     }
-    node->currentTreeNode = root->treeRoot;
+    (*node) = root->treeRoot;
     while (true)
     {
-        if (key == node->currentTreeNode->key)
+        if (key == (*node)->key)
         {
             return node;
         }
-        if (key > node->currentTreeNode->key)
+        if (key > (*node)->key)
         {
-            if (node->currentTreeNode->rightSon == NULL)
+            if ((*node)->rightSon == NULL)
             {
                 free(node);
                 return NULL;
             }
-            node->currentTreeNode = node->currentTreeNode->rightSon;
+            (*node) = (*node)->rightSon;
         }
         else
         {
-            if (node->currentTreeNode->leftSon == NULL)
+            if ((*node)->leftSon == NULL)
             {
                 free(node);
                 return NULL;
             }
-            node->currentTreeNode = node->currentTreeNode->leftSon;
+            (*node) = (*node)->leftSon;
         }
     }
 }
 
 char* findValue(Dictionary* dictionary, int key)
 {
-    CurrentTreeNode* node = findNode(dictionary, key);
+    TreeNode** node = findNode(dictionary, key);
     if (node == NULL)
     {
         return NULL;
     }
-    char* value = node->currentTreeNode->value;
+    char* value = (*node)->value;
     free(node);
 
     return value;
@@ -316,7 +293,7 @@ char* findValue(Dictionary* dictionary, int key)
 
 bool isKeyInDictionary(Dictionary* dictionary, int key)
 {
-    CurrentTreeNode* node = findNode(dictionary, key);
+    TreeNode** node = findNode(dictionary, key);
     if (node != NULL)
     {
         free(node);
@@ -327,7 +304,7 @@ bool isKeyInDictionary(Dictionary* dictionary, int key)
 
 void removeEntry(Dictionary* dictionary, int key)
 {
-    CurrentTreeNode* node = findNode(dictionary, key);
+    TreeNode** node = findNode(dictionary, key);
     if (node != NULL)
     {
         removeTreeNode(&dictionary, &node);

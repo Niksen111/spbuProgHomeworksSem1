@@ -35,7 +35,7 @@ void interactWithUser()
                 printf("Введите ключ\n");
                 scanf("%d%*c", &key);
                 printf("Введите значение (не более 10000 символов)\n");
-                scanf("%[^\n]", value);
+                scanf("%[^\n]%*c", value);
                 addEntry(myTree, key, value);
                 break;
             }
