@@ -240,19 +240,26 @@ void removeTreeNode(Dictionary** root, CurrentTreeNode** retrievableNode)
     if (newNode->currentTreeNode->rightSon == NULL)
     {
         (*retrievableNode)->currentTreeNode->key = newNode->currentTreeNode->key;
+        free((*retrievableNode)->currentTreeNode->value);
         (*retrievableNode)->currentTreeNode->value = newNode->currentTreeNode->value;
         newNode->currentTreeNode->parent->leftSon = newNode->currentTreeNode->leftSon;
-        newNode->currentTreeNode->leftSon->parent = newNode->currentTreeNode->parent;
+        if (newNode->currentTreeNode->leftSon != NULL)
+        {
+            newNode->currentTreeNode->leftSon->parent = newNode->currentTreeNode->parent;
+        }
         freeNode(root, &newNode);
+        free(*retrievableNode);
     }
     while (newNode->currentTreeNode->rightSon != NULL)
     {
         newNode->currentTreeNode = newNode->currentTreeNode->rightSon;
     }
     (*retrievableNode)->currentTreeNode->key = newNode->currentTreeNode->key;
+    free((*retrievableNode)->currentTreeNode->value);
     (*retrievableNode)->currentTreeNode->value = newNode->currentTreeNode->value;
     newNode->currentTreeNode->parent->rightSon = newNode->currentTreeNode->leftSon;
     removeTreeNode(root, &newNode);
+    free(*retrievableNode);
 }
 
 CurrentTreeNode* findNode(Dictionary* root, int key)
