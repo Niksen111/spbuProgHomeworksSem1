@@ -209,7 +209,7 @@ void removeTreeNode(Dictionary** root, CurrentTreeNode** retrievableNode)
         && (*retrievableNode)->currentTreeNode->rightSon == NULL)
     {
         freeNode(root, retrievableNode);
-        return ;
+        return;
     }
     if ((*retrievableNode)->currentTreeNode->leftSon != NULL
         && (*retrievableNode)->currentTreeNode->rightSon == NULL)
