@@ -15,7 +15,7 @@ void printOperations()
 
 void interactWithUser()
 {
-    AVLTreeRoot* myTree = createAVLTreeRoot();
+    Dictionary* myDictionary = createDictionary();
     printOperations();
     while (true)
     {
@@ -26,7 +26,7 @@ void interactWithUser()
         switch (operation)
         {
         case 0:
-            deleteTree(&myTree);
+            deleteDictionary(&myDictionary);
             return;
         case 1:
         {
@@ -36,7 +36,7 @@ void interactWithUser()
             scanf("%d%*c", &key);
             printf("Введите значение (не более 10000 символов)\n");
             scanf("%[^\n]", value);
-            addTreeNode(&myTree, key, value);
+            addEntry(myDictionary, key, value);
             break;
         }
         case 2:
@@ -44,7 +44,7 @@ void interactWithUser()
             int key = 0;
             printf("Введите ключ\n");
             scanf("%d", &key);
-            char* value = findValue(myTree, key);
+            char* value = findValue(myDictionary, key);
             if (value == NULL)
             {
                 printf("Запись не найдена.\n");
@@ -61,7 +61,7 @@ void interactWithUser()
             int key = 0;
             printf("Введите ключ\n");
             scanf("%d", &key);
-            if (isKeyInTree(myTree, key))
+            if (isKeyInDictionary(myDictionary, key))
             {
                 printf("Данный ключ присутствует в словаре.\n");
             }
@@ -76,7 +76,7 @@ void interactWithUser()
             int key = 0;
             printf("Введите ключ\n");
             scanf("%d", &key);
-            removeEntry(&myTree, key);
+            removeEntry(&myDictionary, key);
             break;
         }
         case 5:
