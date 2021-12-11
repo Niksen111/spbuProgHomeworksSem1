@@ -1,9 +1,6 @@
 #pragma once
 #include <stdbool.h>
 
-// node of tree
-typedef struct TreeNode TreeNode;
-
 // root of tree
 typedef struct AVLTreeRoot AVLTreeRoot;
 

@@ -1,6 +1,7 @@
 #include "avlTreeTests.h"
 #include "avlTree.h"
 #include <string.h>
+#include <stdlib.h>
 
 bool testCreateAVLTreeRoot()
 {
@@ -14,9 +15,12 @@ bool testCreateAVLTreeRoot()
 bool testDeleteTree()
 {
     AVLTreeRoot* root = createAVLTreeRoot();
-    char s1[10] = "Abcdef";
-    char s2[15] = "SearchTreeeee";
-    char s3[5] = "Elle";
+    char* s1 = calloc(15, sizeof(char));
+    strcat(s1, "Abcdef");
+    char* s2 = calloc(15, sizeof(char));
+    strcat(s2, "SearchTreeeee");
+    char* s3 = calloc(15, sizeof(char));
+    strcat(s3, "Elle");
     addTreeNode(&root, 2, s2);
     addTreeNode(&root, 1, s1);
     addTreeNode(&root, 3, s3);
@@ -28,11 +32,16 @@ bool testDeleteTree()
 bool testAddTreeNode()
 {
     AVLTreeRoot* root = createAVLTreeRoot();
-    char s1[10] = "Abcdef";
-    char s2[15] = "SearchTreeeee";
-    char s3[5] = "Elle";
-    char s4[5] = "Mrs";
-    char s5[9] = "Ella";
+    char* s1 = calloc(15, sizeof(char));
+    strcat(s1, "Kate");
+    char* s2 = calloc(15, sizeof(char));
+    strcat(s2, "Jess");
+    char* s3 = calloc(15, sizeof(char));
+    strcat(s3, "Elle");
+    char* s4 = calloc(15, sizeof(char));
+    strcat(s4, "Mary");
+    char* s5 = calloc(15, sizeof(char));
+    strcat(s5, "Eva");
     addTreeNode(&root, 2, s2);
     //addTreeNode(&root, 1, s1);
     bool result = findValue(root, 2) != NULL
@@ -50,9 +59,12 @@ bool testAddTreeNode()
 bool testFindValue()
 {
     AVLTreeRoot* root = createAVLTreeRoot();
-    char s1[10] = "Abcdef";
-    char s2[15] = "SearchTreeeee";
-    char s3[5] = "Elle";
+    char* s1 = calloc(15, sizeof(char));
+    strcat(s1, "Abcdef");
+    char* s2 = calloc(15, sizeof(char));
+    strcat(s2, "SearchTreeeee");
+    char* s3 = calloc(15, sizeof(char));
+    strcat(s3, "Elle");
     addTreeNode(&root, 2, s2);
     addTreeNode(&root, 1, s1);
     addTreeNode(&root, 3, s3);
@@ -66,9 +78,12 @@ bool testFindValue()
 bool testIsKeyInTree()
 {
     AVLTreeRoot* root = createAVLTreeRoot();
-    char s1[10] = "Abcdef";
-    char s2[15] = "SearchTreeeee";
-    char s3[5] = "Elle";
+    char* s1 = calloc(15, sizeof(char));
+    strcat(s1, "Abcdef");
+    char* s2 = calloc(15, sizeof(char));
+    strcat(s2, "SearchTreeeee");
+    char* s3 = calloc(15, sizeof(char));
+    strcat(s3, "Elle");
     addTreeNode(&root, 2, s2);
     addTreeNode(&root, 1, s1);
     addTreeNode(&root, 3, s3);
@@ -83,11 +98,16 @@ bool testIsKeyInTree()
 bool testRemoveTheKey()
 {
     AVLTreeRoot* root = createAVLTreeRoot();
-    char s1[10] = "Kate";
-    char s2[15] = "Jess";
-    char s3[5] = "Elle";
-    char s4[5] = "Mary";
-    char s5[5] = "Eva";
+    char* s1 = calloc(15, sizeof(char));
+    strcat(s1, "Kate");
+    char* s2 = calloc(15, sizeof(char));
+    strcat(s2, "Jess");
+    char* s3 = calloc(15, sizeof(char));
+    strcat(s3, "Elle");
+    char* s4 = calloc(15, sizeof(char));
+    strcat(s4, "Mary");
+    char* s5 = calloc(15, sizeof(char));
+    strcat(s5, "Eva");
     addTreeNode(&root, 2, s2);
     addTreeNode(&root, 1, s1);
     addTreeNode(&root, 4, s3);
