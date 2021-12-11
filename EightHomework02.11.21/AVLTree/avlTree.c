@@ -6,26 +6,20 @@ typedef struct TreeNode
 {
     int key;
     char* value;
-    int heightDifference;
-    int height;
-    TreeNode* parent;
-    TreeNode* leftSon;
-    TreeNode* rightSon;
+    char height;
+    struct TreeNode* parent;
+    struct TreeNode* leftSon;
+    struct TreeNode* rightSon;
 } TreeNode;
 
-typedef struct AVLTreeRoot
+typedef struct Dictionary
 {
     TreeNode* AVLTreeRoot;
-} AVLTreeRoot;
+} Dictionary;
 
-typedef struct CurrentTreeNode
+Dictionary* createDictionary()
 {
-    TreeNode* currentTreeNode;
-} CurrentTreeNode;
-
-AVLTreeRoot* createAVLTreeRoot()
-{
-    return calloc(1, sizeof(AVLTreeRoot));
+    return calloc(1, sizeof(Dictionary));
 }
 
 typedef enum Direction
@@ -34,7 +28,24 @@ typedef enum Direction
     right
 } Direction;
 
-int calculateNodeHigh(TreeNode* node)
+char calculateHeightDifference(TreeNode* node)
+{
+    if (node->rightSon != NULL && node->leftSon != NULL)
+    {
+        return node->rightSon->height - node->leftSon->height;
+    }
+    if (node->rightSon != NULL)
+    {
+        return node->rightSon->height + 1;
+    }
+    if (node->leftSon != NULL)
+    {
+        return -node->leftSon->height - 1;
+    }
+    return 0;
+}
+
+char calculateNodeHigh(TreeNode* node)
 {
     if (node->rightSon == NULL && node->leftSon == NULL)
     {
@@ -60,244 +71,230 @@ void recalculateHeightsRecursive(TreeNode* node)
     recalculateHeightsRecursive(node->leftSon);
     recalculateHeightsRecursive(node->rightSon);
     node->height = calculateNodeHigh(node);
-    node->heightDifference = 0;
-    if (node->rightSon != NULL && node->leftSon != NULL)
-    {
-        node->heightDifference = node->rightSon->height - node->leftSon->height;
-        return;
-    }
-    if (node->rightSon != NULL)
-    {
-        node->heightDifference = node->rightSon->height + 1;
-        return;
-    }
-    if (node->leftSon != NULL)
-    {
-        node->heightDifference = -node->leftSon->height - 1;
-    }
 }
 
-void recalculateHeights(AVLTreeRoot* root)
+void recalculateHeights(Dictionary* dictionary)
 {
-    if (root == NULL)
+    if (dictionary == NULL)
     {
         return;
     }
-    recalculateHeightsRecursive(root->AVLTreeRoot);
+    recalculateHeightsRecursive(dictionary->AVLTreeRoot);
 }
 
-void smallLeftRotation(AVLTreeRoot* root, CurrentTreeNode* node)
+void smallLeftRotation(Dictionary* dictionary, TreeNode** node)
 {
-    if (root->AVLTreeRoot == node->currentTreeNode)
+    if (dictionary->AVLTreeRoot == (*node))
     {
-        root->AVLTreeRoot = node->currentTreeNode->rightSon;
+        dictionary->AVLTreeRoot = (*node)->rightSon;
     }
-    if (node->currentTreeNode->parent != NULL)
+    if ((*node)->parent != NULL)
     {
-        if (node->currentTreeNode->parent->rightSon == node->currentTreeNode)
+        if ((*node)->parent->rightSon == (*node))
         {
-            node->currentTreeNode->parent->rightSon = node->currentTreeNode->rightSon;
+            (*node)->parent->rightSon = (*node)->rightSon;
         }
         else
         {
-            node->currentTreeNode->parent->leftSon = node->currentTreeNode->rightSon;
+            (*node)->parent->leftSon = (*node)->rightSon;
         }
-        node->currentTreeNode->rightSon->parent = node->currentTreeNode->parent;
+        (*node)->rightSon->parent = (*node)->parent;
     }
     else
     {
-        node->currentTreeNode->rightSon->parent = NULL;
+        (*node)->rightSon->parent = NULL;
     }
-    if (node->currentTreeNode->rightSon->leftSon != NULL)
+    if ((*node)->rightSon->leftSon != NULL)
     {
-        node->currentTreeNode->rightSon->leftSon->parent = node->currentTreeNode;
+        (*node)->rightSon->leftSon->parent = (*node);
     }
-    node->currentTreeNode->parent = node->currentTreeNode->rightSon;
-    node->currentTreeNode->rightSon = node->currentTreeNode->rightSon->leftSon;
-    node->currentTreeNode->parent->leftSon = node->currentTreeNode;
+    (*node)->parent = (*node)->rightSon;
+    (*node)->rightSon = (*node)->rightSon->leftSon;
+    (*node)->parent->leftSon = (*node);
 }
 
-void smallRightRotation(AVLTreeRoot* root, CurrentTreeNode* node)
+void smallRightRotation(Dictionary* dictionary, TreeNode** node)
 {
-    if (root->AVLTreeRoot == node->currentTreeNode)
+    if (dictionary->AVLTreeRoot == (*node))
     {
-        root->AVLTreeRoot = node->currentTreeNode->leftSon;
+        dictionary->AVLTreeRoot = (*node)->leftSon;
     }
-    if (node->currentTreeNode->parent != NULL)
+    if ((*node)->parent != NULL)
     {
-        if (node->currentTreeNode->parent->rightSon == node->currentTreeNode)
+        if ((*node)->parent->rightSon == (*node))
         {
-            node->currentTreeNode->parent->rightSon = node->currentTreeNode->leftSon;
+            (*node)->parent->rightSon = (*node)->leftSon;
         }
         else
         {
-            node->currentTreeNode->parent->leftSon = node->currentTreeNode->leftSon;
+            (*node)->parent->leftSon = (*node)->leftSon;
         }
-        node->currentTreeNode->leftSon->parent = node->currentTreeNode->parent;
+        (*node)->leftSon->parent = (*node)->parent;
     }
     else
     {
-        node->currentTreeNode->leftSon->parent = NULL;
+        (*node)->leftSon->parent = NULL;
     }
-    if (node->currentTreeNode->leftSon->rightSon->parent != NULL)
+    if ((*node)->leftSon->rightSon->parent != NULL)
     {
-        node->currentTreeNode->leftSon->rightSon->parent = node->currentTreeNode;
+        (*node)->leftSon->rightSon->parent = (*node);
     }
-    node->currentTreeNode->parent = node->currentTreeNode->leftSon;
-    node->currentTreeNode->leftSon = node->currentTreeNode->leftSon->rightSon;
-    node->currentTreeNode->parent->rightSon = node->currentTreeNode;
+    (*node)->parent = (*node)->leftSon;
+    (*node)->leftSon = (*node)->leftSon->rightSon;
+    (*node)->parent->rightSon = (*node);
 }
 
-void bigLeftRotation(AVLTreeRoot* root, CurrentTreeNode* node)
+void bigLeftRotation(Dictionary* dictionary, TreeNode** node)
 {
-    if (root->AVLTreeRoot == node->currentTreeNode)
+    if (dictionary->AVLTreeRoot == (*node))
     {
-        root->AVLTreeRoot = node->currentTreeNode->rightSon->leftSon;
+        dictionary->AVLTreeRoot = (*node)->rightSon->leftSon;
     }
-    if (node->currentTreeNode->parent != NULL)
+    if ((*node)->parent != NULL)
     {
-        if (node->currentTreeNode->parent->rightSon == node->currentTreeNode)
+        if ((*node)->parent->rightSon == (*node))
         {
-            node->currentTreeNode->parent->rightSon = node->currentTreeNode->rightSon->leftSon;
+            (*node)->parent->rightSon = (*node)->rightSon->leftSon;
         }
         else
         {
-            node->currentTreeNode->parent->leftSon = node->currentTreeNode->rightSon->leftSon;
+            (*node)->parent->leftSon = (*node)->rightSon->leftSon;
         }
-        node->currentTreeNode->rightSon->leftSon->parent = node->currentTreeNode->parent;
+        (*node)->rightSon->leftSon->parent = (*node)->parent;
     }
     else
     {
-        node->currentTreeNode->rightSon->leftSon->parent = NULL;
+        (*node)->rightSon->leftSon->parent = NULL;
     }
-    if (node->currentTreeNode->rightSon->leftSon->leftSon != NULL)
+    if ((*node)->rightSon->leftSon->leftSon != NULL)
     {
-        node->currentTreeNode->rightSon->leftSon->leftSon->parent = node->currentTreeNode;
+        (*node)->rightSon->leftSon->leftSon->parent = (*node);
     }
-    if (node->currentTreeNode->rightSon->leftSon->rightSon != NULL)
+    if ((*node)->rightSon->leftSon->rightSon != NULL)
     {
-        node->currentTreeNode->rightSon->leftSon->rightSon->parent = node->currentTreeNode->rightSon;
+        (*node)->rightSon->leftSon->rightSon->parent = (*node)->rightSon;
     }
-    node->currentTreeNode->parent = node->currentTreeNode->rightSon->leftSon;
-    node->currentTreeNode->rightSon->leftSon = node->currentTreeNode->rightSon->leftSon->rightSon;
-    node->currentTreeNode->rightSon->parent = node->currentTreeNode->rightSon->leftSon;
-    node->currentTreeNode->parent->rightSon = node->currentTreeNode->rightSon;
-    node->currentTreeNode->rightSon = node->currentTreeNode->parent->leftSon;
-    node->currentTreeNode->parent->leftSon = node->currentTreeNode;
+    (*node)->parent = (*node)->rightSon->leftSon;
+    (*node)->rightSon->leftSon = (*node)->rightSon->leftSon->rightSon;
+    (*node)->rightSon->parent = (*node)->rightSon->leftSon;
+    (*node)->parent->rightSon = (*node)->rightSon;
+    (*node)->rightSon = (*node)->parent->leftSon;
+    (*node)->parent->leftSon = (*node);
 }
 
-void bigRightRotation(AVLTreeRoot* root, CurrentTreeNode* node)
+void bigRightRotation(Dictionary* dictionary, TreeNode** node)
 {
-    if (root->AVLTreeRoot == node->currentTreeNode)
+    if (dictionary->AVLTreeRoot == (*node))
     {
-        root->AVLTreeRoot = node->currentTreeNode->leftSon->rightSon;
+        dictionary->AVLTreeRoot = (*node)->leftSon->rightSon;
     }
-    if (node->currentTreeNode->parent != NULL)
+    if ((*node)->parent != NULL)
     {
-        if (node->currentTreeNode->parent->rightSon == node->currentTreeNode)
+        if ((*node)->parent->rightSon == (*node))
         {
-            node->currentTreeNode->parent->rightSon = node->currentTreeNode->leftSon->rightSon;
+            (*node)->parent->rightSon = (*node)->leftSon->rightSon;
         }
         else
         {
-            node->currentTreeNode->parent->leftSon = node->currentTreeNode->leftSon->rightSon;
+            (*node)->parent->leftSon = (*node)->leftSon->rightSon;
         }
-        node->currentTreeNode->leftSon->rightSon->parent = node->currentTreeNode->parent;
+        (*node)->leftSon->rightSon->parent = (*node)->parent;
     }
     else
     {
-        node->currentTreeNode->leftSon->rightSon->parent = NULL;
+        (*node)->leftSon->rightSon->parent = NULL;
     }
-    if (node->currentTreeNode->leftSon->rightSon->rightSon != NULL)
+    if ((*node)->leftSon->rightSon->rightSon != NULL)
     {
-        node->currentTreeNode->leftSon->rightSon->rightSon->parent = node->currentTreeNode;
+        (*node)->leftSon->rightSon->rightSon->parent = (*node);
     }
-    if (node->currentTreeNode->leftSon->rightSon->leftSon != NULL)
+    if ((*node)->leftSon->rightSon->leftSon != NULL)
     {
-        node->currentTreeNode->leftSon->rightSon->leftSon->parent = node->currentTreeNode->leftSon;
+        (*node)->leftSon->rightSon->leftSon->parent = (*node)->leftSon;
     }
-    node->currentTreeNode->parent = node->currentTreeNode->leftSon->rightSon;
-    node->currentTreeNode->leftSon->rightSon = node->currentTreeNode->leftSon->rightSon->leftSon;
-    node->currentTreeNode->leftSon->parent = node->currentTreeNode->leftSon->rightSon;
-    node->currentTreeNode->parent->leftSon = node->currentTreeNode->leftSon;
-    node->currentTreeNode->leftSon = node->currentTreeNode->parent->rightSon;
-    node->currentTreeNode->parent->rightSon = node->currentTreeNode;
+    (*node)->parent = (*node)->leftSon->rightSon;
+    (*node)->leftSon->rightSon = (*node)->leftSon->rightSon->leftSon;
+    (*node)->leftSon->parent = (*node)->leftSon->rightSon;
+    (*node)->parent->leftSon = (*node)->leftSon;
+    (*node)->leftSon = (*node)->parent->rightSon;
+    (*node)->parent->rightSon = (*node);
 }
 
-void rebalanceNode(AVLTreeRoot* root, CurrentTreeNode* node)
+void rebalanceNode(Dictionary* dictionary, TreeNode** node)
 {
-    if (node->currentTreeNode->heightDifference == 0)
+    char heightDifference = calculateNodeHigh(*node);
+    if (heightDifference == 0)
     {
         return;
     }
-    if (node->currentTreeNode->heightDifference > 0)
+    if (heightDifference > 0)
     {
-        if (node->currentTreeNode->rightSon->heightDifference > 0)
+        if (heightDifference > 0)
         {
-            smallLeftRotation(root, node);
+            smallLeftRotation(dictionary, node);
             return;
         }
-        bigLeftRotation(root, node);
+        bigLeftRotation(dictionary, node);
         return;
     }
-    if (node->currentTreeNode->leftSon->heightDifference < 0)
+    if (heightDifference < 0)
     {
-        smallRightRotation(root, node);
+        smallRightRotation(dictionary, node);
         return;
     }
-    bigRightRotation(root, node);
+    bigRightRotation(dictionary, node);
 }
 
-void rebalanceTree(AVLTreeRoot* root, CurrentTreeNode* node)
+void rebalanceTree(Dictionary* dictionary, TreeNode** node)
 {
-    if (abs(node->currentTreeNode->heightDifference) > 1)
+    if (abs(calculateNodeHigh(*node)) > 1)
     {
-        rebalanceNode(root, node);
-        recalculateHeights(root);
+        rebalanceNode(dictionary, node);
+        recalculateHeights(dictionary);
         return;
     }
-    if (node->currentTreeNode->parent != NULL)
+    if ((*node)->parent != NULL)
     {
-        node->currentTreeNode = node->currentTreeNode->parent;
-        rebalanceTree(root, node);
+        (*node) = (*node)->parent;
+        rebalanceTree(dictionary, node);
     }
 }
 
-void transfer(CurrentTreeNode* node, Direction directionOfSon)
+void transfer(TreeNode** node, Direction directionOfSon)
 {
-    if (node->currentTreeNode->parent == NULL)
+    if ((*node)->parent == NULL)
     {
         return;
     }
     if (directionOfSon == right)
     {
-        node->currentTreeNode->rightSon->parent = node->currentTreeNode->parent;
+        (*node)->rightSon->parent = (*node)->parent;
     }
     else
     {
-        node->currentTreeNode->leftSon->parent = node->currentTreeNode->parent;
+        (*node)->leftSon->parent = (*node)->parent;
     }
-    if (node->currentTreeNode->parent->rightSon == node->currentTreeNode)
+    if ((*node)->parent->rightSon == (*node))
     {
         if (directionOfSon == right)
         {
-            node->currentTreeNode->parent->rightSon = node->currentTreeNode->rightSon;
-            node->currentTreeNode->rightSon = NULL;
+            (*node)->parent->rightSon = (*node)->rightSon;
+            (*node)->rightSon = NULL;
             return;
         }
-        node->currentTreeNode->parent->rightSon = node->currentTreeNode->leftSon;
-        node->currentTreeNode->leftSon = NULL;
+        (*node)->parent->rightSon = (*node)->leftSon;
+        (*node)->leftSon = NULL;
     }
     else
     {
         if (directionOfSon == right)
         {
-            node->currentTreeNode->parent->leftSon = node->currentTreeNode->rightSon;
-            node->currentTreeNode->rightSon = NULL;
+            (*node)->parent->leftSon = (*node)->rightSon;
+            (*node)->rightSon = NULL;
             return;
         }
-        node->currentTreeNode->parent->leftSon = node->currentTreeNode->leftSon;
-        node->currentTreeNode->leftSon = NULL;
+        (*node)->parent->leftSon = (*node)->leftSon;
+        (*node)->leftSon = NULL;
     }
 }
 
@@ -308,128 +305,127 @@ void deleteBranchRecursive(TreeNode* branch)
         return;
     }
     deleteBranchRecursive(branch->leftSon);
+    free(branch->leftSon);
     deleteBranchRecursive(branch->rightSon);
-    free(branch);
+    free(branch->rightSon);
+    free(branch->value);
 }
 
-void deleteBranch(CurrentTreeNode** branch)
+void deleteDictionary(Dictionary** dictionary)
 {
-    if ((*branch) == NULL)
+    if ((*dictionary) == NULL)
     {
         return;
     }
-    deleteBranchRecursive((*branch)->currentTreeNode);
-    (*branch) = NULL;
+    deleteBranchRecursive((*dictionary)->AVLTreeRoot);
+    free((*dictionary)->AVLTreeRoot);
+    free(*dictionary);
+    (*dictionary) = NULL;
 }
 
-void deleteTree(AVLTreeRoot** root)
+void addEntry(Dictionary* dictionary, int key, char* value)
 {
-    if ((*root) == NULL)
-    {
-        return;
-    }
-    deleteBranchRecursive((*root)->AVLTreeRoot);
-    (*root) = NULL;
-}
-
-void addTreeNode(AVLTreeRoot** root, int key, char* value)
-{
-    if ((*root)->AVLTreeRoot == NULL)
+    if (dictionary->AVLTreeRoot == NULL)
     {
         TreeNode* newTreeNode = calloc(1, sizeof(TreeNode));
         newTreeNode->key = key;
         newTreeNode->value = value;
-        (*root)->AVLTreeRoot = newTreeNode;
+        dictionary->AVLTreeRoot = newTreeNode;
         return;
     }
-    CurrentTreeNode* node = calloc(1, sizeof(CurrentTreeNode));
-    node->currentTreeNode = (*root)->AVLTreeRoot;
+    TreeNode** node = calloc(1, sizeof(TreeNode*));
+    (*node) = dictionary->AVLTreeRoot;
     while (true)
     {
-        if (key == node->currentTreeNode->key)
+        if (key == (*node)->key)
         {
-            node->currentTreeNode->value = value;
+            (*node)->value = value;
             free(node);
             return;
         }
-        if (key > node->currentTreeNode->key)
+        if (key > (*node)->key)
         {
-            if (node->currentTreeNode->rightSon == NULL)
+            if ((*node)->rightSon == NULL)
             {
                 TreeNode* newNode = calloc(1, sizeof(TreeNode));
-                newNode->parent = node->currentTreeNode;
+                newNode->parent = (*node);
                 newNode->key = key;
                 newNode->value = value;
-                node->currentTreeNode->rightSon = newNode;
-                node->currentTreeNode = newNode;
-                recalculateHeights(*root);
-                rebalanceTree(*root, node);
+                (*node)->rightSon = newNode;
+                (*node) = newNode;
+                recalculateHeights(dictionary);
+                rebalanceTree(dictionary, node);
                 free(node);
                 return;
             }
-            node->currentTreeNode = node->currentTreeNode->rightSon;
+            (*node) = (*node)->rightSon;
         }
         else
         {
-            if (node->currentTreeNode->leftSon == NULL)
+            if ((*node)->leftSon == NULL)
             {
                 TreeNode* newNode = calloc(1, sizeof(TreeNode));
-                newNode->parent = node->currentTreeNode;
+                newNode->parent = (*node);
                 newNode->key = key;
                 newNode->value = value;
-                node->currentTreeNode->leftSon = newNode;
-                recalculateHeights(*root);
-                rebalanceTree(*root, node);
+                (*node)->leftSon = newNode;
+                recalculateHeights(dictionary);
+                rebalanceTree(dictionary, node);
                 free(node);
                 return;
             }
-            node->currentTreeNode = node->currentTreeNode->leftSon;
+            (*node) = (*node)->leftSon;
         }
     }
 }
 
-bool isLeftSon(CurrentTreeNode* currentTreeNode)
+void freeNode(Dictionary** root, TreeNode*** retrievableNode)
 {
-    return currentTreeNode->currentTreeNode->parent->leftSon
-            == currentTreeNode->currentTreeNode;
-}
-
-void freeNode(AVLTreeRoot** root, CurrentTreeNode** retrievableNode)
-{
-    if ((*root)->AVLTreeRoot == (*retrievableNode)->currentTreeNode)
+    if ((*root)->AVLTreeRoot == (**retrievableNode))
     {
+        free((**retrievableNode)->value);
         free((*root)->AVLTreeRoot);
-        (*root) = NULL;
-        (*retrievableNode) = NULL;
+        free(*root);
+        free(*retrievableNode);
         return;
     }
-    if ((*retrievableNode)->currentTreeNode->parent != NULL)
+    if ((**retrievableNode)->parent != NULL)
     {
-        if ((*retrievableNode)->currentTreeNode->parent->rightSon == (*retrievableNode)->currentTreeNode)
+        if ((**retrievableNode)->parent->rightSon == (**retrievableNode))
         {
-            (*retrievableNode)->currentTreeNode->parent->rightSon = NULL;
-            free((*retrievableNode)->currentTreeNode);
+            (**retrievableNode)->parent->rightSon = NULL;
+            free((**retrievableNode)->value);
+            free(**retrievableNode);
+            free(*retrievableNode);
             return;
         }
-        (*retrievableNode)->currentTreeNode->parent->leftSon = NULL;
-        free((*retrievableNode)->currentTreeNode);
+        (**retrievableNode)->parent->leftSon = NULL;
+        free((**retrievableNode)->value);
+        free(**retrievableNode);
+        free(*retrievableNode);
+    }
+    else
+    {
+        free((**retrievableNode)->value);
+        free(**retrievableNode);
+        free(*retrievableNode);
     }
 }
 
-void removeTreeNode(AVLTreeRoot** root, CurrentTreeNode** retrievableNode)
+void removeTreeNode(Dictionary** root, TreeNode*** retrievableNode)
 {
     if ((*root)->AVLTreeRoot == NULL)
     {
         return;
     }
-    bool isRoot = (*retrievableNode)->currentTreeNode == (*root)->AVLTreeRoot;
-    if ((*retrievableNode)->currentTreeNode->leftSon == NULL
-            && (*retrievableNode)->currentTreeNode->rightSon == NULL)
+    bool isRoot = (**retrievableNode) == (*root)->AVLTreeRoot;
+    if ((**retrievableNode)->leftSon == NULL
+            && (**retrievableNode)->rightSon == NULL)
     {
-        if ((*retrievableNode)->currentTreeNode->parent != NULL)
+        if ((**retrievableNode)->parent != NULL)
         {
-            CurrentTreeNode* balanceNode = calloc(1, sizeof(CurrentTreeNode));
-            balanceNode->currentTreeNode = (*retrievableNode)->currentTreeNode->parent;
+            TreeNode** balanceNode = calloc(1, sizeof(TreeNode*));
+            (*balanceNode) = (**retrievableNode)->parent;
             freeNode(root, retrievableNode);
             recalculateHeights(*root);
             rebalanceTree(*root, balanceNode);
@@ -439,17 +435,17 @@ void removeTreeNode(AVLTreeRoot** root, CurrentTreeNode** retrievableNode)
         freeNode(root, retrievableNode);
         if (isRoot)
         {
-            deleteTree(root);
+            deleteDictionary(root);
         }
         return;
     }
-    if ((*retrievableNode)->currentTreeNode->leftSon != NULL
-            && (*retrievableNode)->currentTreeNode->rightSon == NULL)
+    if ((**retrievableNode)->leftSon != NULL
+            && (**retrievableNode)->rightSon == NULL)
     {
-        if ((*retrievableNode)->currentTreeNode->parent != NULL)
+        if ((**retrievableNode)->parent != NULL)
         {
-            CurrentTreeNode* balanceNode = calloc(1, sizeof(CurrentTreeNode));
-            balanceNode->currentTreeNode = (*retrievableNode)->currentTreeNode->parent;
+            TreeNode** balanceNode = calloc(1, sizeof(TreeNode*));
+            (*balanceNode) = (**retrievableNode)->parent;
             transfer((*retrievableNode), right);
             freeNode(root, retrievableNode);
             recalculateHeights(*root);
@@ -461,17 +457,17 @@ void removeTreeNode(AVLTreeRoot** root, CurrentTreeNode** retrievableNode)
         freeNode(root, retrievableNode);
         if (isRoot)
         {
-            deleteTree(root);
+            deleteDictionary(root);
         }
         return;
     }
-    if ((*retrievableNode)->currentTreeNode->leftSon == NULL
-            && (*retrievableNode)->currentTreeNode->rightSon != NULL)
+    if ((**retrievableNode)->leftSon == NULL
+            && (**retrievableNode)->rightSon != NULL)
     {
-        if ((*retrievableNode)->currentTreeNode->parent != NULL)
+        if ((**retrievableNode)->parent != NULL)
         {
-            CurrentTreeNode* balanceNode = calloc(1, sizeof(CurrentTreeNode));
-            balanceNode->currentTreeNode = (*retrievableNode)->currentTreeNode->parent;
+            TreeNode** balanceNode = calloc(1, sizeof(TreeNode*));
+            (*balanceNode) = (**retrievableNode)->parent;
             transfer((*retrievableNode), left);
             freeNode(root, retrievableNode);
             recalculateHeights(*root);
@@ -483,77 +479,77 @@ void removeTreeNode(AVLTreeRoot** root, CurrentTreeNode** retrievableNode)
         freeNode(root, retrievableNode);
         if (isRoot)
         {
-            deleteTree(root);
+            deleteDictionary(root);
         }
         return;
     }
-    CurrentTreeNode* newNode = calloc(1, sizeof(CurrentTreeNode));
-    newNode->currentTreeNode = (*retrievableNode)->currentTreeNode->leftSon;
-    while (newNode->currentTreeNode->rightSon != NULL)
+    TreeNode** newNode = calloc(1, sizeof(TreeNode*));
+    (*newNode) = (**retrievableNode)->leftSon;
+    while ((*newNode)->rightSon != NULL)
     {
-        newNode->currentTreeNode = newNode->currentTreeNode->rightSon;
+        (*newNode) = (*newNode)->rightSon;
     }
-    (*retrievableNode)->currentTreeNode->key = newNode->currentTreeNode->key;
-    (*retrievableNode)->currentTreeNode->value = newNode->currentTreeNode->value;
-    newNode->currentTreeNode->parent->rightSon = newNode->currentTreeNode->leftSon;
+    (**retrievableNode)->key = (*newNode)->key;
+    (**retrievableNode)->value = (*newNode)->value;
+    (*newNode)->parent->rightSon = (*newNode)->leftSon;
     removeTreeNode(root, &newNode);
 }
 
-CurrentTreeNode* findNode(AVLTreeRoot* root, int key)
+TreeNode** findNode(Dictionary* root, int key)
 {
     if (root == NULL || root->AVLTreeRoot == NULL)
     {
         return NULL;
     }
-    CurrentTreeNode* node = calloc(1, sizeof(CurrentTreeNode));
+    TreeNode** node = calloc(1, sizeof(TreeNode*));
     if (node == NULL)
     {
         return NULL;
     }
-    node->currentTreeNode = root->AVLTreeRoot;
+    (*node) = root->AVLTreeRoot;
     while (true)
     {
-        if (key == node->currentTreeNode->key)
+        if (key == (*node)->key)
         {
             return node;
         }
-        if (key > node->currentTreeNode->key)
+        if (key > (*node)->key)
         {
-            if (node->currentTreeNode->rightSon == NULL)
+            if ((*node)->rightSon == NULL)
             {
                 free(node);
                 return NULL;
             }
-            node->currentTreeNode = node->currentTreeNode->rightSon;
+            (*node) = (*node)->rightSon;
         }
         else
         {
-            if (node->currentTreeNode->leftSon == NULL)
+            if ((*node)->leftSon == NULL)
             {
                 free(node);
                 return NULL;
             }
-            node->currentTreeNode = node->currentTreeNode->leftSon;
+            (*node) = (*node)->leftSon;
         }
     }
 }
 
-char* findValue(AVLTreeRoot* root, int key)
+char* findValue(Dictionary* dictionary, int key)
 {
-    CurrentTreeNode* node = findNode(root, key);
+    TreeNode** node = findNode(dictionary, key);
     if (node == NULL)
     {
         return NULL;
     }
-    char* value = node->currentTreeNode->value;
+    char* value = (*node)->value;
     free(node);
 
     return value;
 }
 
-bool isKeyInTree(AVLTreeRoot* root, int key)
+bool isKeyInDictionary(Dictionary* dictionary, int key)
 {
-    CurrentTreeNode* node = findNode(root, key);
+    TreeNode** node = findNode(dictionary, key);
     if (node != NULL)
     {
         free(node);
@@ -562,11 +558,11 @@ bool isKeyInTree(AVLTreeRoot* root, int key)
     return false;
 }
 
-void removeEntry(AVLTreeRoot** root, int key)
+void removeEntry(Dictionary** dictionary, int key)
 {
-    CurrentTreeNode* node = findNode((*root), key);
-    if (node != NULL)
+    TreeNode** node = findNode(*dictionary, key);
+    if (*node != NULL)
     {
-        removeTreeNode(root, &node);
+        removeTreeNode(dictionary, &node);
     }
 } 
