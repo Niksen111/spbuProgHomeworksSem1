@@ -1,16 +1,16 @@
 #pragma once
 #include <stdbool.h>
 
-// root of tree
+// Dictionary structure
 typedef struct Dictionary Dictionary;
 
-// create empty TreeRoot
+// create empty Dictionary
 Dictionary* createDictionary();
 
-// removes the entire Tree
+// removes the entire Dictionary
 void deleteDictionary(Dictionary** dictionary);
 
-// adds a new node to the tree or replaces the value
+// adds a new entry to the dictionary or replaces the value
 // if a node with this key exists
 // dictionary is responsible for removing the pointer value
 void addEntry(Dictionary* dictionary, int key, char* value);

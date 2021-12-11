@@ -92,7 +92,7 @@ void interactWithUser()
 
 int main()
 {
-    if (!testSearchTree())
+    if (!testDictionary())
     {
         printf("Tests failed(\n");
         return -1;

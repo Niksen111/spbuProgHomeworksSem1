@@ -1,5 +1,5 @@
 #pragma once
 #include <stdbool.h>
 
-// tests all the functions of searchTree.h
-bool testSearchTree();
+// tests all the functions of the Dictionary
+bool testDictionary();

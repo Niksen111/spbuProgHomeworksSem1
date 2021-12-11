@@ -118,7 +118,7 @@ bool testRemoveTheKey()
     return result;
 }
 
-bool testSearchTree()
+bool testDictionary()
 {
     return testCreateDictionary() && testDeleteDictionary()
         && testAddEntry() && testFindValue()
