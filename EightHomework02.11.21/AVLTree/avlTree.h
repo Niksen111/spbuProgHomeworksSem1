@@ -2,13 +2,13 @@
 #include <stdbool.h>
 
 // root of tree
-typedef struct AVLTreeRoot AVLTreeRoot;
+typedef struct Dictionary Dictionary;
 
-// create empty AVLTreeRoot
-AVLTreeRoot* createAVLTreeRoot();
+// create empty Dictionary
+Dictionary* createDictionary();
 
 // removes the entire Tree
-void deleteTree(AVLTreeRoot** root);
+void deleteDictionary(Dictionary** dictionary);
 
 // adds a new node to the tree or replaces the value
 // if a node with this key exists
