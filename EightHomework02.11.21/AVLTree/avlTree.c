@@ -62,6 +62,22 @@ char calculateNodeHigh(TreeNode* node)
     return max(node->leftSon->height, node->rightSon->height) + 1;
 }
 
+void fixHeight(TreeNode* node)
+{
+    node->height = calculateNodeHigh(node);
+    TreeNode** currentNode = &node;
+    while (node->parent != NULL)
+    {
+        (*currentNode) = (*currentNode)->parent;
+        char height = calculateNodeHigh(*currentNode);
+        if (height == (*currentNode)->height)
+        {
+            return;
+        }
+        (*currentNode)->height = height;
+    }
+}
+
 void recalculateHeightsRecursive(TreeNode* node)
 {
     if (node == NULL)
@@ -247,7 +263,7 @@ void rebalanceNode(Dictionary* dictionary, TreeNode** node)
 
 void rebalanceTree(Dictionary* dictionary, TreeNode** node)
 {
-    if (abs(calculateNodeHigh(*node)) > 1)
+    if (abs(calculateHeightDifference(*node)) > 1)
     {
         rebalanceNode(dictionary, node);
         recalculateHeights(dictionary);
@@ -339,6 +355,7 @@ void addEntry(Dictionary* dictionary, int key, char* value)
     {
         if (key == (*node)->key)
         {
+            free((*node)->value);
             (*node)->value = value;
             free(node);
             return;
@@ -353,7 +370,7 @@ void addEntry(Dictionary* dictionary, int key, char* value)
                 newNode->value = value;
                 (*node)->rightSon = newNode;
                 (*node) = newNode;
-                recalculateHeights(dictionary);
+                fixHeight(newNode);
                 rebalanceTree(dictionary, node);
                 free(node);
                 return;
@@ -369,7 +386,7 @@ void addEntry(Dictionary* dictionary, int key, char* value)
                 newNode->key = key;
                 newNode->value = value;
                 (*node)->leftSon = newNode;
-                recalculateHeights(dictionary);
+                fixHeight(newNode);
                 rebalanceTree(dictionary, node);
                 free(node);
                 return;
@@ -427,7 +444,7 @@ void removeTreeNode(Dictionary** root, TreeNode*** retrievableNode)
             TreeNode** balanceNode = calloc(1, sizeof(TreeNode*));
             (*balanceNode) = (**retrievableNode)->parent;
             freeNode(root, retrievableNode);
-            recalculateHeights(*root);
+            fixHeight(*balanceNode);
             rebalanceTree(*root, balanceNode);
             free(balanceNode);
             return;
@@ -448,17 +465,13 @@ void removeTreeNode(Dictionary** root, TreeNode*** retrievableNode)
             (*balanceNode) = (**retrievableNode)->parent;
             transfer((*retrievableNode), right);
             freeNode(root, retrievableNode);
-            recalculateHeights(*root);
+            fixHeight(*balanceNode);
             rebalanceTree(*root, balanceNode);
             free(balanceNode);
             return;
         }
         transfer((*retrievableNode), right);
         freeNode(root, retrievableNode);
-        if (isRoot)
-        {
-            deleteDictionary(root);
-        }
         return;
     }
     if ((**retrievableNode)->leftSon == NULL
@@ -470,17 +483,13 @@ void removeTreeNode(Dictionary** root, TreeNode*** retrievableNode)
             (*balanceNode) = (**retrievableNode)->parent;
             transfer((*retrievableNode), left);
             freeNode(root, retrievableNode);
-            recalculateHeights(*root);
+            fixHeight(*balanceNode);
             rebalanceTree(*root, balanceNode);
             free(balanceNode);
             return;
         }
         transfer((*retrievableNode), left);
         freeNode(root, retrievableNode);
-        if (isRoot)
-        {
-            deleteDictionary(root);
-        }
         return;
     }
     TreeNode** newNode = calloc(1, sizeof(TreeNode*));

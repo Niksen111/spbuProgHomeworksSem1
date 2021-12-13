@@ -91,7 +91,7 @@ void interactWithUser()
 }
 
 int main() {
-    if (!testAVLTree())
+    if (!testDictionary())
     {
         printf("Tests failed(\n");
         return -1;
