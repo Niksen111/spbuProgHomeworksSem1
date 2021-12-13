@@ -32,8 +32,6 @@ bool testDeleteDictionary()
 bool testAddEntry()
 {
     Dictionary* root = createDictionary();
-    char* s1 = calloc(15, sizeof(char));
-    strcat(s1, "Kate");
     char* s2 = calloc(15, sizeof(char));
     strcat(s2, "Jess");
     char* s3 = calloc(15, sizeof(char));
@@ -107,12 +105,43 @@ bool testRemoveTheKey()
     strcat(s4, "Mary");
     char* s5 = calloc(15, sizeof(char));
     strcat(s5, "Eva");
-    addEntry(root, 2, s2);
+    bool result = getHeight(root) == 0;
     addEntry(root, 1, s1);
+    result = result && getHeight(root) == 0;
+    addEntry(root, 2, s2);
+    result = result && getHeight(root) == 1;
+    addEntry(root, 4, s3);
+    result = result && getHeight(root) == 1;
+    addEntry(root, 3, s4);
+    result = result && getHeight(root) == 2;
+    addEntry(root, 5, s5);
+    result = result && isKeyInDictionary(root, 3) && getHeight(root) == 2;
+    removeEntry(&root, 3);
+    result = result && !isKeyInDictionary(root, 3);
+    deleteDictionary(&root);
+
+    return result;
+}
+
+bool testGetHeight()
+{
+    Dictionary* root = createDictionary();
+    char* s1 = calloc(15, sizeof(char));
+    strcat(s1, "Kate");
+    char* s2 = calloc(15, sizeof(char));
+    strcat(s2, "Jess");
+    char* s3 = calloc(15, sizeof(char));
+    strcat(s3, "Elle");
+    char* s4 = calloc(15, sizeof(char));
+    strcat(s4, "Mary");
+    char* s5 = calloc(15, sizeof(char));
+    strcat(s5, "Eva");
+    addEntry(root, 1, s1);
+    addEntry(root, 2, s2);
     addEntry(root, 4, s3);
     addEntry(root, 3, s4);
     addEntry(root, 5, s5);
-    bool result = isKeyInDictionary(root, 3);
+    bool result = isKeyInDictionary(root, 3) && getHeight(root) == 2;
     removeEntry(&root, 3);
     result = result && !isKeyInDictionary(root, 3);
     deleteDictionary(&root);
@@ -124,5 +153,6 @@ bool testDictionary()
 {
     return testCreateDictionary() && testDeleteDictionary()
             && testAddEntry() && testFindValue()
-            && testisKeyInDictionary() && testRemoveTheKey();
+            && testisKeyInDictionary() && testRemoveTheKey()
+            && testGetHeight();
 } 

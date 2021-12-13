@@ -45,7 +45,7 @@ char calculateHeightDifference(TreeNode* node)
     return 0;
 }
 
-char calculateNodeHigh(TreeNode* node)
+char calculateNodeHight(TreeNode* node)
 {
     if (node->rightSon == NULL && node->leftSon == NULL)
     {
@@ -64,38 +64,18 @@ char calculateNodeHigh(TreeNode* node)
 
 void fixHeight(TreeNode* node)
 {
-    node->height = calculateNodeHigh(node);
+    node->height = calculateNodeHight(node);
     TreeNode** currentNode = &node;
     while (node->parent != NULL)
     {
         (*currentNode) = (*currentNode)->parent;
-        char height = calculateNodeHigh(*currentNode);
+        char height = calculateNodeHight(*currentNode);
         if (height == (*currentNode)->height)
         {
             return;
         }
         (*currentNode)->height = height;
     }
-}
-
-void recalculateHeightsRecursive(TreeNode* node)
-{
-    if (node == NULL)
-    {
-        return;
-    }
-    recalculateHeightsRecursive(node->leftSon);
-    recalculateHeightsRecursive(node->rightSon);
-    node->height = calculateNodeHigh(node);
-}
-
-void recalculateHeights(Dictionary* dictionary)
-{
-    if (dictionary == NULL)
-    {
-        return;
-    }
-    recalculateHeightsRecursive(dictionary->AVLTreeRoot);
 }
 
 void smallLeftRotation(Dictionary* dictionary, TreeNode** node)
@@ -127,6 +107,7 @@ void smallLeftRotation(Dictionary* dictionary, TreeNode** node)
     (*node)->parent = (*node)->rightSon;
     (*node)->rightSon = (*node)->rightSon->leftSon;
     (*node)->parent->leftSon = (*node);
+    (*node)->height = (*node)->parent->rightSon->height;
 }
 
 void smallRightRotation(Dictionary* dictionary, TreeNode** node)
@@ -158,6 +139,7 @@ void smallRightRotation(Dictionary* dictionary, TreeNode** node)
     (*node)->parent = (*node)->leftSon;
     (*node)->leftSon = (*node)->leftSon->rightSon;
     (*node)->parent->rightSon = (*node);
+    (*node)->height = (*node)->parent->leftSon->height;
 }
 
 void bigLeftRotation(Dictionary* dictionary, TreeNode** node)
@@ -196,6 +178,9 @@ void bigLeftRotation(Dictionary* dictionary, TreeNode** node)
     (*node)->parent->rightSon = (*node)->rightSon;
     (*node)->rightSon = (*node)->parent->leftSon;
     (*node)->parent->leftSon = (*node);
+    (*node)->height = (*node)->parent->height;
+    (*node)->parent->height += 1;
+    (*node)->parent->rightSon->height = (*node)->height;
 }
 
 void bigRightRotation(Dictionary* dictionary, TreeNode** node)
@@ -234,31 +219,38 @@ void bigRightRotation(Dictionary* dictionary, TreeNode** node)
     (*node)->parent->leftSon = (*node)->leftSon;
     (*node)->leftSon = (*node)->parent->rightSon;
     (*node)->parent->rightSon = (*node);
+    (*node)->height = (*node)->parent->height;
+    (*node)->parent->height += 1;
+    (*node)->parent->leftSon->height = (*node)->height;
 }
 
 void rebalanceNode(Dictionary* dictionary, TreeNode** node)
 {
-    char heightDifference = calculateNodeHigh(*node);
+    char heightDifference = calculateHeightDifference(*node);
     if (heightDifference == 0)
     {
         return;
     }
     if (heightDifference > 0)
     {
-        if (heightDifference > 0)
+        if (calculateHeightDifference((*node)->rightSon) > 0)
         {
             smallLeftRotation(dictionary, node);
+            fixHeight((*node)->parent);
             return;
         }
         bigLeftRotation(dictionary, node);
+        fixHeight((*node)->parent);
         return;
     }
-    if (heightDifference < 0)
+    if (calculateHeightDifference((*node)->leftSon) < 0)
     {
         smallRightRotation(dictionary, node);
+        fixHeight((*node)->parent);
         return;
     }
     bigRightRotation(dictionary, node);
+    fixHeight((*node)->parent);
 }
 
 void rebalanceTree(Dictionary* dictionary, TreeNode** node)
@@ -266,7 +258,6 @@ void rebalanceTree(Dictionary* dictionary, TreeNode** node)
     if (abs(calculateHeightDifference(*node)) > 1)
     {
         rebalanceNode(dictionary, node);
-        recalculateHeights(dictionary);
         return;
     }
     if ((*node)->parent != NULL)
@@ -574,4 +565,13 @@ void removeEntry(Dictionary** dictionary, int key)
     {
         removeTreeNode(dictionary, &node);
     }
-} 
+}
+
+int getHeight(Dictionary* dictionary)
+{
+    if (dictionary->AVLTreeRoot == NULL)
+    {
+        return 0;
+    }
+    return (int) dictionary->AVLTreeRoot->height;
+}
