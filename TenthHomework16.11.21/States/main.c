@@ -101,7 +101,7 @@ void printStatesAndCities(char* nameOfFile)
     }
     for (int i = 0; i < citiesNumber; ++i)
     {
-        
+
     }
 }
 
