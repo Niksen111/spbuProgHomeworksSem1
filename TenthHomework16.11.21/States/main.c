@@ -93,7 +93,7 @@ void printStatesAndCities(char* nameOfFile)
     }
     fclose(file);
     int* cities = distributionCities(matrix, capitals, citiesNumber, capitalsNumber);
-    freeMatrix(&matrix);
+    freeMatrix(&matrix, citiesNumber);
     int** states = calloc(capitalsNumber, sizeof(int*));
     for (int i = 0; i < capitalsNumber; ++i)
     {
