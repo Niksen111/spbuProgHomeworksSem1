@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <string.h>
 #include "listTests.h"
 #include "list.h"
@@ -7,7 +6,7 @@ bool testCreateList(void)
 {
     List* head = createList();
     bool result = head != NULL;
-    deleteList(head);
+    deleteList(&head);
     return result;
 }
 
@@ -29,7 +28,7 @@ bool testDeleteList(void)
     addToHead(head, "God", "AAAAAA");
     addToHead(head, "I want", "to sleep");
     result = result && head != NULL;
-    deleteList(head);
+    deleteList(&head);
 
     return result && isListEmpty(head);
 }
@@ -41,6 +40,8 @@ bool testDeletePosition(void)
     Position* position = getFirst(list);
     bool result = position != NULL;
     deletePosition(&position);
+    deleteList(&list);
+
     return result && position == NULL;
 }
 
@@ -53,7 +54,7 @@ bool testAddToHead()
     result = result && !isListEmpty(list)
             && strcmp("MMM", getPriorityValue(position, name)) == 0;
     deletePosition(&position);
-    deleteList(list);
+    deleteList(&list);
     return result;
 }
 
@@ -70,7 +71,7 @@ bool testAddAfter(void)
             && strcmp("MMMM", getPriorityValue(position2, phone)) == 0;
     deletePosition(&position1);
     deletePosition(&position2);
-    deleteList(list);
+    deleteList(&list);
     return result;
 }
 
@@ -83,7 +84,7 @@ bool testGetFirst(void)
     bool result = position2048 != NULL
             && isFirst(position2048, list);
     deletePosition(&position2048);
-    deleteList(list);
+    deleteList(&list);
     return result;
 }
 
@@ -98,7 +99,7 @@ bool testGetLast(void)
     result = result && position4096 != NULL
             && isLast(position4096);
     deletePosition(&position4096);
-    deleteList(list);
+    deleteList(&list);
     return result;
 }
 
@@ -114,7 +115,7 @@ bool testMoveToNext(void)
             && arePointersEqual(position2048, position4096);
     deletePosition(&position2048);
     deletePosition(&position4096);
-    deleteList(list);
+    deleteList(&list);
     return result;
 }
 
@@ -127,7 +128,7 @@ bool testIsFirst(void)
     bool result = position2048 != NULL
             && isFirst(position2048, list);
     deletePosition(&position2048);
-    deleteList(list);
+    deleteList(&list);
     return result;
 }
 
@@ -141,7 +142,7 @@ bool testIsLast(void)
     bool result = position4096 != NULL
             && isLast(position4096);
     deletePosition(&position4096);
-    deleteList(list);
+    deleteList(&list);
     return result;
 }
 
@@ -157,7 +158,7 @@ bool testArePointersEqual(void)
             && arePointersEqual(position2048, position4096);
     deletePosition(&position2048);
     deletePosition(&position4096);
-    deleteList(list);
+    deleteList(&list);
     return result;
 }
 
@@ -169,7 +170,7 @@ bool testChangePriorityValue(void)
     changePriorityValue(position2048, "AAAAAAAA", phone);
     bool result = strcmp(getPriorityValue(position2048, phone), "AAAAAAAA") == 0;
     deletePosition(&position2048);
-    deleteList(list);
+    deleteList(&list);
     return result;
 }
 
@@ -181,7 +182,7 @@ bool testGetPriorityValue(void)
     bool result = strcmp(getPriorityValue(position2048, name), "God") == 0
             && strcmp(getPriorityValue(position2048, phone), "Nooooo") == 0;
     deletePosition(&position2048);
-    deleteList(list);
+    deleteList(&list);
     return result;
 }
 
@@ -194,7 +195,7 @@ bool testCopyPointer(void)
     bool result = arePointersEqual(position2048, position4096);
     deletePosition(&position2048);
     deletePosition(&position4096);
-    deleteList(list);
+    deleteList(&list);
     return result;
 }
 

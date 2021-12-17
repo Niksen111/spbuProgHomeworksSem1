@@ -25,7 +25,7 @@ typedef struct Position
 } Position;
 
 
-void changePriorityValue(Position* position, char* newValue, Priority priority)
+void changePriorityValue(Position* position, const char* newValue, Priority priority)
 {
     if (priority == name)
     {
@@ -47,19 +47,21 @@ Position* createPosition()
     return calloc(1, sizeof(Position));
 }
 
-void deleteList(List* list)
+void deleteList(List** list)
 {
-    ListElement* element = list->head;
+    ListElement* element = (*list)->head;
     while (element != NULL)
     {
-        list->head = list->head->next;
+        (*list)->head = (*list)->head->next;
         if (element->directory != NULL)
         {
             free(element->directory);
         }
         free(element);
-        element = list->head;
+        element = (*list)->head;
     }
+    free(*list);
+    (*list) = NULL;
 }
 
 void deletePosition(Position** position)
@@ -164,5 +166,5 @@ char* getPriorityValue(Position* position, Priority priority)
 
 bool isListEmpty(List* list)
 {
-    return list->head == NULL;
+    return list == NULL || list->head == NULL;
 }

@@ -15,7 +15,7 @@ typedef enum Priority
 } Priority;
 
 // returns true if the first line comes first in the lexicographical order
-void changePriorityValue(Position* position, char* newValue, Priority priority);
+void changePriorityValue(Position* position, const char* newValue, Priority priority);
 
 // creates an empty list
 List* createList();
@@ -24,7 +24,7 @@ List* createList();
 Position* createPosition();
 
 // deletes the entire list
-void deleteList(List* list);
+void deleteList(List** list);
 
 // removes a pointer of type Position
 void deletePosition(Position** position);

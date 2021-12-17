@@ -2,6 +2,7 @@
 #include "list.h"
 #include "mergeSorting.h"
 #include <string.h>
+#include <stdlib.h>
 #include "supportFunctions.h"
 
 bool checkThatListAreSorted(List* list, Priority priority)
@@ -64,7 +65,7 @@ bool testMergeSorting()
     bool result = checkThatListAreSorted(list1, name);
     mergeSorting(&list1, phone);
     result = result && checkThatListAreSorted(list1, phone);
-    deleteList(list1);
+    deleteList(&list1);
     deletePosition(&position1);
 
     return result;

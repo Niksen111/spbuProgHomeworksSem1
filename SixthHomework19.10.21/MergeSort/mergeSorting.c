@@ -141,6 +141,7 @@ int mergeSortingRecursive(List** list, List** buffer, Position* leftBoarder,
             moveToNext(&start2);
         }
     }
+    deletePosition(&position);
     deletePosition(&newRightBoarder);
     deletePosition(&newLeftBoarder);
     deletePosition(&start1);
@@ -166,7 +167,7 @@ int mergeSorting(List** list, Priority priority)
     deletePosition(&bufferPointer);
     deletePosition(&leftBoarder);
     deletePosition(&rightBoarder);
-    deleteList(buffer);
+    deleteList(&buffer);
 
     return errorCode;
 }
