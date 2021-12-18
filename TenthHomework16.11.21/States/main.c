@@ -57,7 +57,7 @@ int* distributionCities(int** matrix, int* capitals, int citiesNumber, int capit
             }
             allCitiesDistributed = false;
             int indexOfAddedCity = getNodeNumberFromHead(listsOfAddedCities[i]);
-            removeItemFromHead(&listsOfAddedCities[i], &indexOfAddedCity);
+            removeItemFromHead(&listsOfAddedCities[i], &errorCode);
             cities[indexOfAddedCity] = i + 1;
             for (int j = 0; j < citiesNumber; ++j)
             {
@@ -94,15 +94,35 @@ void printStatesAndCities(char* nameOfFile)
     fclose(file);
     int* cities = distributionCities(matrix, capitals, citiesNumber, capitalsNumber);
     freeMatrix(&matrix, citiesNumber);
-    int** states = calloc(capitalsNumber, sizeof(int*));
+    SortedList** states = calloc(capitalsNumber, sizeof(SortedList*));
     for (int i = 0; i < capitalsNumber; ++i)
     {
-        states[i] = calloc(citiesNumber, sizeof(int));
+        states[i] = createSortedList();
     }
-    for (int i = 0; i < citiesNumber; ++i)
+    for (int i = citiesNumber - 1; i >= 0; --i)
     {
-
+        push(&states[cities[i] - 1], i, i);
     }
+    for (int i = 0; i < capitalsNumber; ++i)
+    {
+        printf("State Number %d.\n", i + 1);
+        printf("The capital of the state is city Number %d.\n", capitals[i]);
+        printf("Cities of this state:\n");
+        int errorCode = 0;
+        printf("%d", removeItemFromHead(&states[i], &errorCode));
+        while (!sortedListIsEmpty(states[i]))
+        {
+            printf(", %d", removeItemFromHead(&states[i], &errorCode));
+        }
+        printf("\n\n");
+    }
+    free(cities);
+    free(capitals);
+    for (int i = 0; i < capitalsNumber; ++i)
+    {
+        deleteSortedList(&states[i]);
+    }
+    free(states);
 }
 
 int main()
@@ -112,5 +132,6 @@ int main()
         printf("Tests failed :(\n");
         return -1;
     }
+    printStatesAndCities("file.txt");
     return 0;
 }

@@ -3,4 +3,4 @@ project(States C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(States main.c sortedList.c sortedList.h sortedListTests.c sortedListTests.h)
+add_executable(States main.c sortedList.c sortedListTests.c)
