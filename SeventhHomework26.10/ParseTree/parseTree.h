@@ -1,6 +1,6 @@
 #pragma once
 
-// root of ParseTree
+// ParseTree
 typedef struct ParseTree ParseTree;
 
 // creates a parse tree by the expression

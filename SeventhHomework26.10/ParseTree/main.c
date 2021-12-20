@@ -4,23 +4,23 @@
 #include "parseTreeTests.h"
 #include "parseTree.h"
 
-char* readLineFromFile(char name[])
+char* readLineFromFile(const char name[])
 {
-    FILE* file1 = fopen(name, "r");
-    if (file1 == NULL)
+    FILE* file = fopen(name, "r");
+    if (file == NULL)
     {
         printf("File not found(\n");
         return NULL;
     }
     int counter = 0;
-    while (fscanf(file1, "%*c") >= 0)
+    while (fscanf(file, "%*c") >= 0)
     {
         ++counter;
     }
-    rewind(file1);
+    rewind(file);
     char* line = calloc(counter + 1, sizeof(char));
-    fscanf(file1, "%[^\n]", line);
-    fclose(file1);
+    fscanf(file, "%[^\n]", line);
+    fclose(file);
     return line;
 }
 
@@ -29,9 +29,8 @@ bool testReadLineFromFile()
     FILE* file1 = fopen("test1.txt", "w");
     fprintf(file1, "Lol kek mmm \n sldfds");
     fclose(file1);
-    char* line = NULL;
-    line = readLineFromFile("test1.txt");
-    char lineAnswer[15] = "Lol kek mmm \0";
+    const char* line = readLineFromFile("test1.txt");
+    const char lineAnswer[15] = "Lol kek mmm ";
 
     return strcmp(line, lineAnswer) == 0;
 }
