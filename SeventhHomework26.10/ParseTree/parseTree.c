@@ -220,7 +220,7 @@ int calculateValueOfTree(ParseTree* root)
 {
     if (root->root->value > '0' && root->root->value < '9')
     {
-        
+
     }
     ParseTree* leftTree = calloc(1, sizeof(ParseTree));
     ParseTree* rightTree = calloc(1, sizeof(ParseTree));
