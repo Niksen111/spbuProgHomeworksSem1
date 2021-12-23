@@ -14,14 +14,13 @@ bool isCorrectGroupNumber(const char* line)
     int i = 0;
     while (true)
     {
-        char c = 0;
+        char c = line[i];
+        ++i;
         switch (state)
         {
             case 0:
             {
-                c = line[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return false;
                 }
@@ -37,9 +36,7 @@ bool isCorrectGroupNumber(const char* line)
             }
             case 1:
             {
-                c = line[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return false;
                 }
@@ -55,9 +52,7 @@ bool isCorrectGroupNumber(const char* line)
             }
             case 2:
             {
-                c = line[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return false;
                 }
@@ -73,9 +68,7 @@ bool isCorrectGroupNumber(const char* line)
             }
             case 3:
             {
-                c = line[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return false;
                 }
@@ -91,9 +84,7 @@ bool isCorrectGroupNumber(const char* line)
             }
             case 4:
             {
-                c = line[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return false;
                 }
@@ -109,9 +100,7 @@ bool isCorrectGroupNumber(const char* line)
             }
             case 5:
             {
-                c = line[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return false;
                 }
@@ -127,9 +116,7 @@ bool isCorrectGroupNumber(const char* line)
             }
             case 6:
             {
-                c = line[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return false;
                 }
@@ -145,9 +132,7 @@ bool isCorrectGroupNumber(const char* line)
             }
             case 7:
             {
-                c = line[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return false;
                 }
@@ -163,9 +148,7 @@ bool isCorrectGroupNumber(const char* line)
             }
             case 8:
             {
-                c = line[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return false;
                 }
@@ -181,9 +164,7 @@ bool isCorrectGroupNumber(const char* line)
             }
             case 9:
             {
-                c = line[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return true;
                 }
@@ -198,25 +179,12 @@ bool isCorrectGroupNumber(const char* line)
 
 bool testIsCorrectGroupNumber()
 {
-    char s1[100] = "21.B10-mm";
-    char s2[100] = "66.M33-mm";
-    char s3[100] = "13.S69-mm";
-    char s4[100] = "00.B00-mm";
-    char s5[100] = "1.B10-mm";
-    char s6[100] = "XX.S30-mm";
-    char s7[100] = "45B30-mm";
-    char s8[100] = "44.M31-mM";
-    char s9[100] = "666.B1337-mm";
-    char s10[100] = "21.B10-mmm";
-    char s11[100] = "";
-    char s12[100] = "35.M";
-
-    return isCorrectGroupNumber(s1) && isCorrectGroupNumber(s2)
-        && isCorrectGroupNumber(s3) && isCorrectGroupNumber(s4)
-        && !isCorrectGroupNumber(s5) && !isCorrectGroupNumber(s6)
-        && !isCorrectGroupNumber(s7) && !isCorrectGroupNumber(s8)
-        && !isCorrectGroupNumber(s9) && !isCorrectGroupNumber(s10)
-        && !isCorrectGroupNumber(s11) && !isCorrectGroupNumber(s12);
+    return isCorrectGroupNumber("21.B10-mm") && isCorrectGroupNumber("66.M33-mm")
+        && isCorrectGroupNumber("13.S69-mm") && isCorrectGroupNumber("00.B00-mm")
+        && !isCorrectGroupNumber("1.B10-mm") && !isCorrectGroupNumber("XX.S30-mm")
+        && !isCorrectGroupNumber("45B30-mm") && !isCorrectGroupNumber("44.M31-mM")
+        && !isCorrectGroupNumber("666.B1337-mm") && !isCorrectGroupNumber("21.B10-mmm")
+        && !isCorrectGroupNumber("") && !isCorrectGroupNumber("35.M");
 }
 
 int main()
@@ -226,7 +194,7 @@ int main()
         printf("Tests failed :(\n");
         return -1;
     }
-    char* line = calloc(1000, sizeof(char));
+    char* line[1000] = { 0 };
     while (true)
     {
         printf("Enter the group number without spaces:\n");
