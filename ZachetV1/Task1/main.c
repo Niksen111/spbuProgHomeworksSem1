@@ -53,6 +53,5 @@ int main()
             printf("Decimal representation: %d\n", convertToDecimal(line));
         }
     }
-    free(line);
     return 0;
 }
