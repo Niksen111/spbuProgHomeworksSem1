@@ -22,7 +22,7 @@ char* findValue(Dictionary* dictionary, int key);
 bool isKeyInDictionary(Dictionary* dictionary, int key);
 
 // Deletes the given key and its associated value from the dictionary
-void removeEntry(Dictionary** dictionary, int key);
+void removeEntry(Dictionary* dictionary, int key);
 
 // technical function, never mind
 // (returns tree height)

@@ -116,7 +116,7 @@ bool testRemoveTheKey()
     result = result && getHeight(root) == 2;
     addEntry(root, 5, s5);
     result = result && isKeyInDictionary(root, 3) && getHeight(root) == 2;
-    removeEntry(&root, 3);
+    removeEntry(root, 3);
     result = result && !isKeyInDictionary(root, 3);
     deleteDictionary(&root);
 
@@ -142,7 +142,7 @@ bool testGetHeight()
     addEntry(root, 3, s4);
     addEntry(root, 5, s5);
     bool result = isKeyInDictionary(root, 3) && getHeight(root) == 2;
-    removeEntry(&root, 3);
+    removeEntry(root, 3);
     result = result && !isKeyInDictionary(root, 3);
     deleteDictionary(&root);
 

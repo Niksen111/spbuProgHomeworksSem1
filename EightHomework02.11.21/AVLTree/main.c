@@ -76,7 +76,7 @@ void interactWithUser()
             int key = 0;
             printf("Введите ключ\n");
             scanf("%d", &key);
-            removeEntry(&myDictionary, key);
+            removeEntry(myDictionary, key);
             break;
         }
         case 5:
