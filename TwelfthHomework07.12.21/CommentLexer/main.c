@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 typedef struct StateTable
 {
@@ -157,8 +158,31 @@ bool testDeleteStateTable()
 bool testGetComment()
 {
     StateTable* stateTable = createStateTableFromFile("stateTable.txt");
+    FILE* file = fopen("inputFile.txt", "r");
+    if (file == NULL)
+    {
+        deleteStateTable(&stateTable);
+        return true;
+    }
+    char* newComment = getComment(file,  stateTable);
+    if (newComment == NULL)
+    {
+        deleteStateTable(&stateTable);
+        return false;
+    }
+    bool result = strcmp(newComment, "/* adds an item to the list*/") == 0;
+    free(newComment);
+    newComment = getComment(file,  stateTable);
+    if (newComment == NULL)
+    {
+        deleteStateTable(&stateTable);
+        return false;
+    }
+    result = result && strcmp(newComment, "/* returns a pointer to the first position of the list*/") == 0;
+    free(newComment);
+    deleteStateTable(&stateTable);
 
-    return true;
+    return result;
 }
 
 int main()
