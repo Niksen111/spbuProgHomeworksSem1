@@ -8,26 +8,37 @@ bool isDigit(char c)
     return c >= '0' && c <= '9';
 }
 
+typedef enum States
+{
+    zero,
+    first,
+    second,
+    third,
+    fourth,
+    fifth,
+    sixth
+} States;
+
 bool isRealNumber(const char* number)
 {
-    int state = 0;
+    States state = zero;
     int i = 0;
     while (true)
     {
-        char c = 0;
+        char c = number[i];
+        ++i;
         switch (state)
         {
-            case 0:
+            case zero:
             {
-                c = number[i];
-                ++i;
-                if (c == 0)
+                
+                if (c == '\0')
                 {
                     return false;
                 }
                 if (isDigit(c))
                 {
-                    state = 1;
+                    state = first;
                 }
                 else
                 {
@@ -35,25 +46,23 @@ bool isRealNumber(const char* number)
                 }
                 break;
             }
-            case 1:
+            case first:
             {
-                c = number[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return true;
                 }
                 if (isDigit(c))
                 {
-                    state = 1;
+                    state = first;
                 }
                 else if (c == '.')
                 {
-                    state = 2;
+                    state = second;
                 }
                 else if (c == 'e')
                 {
-                    state = 4;
+                    state = fourth;
                 }
                 else
                 {
@@ -61,17 +70,15 @@ bool isRealNumber(const char* number)
                 }
                 break;
             }
-            case 2:
+            case second:
             {
-                c = number[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return false;
                 }
                 if (isDigit(c))
                 {
-                    state = 3;
+                    state = third;
                 }
                 else
                 {
@@ -79,21 +86,19 @@ bool isRealNumber(const char* number)
                 }
                 break;
             }
-            case 3:
+            case third:
             {
-                c = number[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return true;
                 }
                 if (isDigit(c))
                 {
-                    state = 3;
+                    state = third;
                 }
                 else if (c == 'e')
                 {
-                    state = 4;
+                    state = fourth;
                 }
                 else
                 {
@@ -101,21 +106,19 @@ bool isRealNumber(const char* number)
                 }
                 break;
             }
-            case 4:
+            case fourth:
             {
-                c = number[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return false;
                 }
                 if (c == '+' || c == '-')
                 {
-                    state = 5;
+                    state = fifth;
                 }
                 else if (isDigit(c))
                 {
-                    state = 6;
+                    state = sixth;
                 }
                 else
                 {
@@ -123,17 +126,15 @@ bool isRealNumber(const char* number)
                 }
                 break;
             }
-            case 5:
+            case fifth:
             {
-                c = number[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return false;
                 }
                 if (isDigit(c))
                 {
-                    state = 6;
+                    state = sixth;
                 }
                 else
                 {
@@ -141,17 +142,15 @@ bool isRealNumber(const char* number)
                 }
                 break;
             }
-            case 6:
+            case sixth:
             {
-                c = number[i];
-                ++i;
-                if (c == 0)
+                if (c == '\0')
                 {
                     return true;
                 }
                 if (isDigit(c))
                 {
-                    state = 6;
+                    state = sixth;
                 }
                 else
                 {
@@ -165,39 +164,17 @@ bool isRealNumber(const char* number)
 
 bool testIsRealNumber()
 {
-    char s1[100] = "1543345665";
-    char s2[100] = "0";
-    char s3[100] = "";
-    char s4[100] = "12423.";
-    char s5[100] = "142423.3435";
-    char s6[100] = "1324.2";
-    char s7[100] = "1234e";
-    char s8[100] = "3132e+";
-    char s9[100] = "3241e-";
-    char s10[100] = "2423e+233";
-    char s11[100] = "23423e-1";
-    char s12[100] = "2134.2332e";
-    char s13[100] = "1523.e";
-    char s14[100] = "15665.e-";
-    char s15[100] = "15433.34e";
-    char s16[100] = "665.243e-5";
-    char s17[100] = "3235.323e534";
-    char s18[100] = "213.12323e-434";
-    char s19[100] = "23434.324e-324e";
-    char s20[100] = "234e.324";
-    char s21[100] = "32434.43e+3434i";
-
-    return isRealNumber(s1) && isRealNumber(s2)
-        && !isRealNumber(s3) && !isRealNumber(s4)
-        && isRealNumber(s5) && isRealNumber(s6)
-        && !isRealNumber(s7) && !isRealNumber(s8)
-        && !isRealNumber(s9) && isRealNumber(s10)
-        && isRealNumber(s11) && !isRealNumber(s12)
-        && !isRealNumber(s13) && !isRealNumber(s14)
-        && !isRealNumber(s15) && isRealNumber(s16)
-        && isRealNumber(s17) && isRealNumber(s18)
-        && !isRealNumber(s19) && !isRealNumber(s20)
-        && !isRealNumber(s21);
+    return isRealNumber("1543345665") && isRealNumber("0")
+        && !isRealNumber("") && !isRealNumber("12423.")
+        && isRealNumber("142423.3435") && isRealNumber("1324.2")
+        && !isRealNumber("1234e") && !isRealNumber("3132e+")
+        && !isRealNumber("3241e-") && isRealNumber("2423e+233")
+        && isRealNumber("23423e-1") && !isRealNumber("2134.2332e")
+        && !isRealNumber("1523.e") && !isRealNumber("15665.e-")
+        && !isRealNumber("15433.34e") && isRealNumber("665.243e-5")
+        && isRealNumber("3235.323e534") && isRealNumber("213.12323e-434")
+        && !isRealNumber("23434.324e-324e") && !isRealNumber("234e.324")
+        && !isRealNumber("32434.43e+3434i");
 }
 
 int main()
@@ -213,7 +190,7 @@ int main()
         printf("Enter the text without spaces:\n");
         printf("(enter \"exit\" if you want to end)\n");
         scanf("%s", line);
-        if (strcmp("exit", line) == 0)
+        if (strcmp("exit", line) == '\0')
         {
             break;
         }
