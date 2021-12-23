@@ -108,7 +108,7 @@ void fixHeapExtraction(Queue* queue, int index)
         fixHeapInsert(queue, sonIndex);
         return;
     }
-    if (queue->pairArray[index]->key > queue->pairArray[sonIndex]->key && queue->pairArray[index]->key > queue->pairArray[sonIndex-1]->key)
+    if (queue->pairArray[index]->key > queue->pairArray[sonIndex]->key && queue->pairArray[index]->key > queue->pairArray[sonIndex - 1]->key)
     {
         return;
     }
@@ -132,7 +132,7 @@ int enqueue(Queue* queue, int key, int value)
     }
     changePair(queue->pairArray[queue->filledCells], key, value);
     fixHeapInsert(queue, queue->filledCells);
-    queue->filledCells += 1;
+    ++queue->filledCells;
 }
 
 int dequeue(Queue* queue)
@@ -145,7 +145,7 @@ int dequeue(Queue* queue)
     swapPairs(queue->pairArray[0], queue->pairArray[queue->filledCells - 1]);
     queue->pairArray[queue->filledCells - 1]->key = 0;
     queue->pairArray[queue->filledCells - 1]->value = -1;
-    queue->filledCells -= 1;
+    --queue->filledCells;
     fixHeapExtraction(queue, 0);
     return returnedValue;
 }
