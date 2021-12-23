@@ -10,18 +10,18 @@ bool isDigit(char c)
 
 typedef enum States
 {
-    zero,
-    first,
-    second,
-    third,
-    fourth,
-    fifth,
-    sixth
+    start,
+    metDigit,
+    metPoint,
+    digitAfterPoint,
+    metE,
+    metPlusMinus,
+    metDigitAfterE
 } States;
 
 bool isRealNumber(const char* number)
 {
-    States state = zero;
+    States state = start;
     int i = 0;
     while (true)
     {
@@ -29,7 +29,7 @@ bool isRealNumber(const char* number)
         ++i;
         switch (state)
         {
-            case zero:
+            case start:
             {
                 
                 if (c == '\0')
@@ -38,7 +38,7 @@ bool isRealNumber(const char* number)
                 }
                 if (isDigit(c))
                 {
-                    state = first;
+                    state = metDigit;
                 }
                 else
                 {
@@ -46,7 +46,7 @@ bool isRealNumber(const char* number)
                 }
                 break;
             }
-            case first:
+            case metDigit:
             {
                 if (c == '\0')
                 {
@@ -54,15 +54,15 @@ bool isRealNumber(const char* number)
                 }
                 if (isDigit(c))
                 {
-                    state = first;
+                    state = metDigit;
                 }
                 else if (c == '.')
                 {
-                    state = second;
+                    state = metPoint;
                 }
                 else if (c == 'e')
                 {
-                    state = fourth;
+                    state = metE;
                 }
                 else
                 {
@@ -70,7 +70,7 @@ bool isRealNumber(const char* number)
                 }
                 break;
             }
-            case second:
+            case metPoint:
             {
                 if (c == '\0')
                 {
@@ -78,7 +78,7 @@ bool isRealNumber(const char* number)
                 }
                 if (isDigit(c))
                 {
-                    state = third;
+                    state = digitAfterPoint;
                 }
                 else
                 {
@@ -86,7 +86,7 @@ bool isRealNumber(const char* number)
                 }
                 break;
             }
-            case third:
+            case digitAfterPoint:
             {
                 if (c == '\0')
                 {
@@ -94,11 +94,11 @@ bool isRealNumber(const char* number)
                 }
                 if (isDigit(c))
                 {
-                    state = third;
+                    state = digitAfterPoint;
                 }
                 else if (c == 'e')
                 {
-                    state = fourth;
+                    state = metE;
                 }
                 else
                 {
@@ -106,7 +106,7 @@ bool isRealNumber(const char* number)
                 }
                 break;
             }
-            case fourth:
+            case metE:
             {
                 if (c == '\0')
                 {
@@ -114,11 +114,11 @@ bool isRealNumber(const char* number)
                 }
                 if (c == '+' || c == '-')
                 {
-                    state = fifth;
+                    state = metPlusMinus;
                 }
                 else if (isDigit(c))
                 {
-                    state = sixth;
+                    state = metDigitAfterE;
                 }
                 else
                 {
@@ -126,7 +126,7 @@ bool isRealNumber(const char* number)
                 }
                 break;
             }
-            case fifth:
+            case metPlusMinus:
             {
                 if (c == '\0')
                 {
@@ -134,7 +134,7 @@ bool isRealNumber(const char* number)
                 }
                 if (isDigit(c))
                 {
-                    state = sixth;
+                    state = metDigitAfterE;
                 }
                 else
                 {
@@ -142,7 +142,7 @@ bool isRealNumber(const char* number)
                 }
                 break;
             }
-            case sixth:
+            case metDigitAfterE:
             {
                 if (c == '\0')
                 {
@@ -150,7 +150,7 @@ bool isRealNumber(const char* number)
                 }
                 if (isDigit(c))
                 {
-                    state = sixth;
+                    state = metDigitAfterE;
                 }
                 else
                 {
