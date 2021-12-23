@@ -5,7 +5,7 @@
 
 int convertToDecimal(char* line)
 {
-    int length = strlen(line);
+    const int length = strlen(line);
     int result = 0;
     int currentDegree = 1;
     for (int i = length - 1; i >= 0; --i)
@@ -38,7 +38,7 @@ int main()
         printf("Tests failed :(");
         return -1;
     }
-    char* line = calloc(33, sizeof(char));
+    char line[33] = { 0 };
     while (true)
     {
         printf("Enter a binary number (no more than 32 characters):\n");
