@@ -56,7 +56,7 @@ StateTable* createStateTableFromFile(const char fileName[])
     return stateTable;
 }
 
-char* getComment(FILE* file, int* currentIndex, StateTable* stateTable)
+char* getComment(FILE* file, StateTable* stateTable)
 {
     char* comment = calloc(1000, sizeof(char));
     if (comment == NULL)
@@ -109,7 +109,6 @@ char* getComment(FILE* file, int* currentIndex, StateTable* stateTable)
 
 void printAllComments(const char fileName[], StateTable* stateTable)
 {
-    int currentIndex = 0;
     FILE* file = fopen(fileName, "r");
     if (file == NULL)
     {
@@ -117,7 +116,7 @@ void printAllComments(const char fileName[], StateTable* stateTable)
     }
     while (true)
     {
-        char* newComment = getComment(file, &currentIndex,  stateTable);
+        char* newComment = getComment(file,  stateTable);
         if (newComment == NULL)
         {
             break;
@@ -157,6 +156,8 @@ bool testDeleteStateTable()
 
 bool testGetComment()
 {
+    StateTable* stateTable = createStateTableFromFile("stateTable.txt");
+
     return true;
 }
 
