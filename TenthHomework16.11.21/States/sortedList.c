@@ -109,7 +109,7 @@ void printSortedList(SortedList* head)
     SortedList* list = head;
     while (!sortedListIsEmpty(list))
     {
-        printf("%d ", (list->value));
+        printf("%d ", list->value);
         list = list->next;
     }
     printf("\n");

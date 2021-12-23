@@ -41,7 +41,7 @@ void freeMatrix(int*** matrix, int n)
     free(*matrix);
 }
 
-void distributionCities(States* states)
+void distributeCities(States* states)
 {
     states->cities = calloc(states->citiesNumber, sizeof(int));
     SortedList** listsOfAddedCities = calloc(states->capitalsNumber, sizeof(SortedList*));
@@ -85,10 +85,15 @@ void distributionCities(States* states)
     free(listsOfAddedCities);
 }
 
-States* createStatesFromFile(char fileName[])
+States* createStatesFromFile(const char fileName[])
 {
     States* states = calloc(1, sizeof(States));
     FILE* file = fopen(fileName, "r");
+    if (file == NULL)
+    {
+        free(states);
+        return NULL;
+    }
     fscanf(file, "%d %d", &(states->citiesNumber), &(states->roadsNumber));
     states->adjacencyMatrix = createAdjacencyMatrixFromFile(file, states->citiesNumber, states->roadsNumber);
     fscanf(file, "%d", &(states->capitalsNumber));
@@ -98,7 +103,7 @@ States* createStatesFromFile(char fileName[])
         fscanf(file, "%d", &(states->capitals)[i]);
     }
     fclose(file);
-    distributionCities(states);
+    distributeCities(states);
     return states;
 }
 

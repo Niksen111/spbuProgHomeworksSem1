@@ -4,7 +4,7 @@
 
 bool testCreateSortedList()
 {
-    SortedList * head = createSortedList();
+    SortedList* head = createSortedList();
     bool result = head == NULL;
     deleteSortedList(&head);
 
