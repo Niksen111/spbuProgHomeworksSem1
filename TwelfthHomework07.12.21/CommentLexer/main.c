@@ -17,6 +17,7 @@ void deleteStateTable(StateTable** stateTable)
     }
     free((*stateTable)->table);
     free(*stateTable);
+    (*stateTable) = NULL;
 }
 
 int getNumber(char c)
@@ -127,8 +128,46 @@ void printAllComments(const char fileName[], StateTable* stateTable)
     fclose(file);
 }
 
+bool testCreateStateTableFromFile()
+{
+    StateTable* stateTable = createStateTableFromFile("stateTable.txt");
+    bool result = stateTable->rowNumber == 4 && stateTable->columnNumber == 3;
+    int tableResult[12] = { 1, 0, 0, 0, 2, 0, 2, 3, 2, 4, 2, 2 };
+    for (int i = 0; i < stateTable->rowNumber; ++i)
+    {
+        for (int j = 0; j < stateTable->columnNumber; ++j)
+        {
+            result = result && tableResult[i * stateTable->columnNumber + j] == stateTable->table[i][j];
+        }
+    }
+    deleteStateTable(&stateTable);
+    return result;
+}
+
+bool testDeleteStateTable()
+{
+    StateTable* stateTable = createStateTableFromFile("stateTable.txt");
+    bool result = stateTable->rowNumber == 4 && stateTable->columnNumber == 3
+        && stateTable->table[0][0] == 1;
+    deleteStateTable(&stateTable);
+    result = result && stateTable == NULL;
+
+    return result;
+}
+
+bool testGetComment()
+{
+    return true;
+}
+
 int main()
 {
+    if (!testCreateStateTableFromFile() || !testDeleteStateTable()
+        || !testGetComment())
+    {
+        printf("Tests failed :)\n");
+        return -1;
+    }
     StateTable* stateTable = createStateTableFromFile("stateTable.txt");
     printAllComments("inputFile.txt", stateTable);\
     deleteStateTable(&stateTable);
