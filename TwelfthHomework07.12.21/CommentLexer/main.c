@@ -42,6 +42,11 @@ StateTable* createStateTableFromFile(const char fileName[])
         return NULL;
     }
     StateTable* stateTable = calloc(1, sizeof(StateTable));
+    if (stateTable == NULL)
+    {
+        fclose(file);
+        return NULL;
+    }
     fscanf(file, "%d %d%*c", &stateTable->columnNumber, &stateTable->rowNumber);
     stateTable->table = calloc(stateTable->rowNumber, sizeof(int*));
     fscanf(file, "%*[^\n]");
@@ -59,6 +64,10 @@ StateTable* createStateTableFromFile(const char fileName[])
 
 char* getComment(FILE* file, StateTable* stateTable)
 {
+    if (stateTable == NULL)
+    {
+        return NULL;
+    }
     char* comment = calloc(1000, sizeof(char));
     if (comment == NULL)
     {
@@ -194,7 +203,7 @@ int main()
         return -1;
     }
     StateTable* stateTable = createStateTableFromFile("stateTable.txt");
-    printAllComments("inputFile.txt", stateTable);\
+    printAllComments("inputFile.txt", stateTable);
     deleteStateTable(&stateTable);
     return 0;
 }
