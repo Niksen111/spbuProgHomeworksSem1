@@ -31,7 +31,6 @@ bool isRealNumber(const char* number)
         {
             case start:
             {
-                
                 if (c == '\0')
                 {
                     return false;
