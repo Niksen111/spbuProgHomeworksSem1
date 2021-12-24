@@ -90,8 +90,8 @@ char* getComment(FILE* file, StateTable* stateTable)
             }
             case 1:
             {
-                comment[currentCommentLength] = c;
-                ++currentCommentLength;
+                comment[0] = '/';
+                currentCommentLength = 1;
                 break;
             }
             case 2:
@@ -141,7 +141,7 @@ bool testCreateStateTableFromFile()
 {
     StateTable* stateTable = createStateTableFromFile("stateTable.txt");
     bool result = stateTable->rowNumber == 4 && stateTable->columnNumber == 3;
-    int tableResult[12] = { 1, 0, 0, 0, 2, 0, 2, 3, 2, 4, 2, 2 };
+    int tableResult[12] = { 1, 0, 0, 1, 2, 0, 2, 3, 2, 4, 3, 2 };
     for (int i = 0; i < stateTable->rowNumber; ++i)
     {
         for (int j = 0; j < stateTable->columnNumber; ++j)

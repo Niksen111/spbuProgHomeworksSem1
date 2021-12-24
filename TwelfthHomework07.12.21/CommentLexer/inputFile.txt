@@ -1,11 +1,11 @@
 /* adds an item to the list*/
 void addAfter(List* list, Position* position, char* name, char* phone);
 
-/* returns a pointer to the first position of the list*/
+//* returns a pointer to the first position of the list*/
 Position* getFirst(List* list);
 
 /* returns a pointer to the last position of the list
-Position* getLast(List* list);*/
+Position* getLast(List* list);**/
 
 /* moves the pointer to the next element*/
 void moveToNext(Position** position);
