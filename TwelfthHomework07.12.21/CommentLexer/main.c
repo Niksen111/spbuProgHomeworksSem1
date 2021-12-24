@@ -94,13 +94,8 @@ char* getComment(FILE* file, StateTable* stateTable)
                 currentCommentLength = 1;
                 break;
             }
-            case 2:
-            {
-                comment[currentCommentLength] = c;
-                ++currentCommentLength;
-                break;
-            }
             case 3:
+            case 2:
             {
                 comment[currentCommentLength] = c;
                 ++currentCommentLength;
