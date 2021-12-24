@@ -26,4 +26,6 @@ char* getPriorityValue(Position* position, Priority priority);*/
 Position* copyPointer(Position* position);
 
 /* returns true if the list is empty*/
-bool isListEmpty(List* list); 
+bool isListEmpty(List* list);
+
+////***////****/*/*/*/*/*/*/*/*//*//****/***/
