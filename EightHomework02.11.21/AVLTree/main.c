@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include "avlTreeTests.h"
 #include "avlTree.h"
 
@@ -30,20 +29,20 @@ void interactWithUser()
             return;
         case 1:
         {
-            int key = 0;
-            char* value = calloc(10010, sizeof(char));
+            char key[10010] = { 0 };
+            char value[10010] = { 0 };
             printf("Введите ключ\n");
-            scanf("%d%*c", &key);
+            scanf("%[^\n]%*c", key);
             printf("Введите значение (не более 10000 символов)\n");
-            scanf("%[^\n]", value);
+            scanf("%[^\n]%*c", value);
             addEntry(myDictionary, key, value);
             break;
         }
         case 2:
         {
-            int key = 0;
+            char key[10010] = { 0 };
             printf("Введите ключ\n");
-            scanf("%d", &key);
+            scanf("%[^\n]%*c", key);
             char* value = findValue(myDictionary, key);
             if (value == NULL)
             {
@@ -58,9 +57,9 @@ void interactWithUser()
         }
         case 3:
         {
-            int key = 0;
+            char key[10010] = { 0 };
             printf("Введите ключ\n");
-            scanf("%d", &key);
+            scanf("%[^\n]%*c", key);
             if (isKeyInDictionary(myDictionary, key))
             {
                 printf("Данный ключ присутствует в словаре.\n");
@@ -73,9 +72,9 @@ void interactWithUser()
         }
         case 4:
         {
-            int key = 0;
+            char key[10010] = { 0 };
             printf("Введите ключ\n");
-            scanf("%d", &key);
+            scanf("%[^\n]%*c", key);
             removeEntry(myDictionary, key);
             break;
         }

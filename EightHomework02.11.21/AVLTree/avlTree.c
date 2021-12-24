@@ -1,10 +1,11 @@
 #include "avlTree.h"
 #include <stdlib.h>
+#include <string.h>
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 
 typedef struct TreeNode
 {
-    int key;
+    const char* key;
     char* value;
     char height;
     struct TreeNode* parent;
@@ -132,7 +133,7 @@ void smallRightRotation(Dictionary* dictionary, TreeNode* node)
     {
         node->leftSon->parent = NULL;
     }
-    if (node->leftSon->rightSon->parent != NULL)
+    if (node->leftSon->rightSon != NULL)
     {
         node->leftSon->rightSon->parent = node;
     }
@@ -314,6 +315,7 @@ void deleteBranchRecursive(TreeNode* branch)
     deleteBranchRecursive(branch->leftSon);
     deleteBranchRecursive(branch->rightSon);
     free(branch->value);
+    free(branch->key);
     free(branch);
 }
 
@@ -328,33 +330,37 @@ void deleteDictionary(Dictionary** dictionary)
     (*dictionary) = NULL;
 }
 
-void addEntry(Dictionary* dictionary, int key, char* value)
+void addEntry(Dictionary* dictionary, const char* key, char* value)
 {
     if (dictionary->AVLTreeRoot == NULL)
     {
         TreeNode* newTreeNode = calloc(1, sizeof(TreeNode));
-        newTreeNode->key = key;
-        newTreeNode->value = value;
+        newTreeNode->key = calloc(10010, sizeof(char));
+        newTreeNode->value = calloc(10010, sizeof(char));
+        strcat(newTreeNode->key, key);
+        strcat(newTreeNode->value, value);
         dictionary->AVLTreeRoot = newTreeNode;
         return;
     }
     TreeNode* node = dictionary->AVLTreeRoot;
     while (true)
     {
-        if (key == node->key)
+        if (strcmp(key, node->key) == 0)
         {
             free(node->value);
             node->value = value;
             return;
         }
-        if (key > node->key)
+        if (strcmp(key, node->key) > 0)
         {
             if (node->rightSon == NULL)
             {
                 TreeNode* newNode = calloc(1, sizeof(TreeNode));
+                newNode->key = calloc(10010, sizeof(char));
+                newNode->value = calloc(10010, sizeof(char));
+                strcat(newNode->key, key);
+                strcat(newNode->value, value);
                 newNode->parent = node;
-                newNode->key = key;
-                newNode->value = value;
                 node->rightSon = newNode;
                 node = newNode;
                 fixHeight(newNode);
@@ -368,9 +374,11 @@ void addEntry(Dictionary* dictionary, int key, char* value)
             if (node->leftSon == NULL)
             {
                 TreeNode* newNode = calloc(1, sizeof(TreeNode));
+                newNode->key = calloc(10010, sizeof(char));
+                newNode->value = calloc(10010, sizeof(char));
+                strcat(newNode->key, key);
+                strcat(newNode->value, value);
                 newNode->parent = node;
-                newNode->key = key;
-                newNode->value = value;
                 node->leftSon = newNode;
                 fixHeight(newNode);
                 rebalanceTree(dictionary, node);
@@ -386,6 +394,7 @@ void freeNode(Dictionary* root, TreeNode* retrievableNode)
     if (root->AVLTreeRoot == retrievableNode)
     {
         free(retrievableNode->value);
+        free(retrievableNode->key);
         free(root->AVLTreeRoot);
         root->AVLTreeRoot = NULL;
         return;
@@ -396,16 +405,19 @@ void freeNode(Dictionary* root, TreeNode* retrievableNode)
         {
             retrievableNode->parent->rightSon = NULL;
             free(retrievableNode->value);
+            free(retrievableNode->key);
             free(retrievableNode);
             return;
         }
         retrievableNode->parent->leftSon = NULL;
         free(retrievableNode->value);
+        free(retrievableNode->key);
         free(retrievableNode);
     }
     else
     {
         free(retrievableNode->value);
+        free(retrievableNode->key);
         free(retrievableNode);
     }
 }
@@ -441,14 +453,14 @@ void removeTreeNode(Dictionary* root, TreeNode* retrievableNode)
         if (retrievableNode->parent != NULL)
         {
             TreeNode* balanceNode = retrievableNode->parent;
-            transfer(retrievableNode, right);
+            transfer(retrievableNode, left);
+            retrievableNode->parent = NULL;
             freeNode(root, retrievableNode);
             fixHeight(balanceNode);
             rebalanceTree(root, balanceNode);
-            free(balanceNode);
             return;
         }
-        transfer(retrievableNode, right);
+        transfer(retrievableNode, left);
         freeNode(root, retrievableNode);
         return;
     }
@@ -458,14 +470,14 @@ void removeTreeNode(Dictionary* root, TreeNode* retrievableNode)
         if (retrievableNode->parent != NULL)
         {
             TreeNode* balanceNode = retrievableNode->parent;
-            transfer(retrievableNode, left);
+            transfer(retrievableNode, right);
+            retrievableNode->parent = NULL;
             freeNode(root, retrievableNode);
             fixHeight(balanceNode);
             rebalanceTree(root, balanceNode);
-            free(balanceNode);
             return;
         }
-        transfer(retrievableNode, left);
+        transfer(retrievableNode, right);
         freeNode(root, retrievableNode);
         return;
     }
@@ -480,7 +492,7 @@ void removeTreeNode(Dictionary* root, TreeNode* retrievableNode)
     removeTreeNode(root, newNode);
 }
 
-TreeNode* findNode(Dictionary* root, int key)
+TreeNode* findNode(Dictionary* root, const char* key)
 {
     if (root == NULL || root->AVLTreeRoot == NULL)
     {
@@ -489,11 +501,11 @@ TreeNode* findNode(Dictionary* root, int key)
     TreeNode* node = root->AVLTreeRoot;
     while (true)
     {
-        if (key == node->key)
+        if (strcmp(key, node->key) == 0)
         {
             return node;
         }
-        if (key > node->key)
+        if (strcmp(key, node->key) > 0)
         {
             if (node->rightSon == NULL)
             {
@@ -512,7 +524,7 @@ TreeNode* findNode(Dictionary* root, int key)
     }
 }
 
-char* findValue(Dictionary* dictionary, int key)
+char* findValue(Dictionary* dictionary, const char* key)
 {
     TreeNode* node = findNode(dictionary, key);
     if (node == NULL)
@@ -524,7 +536,7 @@ char* findValue(Dictionary* dictionary, int key)
     return value;
 }
 
-bool isKeyInDictionary(Dictionary* dictionary, int key)
+bool isKeyInDictionary(Dictionary* dictionary, const char* key)
 {
     TreeNode* node = findNode(dictionary, key);
     if (node != NULL)
@@ -534,7 +546,7 @@ bool isKeyInDictionary(Dictionary* dictionary, int key)
     return false;
 }
 
-void removeEntry(Dictionary* dictionary, int key)
+void removeEntry(Dictionary* dictionary, const char* key)
 {
     TreeNode* node = findNode(dictionary, key);
     if (node != NULL)
