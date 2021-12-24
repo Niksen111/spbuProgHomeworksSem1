@@ -10,7 +10,7 @@ ParseTree* createTree(const char expression[], int *errorCode);
 int calculateValueOfTree(ParseTree* root);
 
 // prints the value of the tree
-void printTree(ParseTree* root);
+void printTree(const ParseTree* root);
 
 // removes the entire tree
 void deleteTree(ParseTree** root);

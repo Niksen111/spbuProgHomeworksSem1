@@ -38,7 +38,7 @@ int convertToInt(const char* number)
     {
         result = result * 10 + (int)(number[i] - '0');
     }
-    return start == 1 ? result * (-1) : result;
+    return start == 1 ? -result : result;
 }
 
 int operation(const int value1, const int value2,
@@ -101,7 +101,7 @@ void deleteTree(ParseTree** root)
     (*root) = NULL;
 }
 
-int add(ParseTree* root, TreeNode** currentNode, char* value)
+int add(ParseTree* root, TreeNode** currentNode, const char* value)
 {
     TreeNode* newNode = calloc(1, sizeof(TreeNode));
     if (newNode == NULL)
@@ -110,9 +110,8 @@ int add(ParseTree* root, TreeNode** currentNode, char* value)
     }
     newNode->value = calloc(strlen(value) + 1, sizeof(char));
     strcat(newNode->value, value);
-    bool isDigit = value[0] >= '0' && value[0] <= '9'
-            || value[1] >= '0' && value[1] <= '9';
-    if (*currentNode == NULL)
+    bool isDigit = isNumber(value);
+    if ((*currentNode) == NULL)
     {
         root->root = newNode;
         *currentNode = newNode;
@@ -128,7 +127,7 @@ int add(ParseTree* root, TreeNode** currentNode, char* value)
         }
         return 0;
     }
-    if ((*currentNode)->rightSon == NULL)
+    if ((*currentNode) ->rightSon == NULL)
     {
         newNode->parent = *currentNode;
         (*currentNode)->rightSon = newNode;
@@ -157,13 +156,7 @@ ParseTree* createTree(const char expression[], int *errorCode)
         *errorCode = -1;
         return NULL;
     }
-    TreeNode** currentNode = calloc(1, sizeof(TreeNode*));
-    if (currentNode == NULL)
-    {
-        *errorCode = -1;
-        free(root);
-        return NULL;
-    }
+    TreeNode* currentNode = NULL;
     const char* operations = "*/+-";
     const int lengthOfExpression = strlen(expression);
     int state = 0;
@@ -188,7 +181,7 @@ ParseTree* createTree(const char expression[], int *errorCode)
                     state = 0;
                     currentValue[j] = c;
                     j = 0;
-                    add(root, currentNode, currentValue);
+                    add(root, &currentNode, currentValue);
                     fillWithZeros(currentValue, 15);
                     break;
                 }
@@ -212,7 +205,7 @@ ParseTree* createTree(const char expression[], int *errorCode)
                 }
                 state = 0;
                 j = 0;
-                add(root, currentNode, currentValue);
+                add(root, &currentNode, currentValue);
                 fillWithZeros(currentValue, 15);
                 break;
             }
@@ -227,13 +220,12 @@ ParseTree* createTree(const char expression[], int *errorCode)
                 }
                 state = 0;
                 j = 0;
-                add(root, currentNode, currentValue);
+                add(root, &currentNode, currentValue);
                 fillWithZeros(currentValue, 15);
                 break;
             }
         }
     }
-    free(currentNode);
     return root;
 }
 
@@ -276,7 +268,7 @@ void printTreeRecursive(TreeNode* node)
     printf(") ");
 }
 
-void printTree(ParseTree* root)
+void printTree(const ParseTree* root)
 {
     printTreeRecursive(root->root);
 }
