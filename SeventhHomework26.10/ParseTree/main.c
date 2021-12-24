@@ -31,8 +31,10 @@ bool testReadLineFromFile()
     fclose(file1);
     const char* line = readLineFromFile("test1.txt");
     const char lineAnswer[15] = "Lol kek mmm ";
+    bool result = strcmp(line, lineAnswer) == 0;
+    free((void*)line);
 
-    return strcmp(line, lineAnswer) == 0;
+    return result;
 }
 
 int main()
@@ -42,13 +44,14 @@ int main()
         printf("Tests failed(\n");
         return -1;
     }
-    char* line = readLineFromFile("file.txt\0");
+    char* line = readLineFromFile("file.txt");
     if (line == NULL)
     {
         return -2;
     }
     int errorCode = 0;
     ParseTree* myTree = createTree(line, &errorCode);
+    free(line);
     printTree(myTree);
     printf("\n");
     int result = calculateValueOfTree(myTree);

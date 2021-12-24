@@ -17,6 +17,30 @@ typedef struct ParseTree
     TreeNode* root;
 } ParseTree;
 
+void fillWithZeros(char* line, int lineSize)
+{
+    for (int i = 0; i < lineSize; ++i)
+    {
+        line[i] = 0;
+    }
+}
+
+bool isNumber(const char* line)
+{
+    return line[0] > '0' && line[0] < '9' || line[1] > '0' && line[1] < '9';
+}
+
+int convertToInt(const char* number)
+{
+    int result = 0;
+    int start = number[0] == '-' ? 1 : 0;
+    for (int i = start; number[i] != '\0'; ++i)
+    {
+        result = result * 10 + (int)(number[i] - '0');
+    }
+    return start == 1 ? result * (-1) : result;
+}
+
 int operation(const int value1, const int value2,
         const int operation, int* errorCode)
 {
@@ -61,9 +85,9 @@ void deleteTreeRecursive(TreeNode* root)
         return;
     }
     deleteTreeRecursive(root->leftSon);
-    free(root->leftSon);
     deleteTreeRecursive(root->rightSon);
-    free(root->rightSon);
+    free(root->value);
+    free(root);
 }
 
 void deleteTree(ParseTree** root)
@@ -73,7 +97,6 @@ void deleteTree(ParseTree** root)
         return;
     }
     deleteTreeRecursive((*root)->root);
-    free((*root)->root);
     free(*root);
     (*root) = NULL;
 }
@@ -85,9 +108,10 @@ int add(ParseTree* root, TreeNode** currentNode, char* value)
     {
         return -1;
     }
+    newNode->value = calloc(strlen(value) + 1, sizeof(char));
+    strcat(newNode->value, value);
     bool isDigit = value[0] >= '0' && value[0] <= '9'
             || value[1] >= '0' && value[1] <= '9';
-    newNode->value = value;
     if (*currentNode == NULL)
     {
         root->root = newNode;
@@ -143,7 +167,7 @@ ParseTree* createTree(const char expression[], int *errorCode)
     const char* operations = "*/+-";
     const int lengthOfExpression = strlen(expression);
     int state = 0;
-    char* currentValue = NULL;
+    char currentValue[15] = { 0 };
     int j = 0;
     for (int i = 0; i < lengthOfExpression; ++i)
     {
@@ -155,7 +179,6 @@ ParseTree* createTree(const char expression[], int *errorCode)
                 if (c == '-')
                 {
                     state = 1;
-                    currentValue = calloc(15, sizeof(char));
                     currentValue[j] = c;
                     ++j;
                     break;
@@ -163,17 +186,15 @@ ParseTree* createTree(const char expression[], int *errorCode)
                 if (inLine(operations, c))
                 {
                     state = 0;
-                    currentValue = calloc(2, sizeof(char));
                     currentValue[j] = c;
                     j = 0;
                     add(root, currentNode, currentValue);
-                    currentValue = NULL;
+                    fillWithZeros(currentValue, 15);
                     break;
                 }
                 if (c >= '0' && c <= '9')
                 {
                     state = 2;
-                    currentValue = calloc(15, sizeof(char));
                     currentValue[j] = c;
                     ++j;
                     break;
@@ -192,7 +213,7 @@ ParseTree* createTree(const char expression[], int *errorCode)
                 state = 0;
                 j = 0;
                 add(root, currentNode, currentValue);
-                currentValue = NULL;
+                fillWithZeros(currentValue, 15);
                 break;
             }
             case 2:
@@ -207,7 +228,7 @@ ParseTree* createTree(const char expression[], int *errorCode)
                 state = 0;
                 j = 0;
                 add(root, currentNode, currentValue);
-                currentValue = NULL;
+                fillWithZeros(currentValue, 15);
                 break;
             }
         }
@@ -216,46 +237,46 @@ ParseTree* createTree(const char expression[], int *errorCode)
     return root;
 }
 
-int calculateValueOfTree(ParseTree* root)
+int calculateValueOfTreeRecursive(TreeNode* node)
 {
-    if (root->root->value > '0' && root->root->value < '9')
+    if (isNumber(node->value))
     {
-
+        return convertToInt(node->value);
     }
-    ParseTree* leftTree = calloc(1, sizeof(ParseTree));
-    ParseTree* rightTree = calloc(1, sizeof(ParseTree));
-    leftTree->root = root->root->leftSon;
-    rightTree->root = root->root->rightSon;
-    int leftValue = calculateValueOfTree(leftTree);
-    int rightValue = calculateValueOfTree(rightTree);
+    TreeNode* leftSon = node->leftSon;
+    TreeNode* rightSon = node->rightSon;
+    int leftValue = calculateValueOfTreeRecursive(leftSon);
+    int rightValue = calculateValueOfTreeRecursive(rightSon);
     int errorCode = 0;
-    int result = operation(leftValue, rightValue, root->root->value, &errorCode);
+    int result = operation(leftValue, rightValue, node->value[0], &errorCode);
     if (errorCode != 0)
     {
-        free(leftTree);
-        free(rightTree);
         return -1;
     }
-    free(leftTree);
-    free(rightTree);
     return result;
+}
+
+int calculateValueOfTree(ParseTree* root)
+{
+    return calculateValueOfTreeRecursive(root->root);
+}
+
+void printTreeRecursive(TreeNode* node)
+{
+    if (isNumber(node->value))
+    {
+        printf("%s ", node->value);
+        return;
+    }
+    printf("( %s ", node->value);
+    TreeNode* leftSon = node->leftSon;
+    TreeNode* rightSon = node->rightSon;
+    printTreeRecursive(leftSon);
+    printTreeRecursive(rightSon);
+    printf(") ");
 }
 
 void printTree(ParseTree* root)
 {
-    if (root->root->value < '0' || root->root->value > '9')
-    {
-        printf("( %c ", (root->root->value));
-        ParseTree* leftTree = calloc(1, sizeof(ParseTree));
-        ParseTree* rightTree = calloc(1, sizeof(ParseTree));
-        leftTree->root = root->root->leftSon;
-        rightTree->root = root->root->rightSon;
-        printTree(leftTree);
-        printTree(rightTree);
-        printf(") ");
-        free(leftTree);
-        free(rightTree);
-        return;
-    }
-    printf("%c ", (root->root->value));
+    printTreeRecursive(root->root);
 }
