@@ -1,6 +1,7 @@
 #include "avlTree.h"
 #include <stdlib.h>
 #include <string.h>
+
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 
 typedef struct TreeNode
@@ -335,8 +336,8 @@ void addEntry(Dictionary* dictionary, const char* key, char* value)
     if (dictionary->AVLTreeRoot == NULL)
     {
         TreeNode* newTreeNode = calloc(1, sizeof(TreeNode));
-        newTreeNode->key = calloc(10010, sizeof(char));
-        newTreeNode->value = calloc(10010, sizeof(char));
+        newTreeNode->key = calloc(strlen(key) + 1, sizeof(char));
+        newTreeNode->value = calloc(strlen(value) + 1, sizeof(char));
         strcat(newTreeNode->key, key);
         strcat(newTreeNode->value, value);
         dictionary->AVLTreeRoot = newTreeNode;
@@ -348,7 +349,8 @@ void addEntry(Dictionary* dictionary, const char* key, char* value)
         if (strcmp(key, node->key) == 0)
         {
             free(node->value);
-            node->value = value;
+            node->value = calloc(strlen(value) + 1, sizeof(char));
+            strcat(node->value, value);
             return;
         }
         if (strcmp(key, node->key) > 0)
@@ -356,8 +358,8 @@ void addEntry(Dictionary* dictionary, const char* key, char* value)
             if (node->rightSon == NULL)
             {
                 TreeNode* newNode = calloc(1, sizeof(TreeNode));
-                newNode->key = calloc(10010, sizeof(char));
-                newNode->value = calloc(10010, sizeof(char));
+                newNode->key = calloc(strlen(key) + 1, sizeof(char));
+                newNode->value = calloc(strlen(value) + 1, sizeof(char));
                 strcat(newNode->key, key);
                 strcat(newNode->value, value);
                 newNode->parent = node;
@@ -374,8 +376,8 @@ void addEntry(Dictionary* dictionary, const char* key, char* value)
             if (node->leftSon == NULL)
             {
                 TreeNode* newNode = calloc(1, sizeof(TreeNode));
-                newNode->key = calloc(10010, sizeof(char));
-                newNode->value = calloc(10010, sizeof(char));
+                newNode->key = calloc(strlen(key) + 1, sizeof(char));
+                newNode->value = calloc(strlen(value) + 1, sizeof(char));
                 strcat(newNode->key, key);
                 strcat(newNode->value, value);
                 newNode->parent = node;
@@ -394,7 +396,7 @@ void freeNode(Dictionary* root, TreeNode* retrievableNode)
     if (root->AVLTreeRoot == retrievableNode)
     {
         free(retrievableNode->value);
-        free(retrievableNode->key);
+        free((void*)retrievableNode->key);
         free(root->AVLTreeRoot);
         root->AVLTreeRoot = NULL;
         return;
@@ -405,19 +407,19 @@ void freeNode(Dictionary* root, TreeNode* retrievableNode)
         {
             retrievableNode->parent->rightSon = NULL;
             free(retrievableNode->value);
-            free(retrievableNode->key);
+            free((void*)retrievableNode->key);
             free(retrievableNode);
             return;
         }
         retrievableNode->parent->leftSon = NULL;
         free(retrievableNode->value);
-        free(retrievableNode->key);
+        free((void*)retrievableNode->key);
         free(retrievableNode);
     }
     else
     {
         free(retrievableNode->value);
-        free(retrievableNode->key);
+        free((void*)retrievableNode->key);
         free(retrievableNode);
     }
 }
@@ -531,19 +533,12 @@ char* findValue(Dictionary* dictionary, const char* key)
     {
         return NULL;
     }
-    char* value = node->value;
-
-    return value;
+    return node->value;
 }
 
 bool isKeyInDictionary(Dictionary* dictionary, const char* key)
 {
-    TreeNode* node = findNode(dictionary, key);
-    if (node != NULL)
-    {
-        return true;
-    }
-    return false;
+    return findNode(dictionary, key) != NULL;
 }
 
 void removeEntry(Dictionary* dictionary, const char* key)
