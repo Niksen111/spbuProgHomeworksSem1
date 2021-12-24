@@ -68,6 +68,10 @@ bool testMoveCommentsToAnotherFile()
 {
     moveCommentsToAnotherFile("input.txt", "output.txt");
     FILE* fileOutput = fopen("output.txt", "r");
+    if (fileOutput == NULL)
+    {
+        return false;
+    }
     char line[100] = { 0 };
     fscanf(fileOutput, "%s", line);
     bool result = strcmp(line, "\"ksdjg\"") == 0;
