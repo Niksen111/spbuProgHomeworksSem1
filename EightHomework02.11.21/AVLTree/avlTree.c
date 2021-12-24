@@ -426,7 +426,6 @@ void removeTreeNode(Dictionary* root, TreeNode* retrievableNode)
             freeNode(root, retrievableNode);
             fixHeight(balanceNode);
             rebalanceTree(root, balanceNode);
-            free(balanceNode);
             return;
         }
         freeNode(root, retrievableNode);

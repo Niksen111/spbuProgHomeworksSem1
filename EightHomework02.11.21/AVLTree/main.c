@@ -90,7 +90,8 @@ void interactWithUser()
     }
 }
 
-int main() {
+int main()
+{
     if (!testDictionary())
     {
         printf("Tests failed(\n");
